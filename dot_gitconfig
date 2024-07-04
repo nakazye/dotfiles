@@ -1,0 +1,5 @@
+[user]
+	email = nakazye@gmail.com
+	name = nakazye
+[core]
+	autocrlf = false
