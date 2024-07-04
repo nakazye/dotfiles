@@ -3,3 +3,7 @@
 	name = nakazye
 [core]
 	autocrlf = false
+        filemode = false
+        editor = vi
+[sequence]
+        editor = vi
