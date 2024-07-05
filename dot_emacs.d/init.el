@@ -19,9 +19,9 @@
 
 (leaf font-setting
   :doc "font setting"
-  :when (member "Myrica M" (font-family-list))
+  :when (member "HackGen Console NF" (font-family-list))
   :config
-  (add-to-list 'default-frame-alist '(font . "Myrica M-16")))
+  (add-to-list 'default-frame-alist '(font . "HackGen Console NF-16")))
 
 ;;; --------------------------------------
 
