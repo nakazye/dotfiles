@@ -114,6 +114,14 @@
 
 ;;; --------------------------------------
 
+(leaf affe
+  :ensure t
+  :custom ((affe-regexp-function . 'orderless-pattern-compiler)
+           (affe-highlight-function . 'orderless--highlight)
+	   (affe-find-command . "fd --color=never --full-path")))
+
+;;; --------------------------------------
+
 (leaf flycheck
   :doc "On-the-fly syntax checking"
   :ensure t
