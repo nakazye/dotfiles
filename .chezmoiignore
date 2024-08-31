@@ -18,7 +18,7 @@
 {{- if eq .chezmoi.os "windows" }}
 .zshrc
 .zshenv
-dot_alacritty.toml
+.alacritty.toml
 {{- else if ne .chezmoi.os "windows" }}
 AppData/
 {{- end }}
