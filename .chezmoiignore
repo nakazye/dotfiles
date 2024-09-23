@@ -1,0 +1,38 @@
+# emacs
+.emacs.d/elpa
+.emacs.d/ac-comphist.dat
+.emacs.d/abbrev_defs
+.emacs.d/amx-items
+.emacs.d/kkcrc
+.emacs.d/bookmarks
+.emacs.d/eshell/
+.emacs.d/var/
+.emacs.d/jdee-server/
+.emacs.d/url/
+.emacs.d/straight/
+.emacs.d/eln-cache/
+.emacs.d/auto-save-list/
+.emacs.d/backup/
+
+# os
+{{- if eq .chezmoi.os "windows" }}
+.zshrc
+.zshenv
+.alacritty.toml
+{{- else if ne .chezmoi.os "windows" }}
+AppData/
+{{- end }}
+
+{{- if eq .chezmoi.os "darwin" }}
+
+{{- else if ne .chezmoi.os "darwin" }}
+
+{{- end }}
+
+{{- if eq .chezmoi.os "linux" }}
+{{-   if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
+.config/starship.toml
+{{-   end }}
+{{- end }}
+
+
