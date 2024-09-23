@@ -48,14 +48,18 @@
 (setq frame-inhibit-implied-resize t)
 (setq inhibit-startup-message t)
 (setq initial-scratch-message nil)
+(line-number-mode +1)
+(column-number-mode +1)
+(global-display-line-numbers-mode t)
+(custom-set-variables '(display-line-numbers-width-start t))
+
 
 ;; ===================================
 ;; package manager leaf.el setting
 (eval-and-compile
   (customize-set-variable
    'package-archives '(("gnu"   . "https://elpa.gnu.org/packages/")
-                       ("melpa" . "https://melpa.org/packages/")
-                       ("org"   . "https://orgmode.org/elpa/")))
+                       ("melpa" . "https://melpa.org/packages/")))
   (package-initialize)
   (unless (package-installed-p 'leaf)
     (package-refresh-contents)
