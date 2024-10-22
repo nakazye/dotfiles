@@ -100,5 +100,5 @@ alias du="du -h"
 alias df="df -h"
 alias vi="vim"
 alias emacs="emacs -nw"
-alias -s py=python
-
+alias tmain="tmux attach -t main || tmux new-session -s main"
+alias twsl="tmux attach -t wsl || tmux new-session -s wsl"
