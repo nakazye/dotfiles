@@ -6,4 +6,6 @@
         filemode = false
         editor = vi
 [sequence]
-        editor = vi
+	editor = vi
+[ghq]
+        root = ~/src

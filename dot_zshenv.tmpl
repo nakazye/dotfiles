@@ -1,6 +1,7 @@
 {{ if eq .chezmoi.os "linux" }}
   {{ if eq .chezmoi.osRelease.id "ubuntu" }}
-  export PATH=/snap/bin:$PATH
+  export PATH=~/go/bin/:/snap/bin:$PATH
+  export GOPATH=~/go/
   {{ end }}
 {{ else if eq .chezmoi.os "darwin" }}
 

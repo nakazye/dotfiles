@@ -6,7 +6,7 @@
 ;;; code:
 
 (leaf lang-setting
-  :doc "langage setting"
+  :doc "言語設定系"
   :config
   (set-language-environment  "Japanese")
   (prefer-coding-system  'utf-8)
@@ -18,7 +18,7 @@
 ;;; --------------------------------------
 
 (leaf font-setting
-  :doc "font setting"
+  :doc "フォント設定"
   :when (member "HackGen Console NF" (font-family-list))
   :config
   (add-to-list 'default-frame-alist '(font . "HackGen Console NF-16")))
@@ -26,7 +26,7 @@
 ;;; --------------------------------------
 
 (leaf modus-themes
-  :doc "theme setting"
+  :doc "テーマ設定"
   :ensure t
   :init
   (load-theme 'modus-operandi :no-confirm)
@@ -40,7 +40,7 @@
 ;;; --------------------------------------
 
 (leaf files
-  :doc "editing file settings"
+  :doc "バックアップファイル置き場等の設定"
   :custom `((auto-save-timeout . 15)
             (auto-save-interval . 60)
             (auto-save-file-name-transforms . '((".*" ,(locate-user-emacs-file "backup/") t)))
@@ -53,29 +53,77 @@
 ;;; --------------------------------------
 
 (leaf autorevert
-  :doc "revert buffers when files on disk change"
+  :doc "自動revert設定(他でファイル変更があった際の再読み込み)"
   :custom ((auto-revert-interval . 1))
   :global-minor-mode global-auto-revert-mode)
 
 ;;; --------------------------------------
 
 (leaf delsel
-  :doc "delete selection if you insert"
+  :doc "リージョン選択中に入力すると、選択範囲を消して入力"
   :global-minor-mode delete-selection-mode)
 
 ;;; --------------------------------------
 
 (leaf which-key
-  :doc "Display available keybindings in popup"
+  :doc "キーバインド表示"
   :ensure t
   :config
-  (which-key-mode)
-  )
+  (which-key-mode))
+
+;;; --------------------------------------
+
+(leaf affe
+  :doc "grepやfindを便利に"
+  :ensure t
+  :custom ((affe-regexp-function . 'orderless-pattern-compiler)
+           (affe-highlight-function . 'orderless--highlight)
+	   (affe-find-command . "fd --color=never --full-path")))
+
+;;; --------------------------------------
+
+(leaf consult
+  :doc "補完リスト作成"
+  :ensure t
+  :package t
+  :bind
+  (
+   ("C-s" . consult-line)
+   ("C-x C-b" . switch-to-buffer))
+  :config
+  (leaf consult-ghq
+    :doc ""
+    :ensure t)
+  (leaf consult-lsp
+    :doc ""
+    :ensure t))
+
+;;; --------------------------------------
+
+(leaf orderless
+  :doc "順不同のスペース区切り補完スタイルの提供"
+  :ensure t
+  :custom
+  `((completion-styles . '(orderless))
+    (orderless-matching-styles
+     . '(
+         ;; orderless-prefixes
+         orderless-flex
+         ;; orderless-regexp
+         ;; orderless-initialism
+	 ;; orderless-literal
+	 ))))
+
+;;; --------------------------------------
+
+(leaf marginalia
+  :doc "補完項目に追加情報を提供"
+  :ensure t)
 
 ;;; --------------------------------------
 
 (leaf vertico
-  :tag "minibuffer UI"
+  :doc "ミニバッファでの補完UIの提供"
   :ensure t
   :bind
   (:vertico-map
@@ -84,55 +132,12 @@
   :custom (vertico-count . 10)
   :hook
   (after-init-hook . vertico-mode)
-  (after-init-hook . marginalia-mode)
-  :config
-  (leaf consult
-    :tag "completion command"
-    :ensure t
-    :package t
-    :bind
-    (
-     ("C-s" . consult-line)
-     ("C-x C-b" . switch-to-buffer)))
-  (leaf orderless
-    :tag "completion style"
-    :ensure t
-    :custom
-    `((completion-styles . '(orderless))
-      (orderless-matching-styles
-       . '(
-           ;; orderless-prefixes
-           orderless-flex
-           ;; orderless-regexp
-           ;; orderless-initialism
-	   ;; orderless-literal
-	   ))))
-  (leaf marginalia
-    :tag "minibuffer annotations"
-    :ensure t)
-  )
-
-;;; --------------------------------------
-
-(leaf affe
-  :ensure t
-  :custom ((affe-regexp-function . 'orderless-pattern-compiler)
-           (affe-highlight-function . 'orderless--highlight)
-	   (affe-find-command . "fd --color=never --full-path")))
-
-;;; --------------------------------------
-
-(leaf flycheck
-  :doc "On-the-fly syntax checking"
-  :ensure t
-  :bind (("M-n" . flycheck-next-error)
-         ("M-p" . flycheck-previous-error))
-  :global-minor-mode global-flycheck-mode)
+  (after-init-hook . marginalia-mode))
 
 ;;; --------------------------------------
 
 (leaf company
-  :doc "Modular text completion framework"
+  :doc "補完パネルの提供"
   :ensure t
   :leaf-defer nil
   :bind ((company-active-map
@@ -159,8 +164,17 @@
 
 ;;; --------------------------------------
 
+(leaf flycheck
+  :doc "いろいろな言語の構文チェック"
+  :ensure t
+  :bind (("M-n" . flycheck-next-error)
+         ("M-p" . flycheck-previous-error))
+  :global-minor-mode global-flycheck-mode)
+
+
+;;; --------------------------------------
+
 (leaf org
-  :doc "org-mode settings"
   :ensure t
   :bind (("C-c a" . org-agenda)
 	 ("C-c l" . org-store-link)
