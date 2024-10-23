@@ -30,8 +30,6 @@ zstyle ':vcs_info:*' actionformats '[%b|%a]'
 precmd () { vcs_info }
 RPROMPT=$RPROMPT'${vcs_info_msg_0_}'
 
-
-
 # もしかして機能
 setopt correct
 SPROMPT="%{$fg[red]%}%{$suggest%}(*'~'%)? < %B%r%b %{$fg[red]%}? [Yes!(y), No!(n),a,e]:${reset_color} "
@@ -102,3 +100,4 @@ alias vi="vim"
 alias emacs="emacs -nw"
 alias tmain="tmux attach -t main || tmux new-session -s main"
 alias tvsc="tmux attach -t vsc || tmux new-session -s vsc"
+alias ghqp='cd $(ghq list -p | peco)'
