@@ -19,8 +19,10 @@
 .zshrc
 .zshenv
 .alacritty.toml
+.vimrc
 {{- else if ne .chezmoi.os "windows" }}
 AppData/
+_vimrc
 {{- end }}
 
 {{- if eq .chezmoi.os "darwin" }}
