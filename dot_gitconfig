@@ -9,3 +9,5 @@
 	editor = vi
 [ghq]
         root = ~/src
+[credential]
+       helper = store
