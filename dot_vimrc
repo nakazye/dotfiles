@@ -1,4 +1,5 @@
-:scriptencoding utf-8
+set encoding=utf-8
+scriptencoding utf-8
 
 "文字コードをUFT-8に設定
 set fenc=utf-8
@@ -13,6 +14,12 @@ set hidden
 " 入力中のコマンドをステータスに表示する
 set showcmd
 
+" swpファイル出力無効
+set noswapfile
+" バックアップファイル出力無効
+set nobackup
+" undoファイル出力無効
+set noundofile
 
 " 行番号を表示
 set number
@@ -31,8 +38,9 @@ set wildmode=list:longest
 " シンタックスハイライトの有効化
 syntax enable
 
-" 不可視文字を可視化(タブが「▸-」と表示される)
-set list listchars=tab:\▸\-
+" 不可視文字を可視化
+set list
+set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
 " Tab文字を半角スペースにする
 set expandtab
 " 行頭以外のTab文字の表示幅（スペースいくつ分）

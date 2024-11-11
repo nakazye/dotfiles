@@ -8,14 +8,19 @@ set lines=40
 
 " フォント設定
 if has('win32')
-	" TODO 確認して設定
-	set guifont=HackGenConsoleNF-Regular:h12
+	set guifont=HackGen_Console_NF:h12 
 elseif has('mac')
 	set guifont=HackGenConsoleNF-Regular:h14
 endif
 
 " カラースキーマ
 colorscheme peachpuff 
+
+" ツールバーを削除
+set guioptions-=T
+
+" メニューを削除
+set guioptions-=m
 
 " クリップボード有効化
 set clipboard=unnamed
