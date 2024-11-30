@@ -61,3 +61,13 @@ set wrapscan
 set hlsearch
 " ESC連打でハイライト解除
 nmap <Esc><Esc> :nohlsearch<CR><Esc>
+
+" インサートモードをEmacsライクに
+inoremap <C-d> <Del>
+inoremap <C-h> <BS>
+inoremap <C-a> <home>
+inoremap <C-e> <End>
+inoremap <C-p> <Up>
+inoremap <C-n> <Down>
+inoremap <C-f> <right>
+inoremap <C-b> <left>
