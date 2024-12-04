@@ -106,13 +106,9 @@
   :custom
   `((completion-styles . '(orderless))
     (orderless-matching-styles
-     . '(
-         ;; orderless-prefixes
-         orderless-flex
-         ;; orderless-regexp
-         ;; orderless-initialism
-	 ;; orderless-literal
-	 ))))
+     . '(orderless-literal
+	 orderless-flex
+	 orderless-initialism))))
 
 ;;; --------------------------------------
 
@@ -175,6 +171,7 @@
 ;;; --------------------------------------
 
 (leaf org
+  :doc "org-mode設定"
   :ensure t
   :bind (("C-c a" . org-agenda)
 	 ("C-c l" . org-store-link)
@@ -196,6 +193,7 @@
 ;;; --------------------------------------
 
 (leaf lsp-java
+  :doc "lsp java"
   :ensure t
   :hook (java-mode-hook . (lambda () (lsp))))
 
