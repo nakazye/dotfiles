@@ -1,9 +1,10 @@
+{{ if ne .chezmoi.os "windows" -}}
 #!/bin/sh
+{{ end -}}
+
 {{ if eq .chezmoi.os "linux" -}}
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  {{ if eq .chezmoi.osRelease.id "ubuntu" -}}
-  {{ else if eq .chezmoi.osRelease.id "amzn" -}}
-  {{ end -}}
 {{ else if eq .chezmoi.os "darwin" -}}
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 {{ end -}}
+
