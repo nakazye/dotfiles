@@ -25,6 +25,19 @@
 
 ;;; --------------------------------------
 
+(leaf nerd-icons
+  :doc "Nerd Fontsアイコンの利用"
+  :doc "自前でM-x nerd-icons-install-fontsを実行する必要があるので注意"
+  :ensure t)
+
+;;; --------------------------------------
+
+(leaf treemacs-nerd-icons
+  :doc "treemacsのアイコンをNerd Fontsで置き換え(デフォルトのpngを用いない)"
+  :ensure t)
+
+;;; --------------------------------------
+
 (leaf modus-themes
   :doc "テーマ設定"
   :ensure t
