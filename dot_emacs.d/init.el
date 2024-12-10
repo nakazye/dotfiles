@@ -27,13 +27,6 @@
 
 (leaf nerd-icons
   :doc "Nerd Fontsアイコンの利用"
-  :doc "自前でM-x nerd-icons-install-fontsを実行する必要があるので注意"
-  :ensure t)
-
-;;; --------------------------------------
-
-(leaf treemacs-nerd-icons
-  :doc "treemacsのアイコンをNerd Fontsで置き換え(デフォルトのpngを用いない)"
   :ensure t)
 
 ;;; --------------------------------------
@@ -173,13 +166,23 @@
 
 ;;; --------------------------------------
 
+(leaf treemacs
+  :doc "ツリービュー設定"
+  :ensure t
+  :config
+  (leaf treemacs-nerd-icons
+    :doc "treemacsのアイコンをNerd Fontsで置き換え(デフォルトのpngを用いない)"
+    :ensure t
+    :defer-config (treemacs-load-theme "nerd-icons")))
+
+;;; --------------------------------------
+
 (leaf flycheck
   :doc "いろいろな言語の構文チェック"
   :ensure t
   :bind (("M-n" . flycheck-next-error)
          ("M-p" . flycheck-previous-error))
   :global-minor-mode global-flycheck-mode)
-
 
 ;;; --------------------------------------
 
