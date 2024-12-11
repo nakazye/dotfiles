@@ -173,6 +173,7 @@
   (leaf treemacs-nerd-icons
     :doc "treemacsのアイコンをNerd Fontsで置き換え(デフォルトのpngを用いない)"
     :ensure t
+    :require t
     :defer-config (treemacs-load-theme "nerd-icons")))
 
 ;;; --------------------------------------
