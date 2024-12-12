@@ -166,6 +166,15 @@
 
 ;;; --------------------------------------
 
+(leaf projectile
+  :doc "プロジェクト管理便利ツール"
+  :ensure t
+  :config
+  (leaf consult-projectile
+    :ensure t))
+
+;;; --------------------------------------
+
 (leaf treemacs
   :doc "ツリービュー設定"
   :ensure t
@@ -184,6 +193,13 @@
   :bind (("M-n" . flycheck-next-error)
          ("M-p" . flycheck-previous-error))
   :global-minor-mode global-flycheck-mode)
+
+;;; --------------------------------------
+
+(leaf lsp-java
+  :doc "lsp java"
+  :ensure t
+  :hook (java-mode-hook . (lambda () (lsp))))
 
 ;;; --------------------------------------
 
@@ -206,13 +222,6 @@
     (org-journal-time-format . "")
     (org-journal-file-format . "journal-%Y%m.org"))
   )
-
-;;; --------------------------------------
-
-(leaf lsp-java
-  :doc "lsp java"
-  :ensure t
-  :hook (java-mode-hook . (lambda () (lsp))))
 
 ;;; --------------------------------------
 
