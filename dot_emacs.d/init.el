@@ -169,9 +169,13 @@
 (leaf projectile
   :doc "プロジェクト管理便利ツール"
   :ensure t
+  :bind (:projectile-mode-map
+	 ("C-c p" . projectile-command-map))
   :config
   (leaf consult-projectile
-    :ensure t))
+    :ensure t)
+  :init
+  (projectile-mode +1))
 
 ;;; --------------------------------------
 
@@ -184,6 +188,15 @@
     :ensure t
     :require t
     :defer-config (treemacs-load-theme "nerd-icons")))
+
+;;; --------------------------------------
+
+(leaf treemacs-projectile
+  :doc "プロジェクト単位でのtreemacs自動更新"
+  :ensure t
+  :after (treemacs projectile)
+  :config
+  (treemacs-project-follow-mode))
 
 ;;; --------------------------------------
 
