@@ -17,6 +17,14 @@
 
 ;;; --------------------------------------
 
+(leaf windows-encoding
+  :doc "Windowsでの文字化け対策"
+  :when (memq system-type '(cygwin windows-nt ms-dos))
+  :config
+  (setq-default default-process-coding-system '(utf-8-unix . japanese-cp932-dos)))
+
+;;; --------------------------------------
+
 (leaf font-setting
   :doc "フォント設定"
   :when (member "HackGen Console NF" (font-family-list))
@@ -169,6 +177,13 @@
 	    :defvar company-backends
 	    :config
 	    (add-to-list 'company-backends 'company-c-headers)))
+
+;;; --------------------------------------
+
+(leaf nerd-icons-completion
+  :doc "補完パッケージでアイコンが表示されるように"
+  :ensure t
+  :init (nerd-icons-completion-mode))
 
 ;;; --------------------------------------
 
