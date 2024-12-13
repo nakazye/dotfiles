@@ -1,0 +1,14 @@
+{{ if ne .chezmoi.os "windows" -}}
+
+#!/bin/sh
+{{ if eq .chezmoi.os "darwin" -}}
+brew install --cask rancher
+{{ else if eq .chezmoi.osRelease.id "ubuntu" -}}
+
+{{ else if eq .chezmoi.osRelease.id "amzn" -}}
+
+{{ end -}}
+
+{{ else -}}
+scoop install rancher-desktop
+{{ end -}}

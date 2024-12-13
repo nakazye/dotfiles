@@ -33,26 +33,6 @@
 
 ;;; --------------------------------------
 
-(leaf nerd-icons
-  :doc "Nerd Fontsアイコンの利用"
-  :ensure t)
-
-;;; --------------------------------------
-
-(leaf modus-themes
-  :doc "テーマ設定"
-  :ensure t
-  :init
-  (load-theme 'modus-operandi :no-confirm)
-  (modus-themes-toggle)
-  :custom
-  `((modus-themes-italic-constructs . t)
-    (modus-themes-bold-constructs   . nil)
-    (modus-themes-region            . '(bg-only no-extend)))
-  )
-
-;;; --------------------------------------
-
 (leaf files
   :doc "バックアップファイル置き場等の設定"
   :custom `((auto-save-timeout . 15)
@@ -177,6 +157,26 @@
 	    :defvar company-backends
 	    :config
 	    (add-to-list 'company-backends 'company-c-headers)))
+
+;;; --------------------------------------
+
+(leaf nerd-icons
+  :doc "Nerd Fontsアイコンの利用"
+  :ensure t)
+
+;;; --------------------------------------
+
+(leaf modus-themes
+  :doc "テーマ設定"
+  :ensure t
+  :init
+  (load-theme 'modus-operandi :no-confirm)
+  (modus-themes-toggle)
+  :custom
+  `((modus-themes-italic-constructs . t)
+    (modus-themes-bold-constructs   . nil)
+    (modus-themes-region            . '(bg-only no-extend)))
+  )
 
 ;;; --------------------------------------
 
