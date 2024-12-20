@@ -7,6 +7,8 @@ brew install git
 sudo apt -y install git
 {{ else if eq .chezmoi.osRelease.id "amzn" -}}
 sudo dnf install git
+{{ else if eq .chezmoi.osRelease.id "arch" -}}
+sudo pacman -S --noconfirm git
 {{ end -}}
 
 {{ end -}}

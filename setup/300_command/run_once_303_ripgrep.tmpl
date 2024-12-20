@@ -7,6 +7,8 @@ brew install ripgrep
 sudo apt -y install ripgrep
 {{ else if eq .chezmoi.osRelease.id "amzn" -}}
 brew install ripgrep
+{{ else if eq .chezmoi.osRelease.id "arch" -}}
+sudo pacman -S --noconfirm ripgrep
 {{ end -}}
 
 {{ end -}}

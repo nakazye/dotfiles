@@ -7,6 +7,8 @@ brew install fd
 sudo apt -y install fd-find
 {{ else if eq .chezmoi.osRelease.id "amzn" -}}
 brew install fd
+{{ else if eq .chezmoi.osRelease.id "arch" -}}
+sudo pacman -S --noconfirm fd
 {{ end -}}
 
 {{ end -}}

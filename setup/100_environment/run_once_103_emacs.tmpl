@@ -7,6 +7,8 @@ brew install emacs
 sudo apt -y install emacs
 {{ else if eq .chezmoi.osRelease.id "amzn" -}}
 brew install emacs
+{{ else if eq .chezmoi.osRelease.id "arch" -}}
+sudo pacman -S --noconfirm emacs
 {{ end -}}
 
 {{ end -}}

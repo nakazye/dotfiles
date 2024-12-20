@@ -7,6 +7,8 @@ brew install ghq
 brew install ghq
 {{ else if eq .chezmoi.osRelease.id "amzn" -}}
 brew install ghq
+{{ else if eq .chezmoi.osRelease.id "arch" -}}
+sudo pacman -S --noconfirm ghq
 {{ end -}}
 
 
