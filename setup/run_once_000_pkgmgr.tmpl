@@ -3,7 +3,9 @@
 {{ end -}}
 
 {{ if eq .chezmoi.os "linux" -}}
+{{ if ne .chezmoi.osRelease.id "ArchLinux" -}}
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+{{ end -}}
 {{ else if eq .chezmoi.os "darwin" -}}
  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 {{ end -}}

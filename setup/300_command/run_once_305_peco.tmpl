@@ -1,6 +1,12 @@
 {{ if ne .chezmoi.os "windows" -}}
 
 #!/bin/sh
+{{ if eq .chezmoi.os "darwin" -}}
 brew install peco
+{{ else if eq .chezmoi.osRelease.id "ubuntu" -}}
+brew install peco
+{{ else if eq .chezmoi.osRelease.id "amzn" -}}
+brew install peco
+{{ end -}}
 
 {{ end -}}

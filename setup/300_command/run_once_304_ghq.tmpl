@@ -1,6 +1,13 @@
 {{ if ne .chezmoi.os "windows" -}}
 
 #!/bin/sh
+{{ if eq .chezmoi.os "darwin" -}}
 brew install ghq
+{{ else if eq .chezmoi.osRelease.id "ubuntu" -}}
+brew install ghq
+{{ else if eq .chezmoi.osRelease.id "amzn" -}}
+brew install ghq
+{{ end -}}
+
 
 {{ end -}}
