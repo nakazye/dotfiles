@@ -7,6 +7,9 @@ brew install --cask rancher
 
 {{ else if eq .chezmoi.osRelease.id "amzn" -}}
 
+{{ else if eq .chezmoi.osRelease.id "arch" -}}
+sudo pacman -S docker
+
 {{ end -}}
 
 {{ else -}}

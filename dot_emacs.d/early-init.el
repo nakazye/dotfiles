@@ -27,6 +27,11 @@
 ;; back space with C-h
 (define-key key-translation-map (kbd "C-h") (kbd "<DEL>"))
 (global-set-key (kbd "C-?") 'help-for-help)
+;; ignore C-mouse-1(buffer menu)
+(global-unset-key [C-mouse-1])
+(global-unset-key [C-down-mouse-1])
+(global-unset-key [C-mouse-3])
+(global-unset-key [C-down-mouse-3])
 
 ;; ===================================
 ;; current directry setting
