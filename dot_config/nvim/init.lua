@@ -72,7 +72,13 @@ end
 
 vim.cmd('packadd vim-jetpack')
 require('jetpack.packer').add {
+  -- JetPack本体
   'tani/vim-jetpack',
-  {'beikome/cosme.vim', run = vim.cmd[[colorscheme cosme]]}
+  -- カラースキーマ
+  {'beikome/cosme.vim', run = vim.cmd[[colorscheme cosme]]},
+  -- ファジーファインダ(telescoope)
+  {'nvim-telescope/telescope.nvim',
+   requires = {{'nvim-lua/plenary.nvim'}}
+ }
 }
 
