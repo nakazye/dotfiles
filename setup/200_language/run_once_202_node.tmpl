@@ -1,0 +1,15 @@
+{{ if ne .chezmoi.os "windows" -}}
+
+#!/bin/sh
+{{ if eq .chezmoi.os "darwin" -}}
+brew install node
+{{ else if eq .chezmoi.osRelease.id "ubuntu" -}}
+sudo apt install -y nodejs npm
+{{ else if eq .chezmoi.osRelease.id "amzn" -}}
+
+{{ else if eq .chezmoi.osRelease.id "arch" -}}
+sudo pacman -S --noconfirm nodejs
+{{ end -}}
+
+{{ end -}}
+
