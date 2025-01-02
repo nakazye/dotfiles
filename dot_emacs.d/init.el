@@ -29,7 +29,7 @@
   :doc "フォント設定"
   :when (member "HackGen Console NF" (font-family-list))
   :config
-  (add-to-list 'default-frame-alist '(font . "HackGen Console NF-16")))
+  (add-to-list 'default-frame-alist '(font . "HackGen Console NF-12")))
 
 ;;; --------------------------------------
 
