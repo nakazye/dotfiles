@@ -107,7 +107,6 @@
   `((completion-styles . '(orderless))
     (orderless-matching-styles
      . '(orderless-literal
-	 orderless-flex
 	 orderless-initialism))))
 
 ;;; --------------------------------------
