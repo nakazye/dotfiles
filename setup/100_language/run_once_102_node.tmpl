@@ -8,7 +8,7 @@ sudo apt install -y nodejs npm
 {{ else if eq .chezmoi.osRelease.id "amzn" -}}
 
 {{ else if eq .chezmoi.osRelease.id "arch" -}}
-sudo pacman -S --noconfirm nodejs
+sudo pacman -S --noconfirm nodejs npm
 {{ end -}}
 
 {{ end -}}
