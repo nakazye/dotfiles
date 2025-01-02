@@ -247,15 +247,28 @@
   (org-agenda-files . '("~/org/"))
   :config
   (leaf org-journal
-    :doc "org-journal settings"
+    :doc "ジャーナル(個人的には仕事のメモとかに利用)"
     :ensure t
     :custom
-    (org-journal-dir . "~/org/")
+    (org-journal-dir . "~/org/journal")
     (org-journal-file-type . 'monthly)
     (org-journal-date-format . "%Y-%m-%d, %A")
     (org-journal-time-format . "")
     (org-journal-file-format . "journal-%Y%m.org"))
   )
+
+(leaf org-roam
+  :doc "org-roam"
+  :ensure t
+  :require t
+  :custom
+  (org-roam-v2-ack . t)
+  (org-roam-db-autosync-mode)
+  (org-roam-dailies-directory . "~/org/dailies")
+  (org-roam-dailies-capture-templates . '(("d" "diary" entry
+					   "* %?"
+					   :target (file+head "diary-%<%Y%m>.org"
+							      "#+title: %<%Y-%m-%d>\n")))))
 
 ;;; --------------------------------------
 
