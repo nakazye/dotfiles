@@ -63,7 +63,10 @@
   :doc "キーバインド表示"
   :ensure t
   :config
-  (which-key-mode))
+  (which-key-mode)
+  (which-key-add-keymap-based-replacements
+    global-map
+    "C-c o" "org-command-map"))
 
 ;;; --------------------------------------
 
@@ -165,17 +168,16 @@
 
 ;;; --------------------------------------
 
-(leaf modus-themes
-  :doc "テーマ設定"
+(leaf solarized-theme
+  :doc ""
   :ensure t
-  :init
-  (load-theme 'modus-operandi :no-confirm)
-  (modus-themes-toggle)
-  :custom
-  `((modus-themes-italic-constructs . t)
-    (modus-themes-bold-constructs   . nil)
-    (modus-themes-region            . '(bg-only no-extend)))
-  )
+  :require t
+  :config
+    (solarized-create-theme-file-with-palette 'light 'my-solarized-light
+    '("#d688a7" "#f4f0f9"
+       "#c1e2f6" "#efc9cd" "#e8c34d" "#e4a747" "#c2d648" "#a2dcad" "#94cbd1" "#c6a3d8"))
+    (load-theme 'my-solarized-light t))
+
 
 ;;; --------------------------------------
 
@@ -204,10 +206,10 @@
   :ensure t
   :config
   (leaf treemacs-nerd-icons
-    :doc "treemacsのアイコンをNerd Fontsで置き換え(デフォルトのpngを用いない)"
+    :doc "treemacsのアイコンをNerd Fontsで置き換え"
     :ensure t
-    :require t
-    :defer-config (treemacs-load-theme "nerd-icons")))
+    :require t)
+  (treemacs-load-theme "nerd-icons"))
 
 ;;; --------------------------------------
 
@@ -217,6 +219,14 @@
   :after (treemacs projectile)
   :config
   (treemacs-project-follow-mode))
+
+;;; --------------------------------------
+
+(leaf colorful-mode
+  :doc "カラーコードに色つけたり"
+  :ensure t
+  :custom ((colorful-use-prefix . t)
+	   (colorful-prefix-string . "󰏘")))
 
 ;;; --------------------------------------
 
@@ -239,14 +249,15 @@
 (leaf org
   :doc "org-mode設定"
   :ensure t
-  :bind (("C-c a" . org-agenda)
-	 ("C-c l" . org-store-link)
-	 ("C-c j" . org-journal-new-entry))
+  :bind (("C-c o a" . org-agenda)
+	 ("C-c o l" . org-store-link)
+	 ("C-c o c" . org-capture)
+	 ("C-c o j" . org-journal-new-entry))
   :custom
   (org-agenda-files . '("~/org/"))
   :config
   (leaf org-journal
-    :doc "ジャーナル(個人的には仕事のメモとかに利用)"
+    :doc "ジャーナル(仕事のメモに利用するぞ)"
     :ensure t
     :custom
     (org-journal-dir . "~/org/journal")
@@ -258,16 +269,26 @@
 
 (leaf org-roam
   :doc "org-roam"
+  :doc "org-roam-dailiesを日記として活用したい"
   :ensure t
   :require t
+  :init
+  (defvar org-roam-directory) ; config内で未定義警告出るのがいやなので一時的に設定
+  :bind (("C-c o d" . org-roam-dailies-capture-today)
+	 ("C-c o C" . org-roam-capture))
   :custom
   (org-roam-v2-ack . t)
-  (org-roam-db-autosync-mode)
-  (org-roam-dailies-directory . "~/org/dailies")
+  (org-roam-directory . "~/org/roam")
+  (org-roam-db-location . "~/org/org-roam.db")
+  (org-roam-dailies-directory . "~/org/diary")
   (org-roam-dailies-capture-templates . '(("d" "diary" entry
 					   "* %?"
 					   :target (file+head "diary-%<%Y%m>.org"
-							      "#+title: %<%Y-%m-%d>\n")))))
+							      "#+title: %<%Y-%m-%d>\n"))))
+  :config
+  (unless (file-exists-p org-roam-directory)
+    (make-directory org-roam-directory t))
+  (org-roam-db-autosync-mode))
 
 ;;; --------------------------------------
 
