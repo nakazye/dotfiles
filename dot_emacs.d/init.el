@@ -169,7 +169,7 @@
 ;;; --------------------------------------
 
 (leaf solarized-theme
-  :doc ""
+  :doc "サンリオのサイトを大いに参考にしつつカラーテーマ設定"
   :ensure t
   :require t
   :config
@@ -177,7 +177,6 @@
     '("#d688a7" "#f4f0f9"
        "#c1e2f6" "#efc9cd" "#e8c34d" "#e4a747" "#c2d648" "#a2dcad" "#94cbd1" "#c6a3d8"))
     (load-theme 'my-solarized-light t))
-
 
 ;;; --------------------------------------
 
@@ -257,7 +256,7 @@
   (org-agenda-files . '("~/org/"))
   :config
   (leaf org-journal
-    :doc "ジャーナル(仕事のメモに利用するぞ)"
+    :doc "ジャーナル"
     :ensure t
     :custom
     (org-journal-dir . "~/org/journal")
@@ -269,26 +268,22 @@
 
 (leaf org-roam
   :doc "org-roam"
-  :doc "org-roam-dailiesを日記として活用したい"
+  :doc "ノート術だと考えるから混乱するのであって、カード整理術と考えるとなんとなくすっと入ってくる"
+  :doc "俺は何をカードで整理したいんだ？残しておきたいんだ？というのをもうちょっと時間をかけて考えてから運用してみよう"
+  :doc "つまりは、どんなナレッジベースを作りたいんだ？な気がしている"
+  :doc "多分、学びたいものごとにまとめるのが良い気がする(英語/Emacs/ビジネス一般/などなど・・・)。"
+  :doc "日記とか、行きたいお店リストとか、読みたい本リストとか、刺さったポエムとか、そういうのに使ってもあまり意味を成さない気がする"
   :ensure t
   :require t
   :init
   (defvar org-roam-directory) ; config内で未定義警告出るのがいやなので一時的に設定
-  :bind (("C-c o d" . org-roam-dailies-capture-today)
-	 ("C-c o C" . org-roam-capture))
+  :bind (("C-c o r" . org-roam-capture))
   :custom
   (org-roam-v2-ack . t)
-  (org-roam-directory . "~/org/roam")
+  (org-roam-directory . "~/org/roam/")
   (org-roam-db-location . "~/org/org-roam.db")
-  (org-roam-dailies-directory . "~/org/diary")
-  (org-roam-dailies-capture-templates . '(("d" "diary" entry
-					   "* %?"
-					   :target (file+head "diary-%<%Y%m>.org"
-							      "#+title: %<%Y-%m-%d>\n"))))
-  :config
-  (unless (file-exists-p org-roam-directory)
-    (make-directory org-roam-directory t))
-  (org-roam-db-autosync-mode))
+  ;; org-roam-capture-templatesは後で考えて設定する
+)
 
 ;;; --------------------------------------
 

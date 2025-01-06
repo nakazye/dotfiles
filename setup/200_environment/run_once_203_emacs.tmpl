@@ -1,14 +1,16 @@
 {{ if ne .chezmoi.os "windows" -}}
 
 #!/bin/sh
+
+# org-roamでgpg暗号使うので一緒に入れている
 {{ if eq .chezmoi.os "darwin" -}}
-brew install emacs
+brew install emacs gpg
 {{ else if eq .chezmoi.osRelease.id "ubuntu" -}}
-sudo apt -y install emacs
+sudo apt -y install emacs gnupg
 {{ else if eq .chezmoi.osRelease.id "amzn" -}}
-brew install emacs
+brew install emacs gnupg
 {{ else if eq .chezmoi.osRelease.id "arch" -}}
-sudo pacman -S --noconfirm emacs-wayland
+sudo pacman -S --noconfirm emacs-wayland 
 {{ end -}}
 
 {{ end -}}
