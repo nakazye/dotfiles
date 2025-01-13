@@ -92,9 +92,9 @@
       :doc "flycheckかflymakeかどちらもありだけど、flycheck使い続けてたのでflymakeにしてみる"
       :config )
 
-
     ) ; end of 一般設定 ===============================================================
 
+  
   (leaf *GUI表示系設定=================================================================
     :if (window-system)
     ;; フォントサイズ確認
@@ -384,9 +384,9 @@
           (volatile-highlights-mode t))
         )
 
-
     ) ; end of ファイル編集設定========================================================
 
+  
   (leaf *各種便利機能==================================================================
     :config
 
@@ -591,7 +591,7 @@
 			                                (setq mode-line-format nil)
 			                                (display-line-numbers-mode 0)))))
 
-    (leaf *編集中にぺろんと補完するやつ================================================
+    (leaf *編集中にぺろんと補完するやつ------------------------------------------------
       :doc "companyにお世話になっていたけど、令和はcorfu+capeらしいので試す"
       :doc "なお、CUIでは動作しない。Emacs 31から動作するとのこと。先は長い・・・"
       :config
@@ -625,7 +625,14 @@
           ;; 無理やりスペースの幅を調整する(20241202.2355の元コードから。Ambiguous-width characters絡みの問題と理解している)
           ;; 元コードを上書きしたいので、customは使わない
           (setq nerd-icons-corfu--space  "  "))
-        )
+        ;; CUIで利用できる様にするよ
+        (leaf corfu-terminal
+          :url "https://codeberg.org/akib/emacs-corfu-terminal"
+          :unless (display-graphic-p) ; GUI 環境ではスキップ
+          :ensure t
+          :config
+          (corfu-terminal-mode 1)))
+      ;; 続いてcape
       (leaf cape
 	      :doc "Emacsの標準補完機能であるcapfsと統合する。"
 	      :doc "よってもってつまりはlsp-modeとか各種言語のメジャーモードとかでそれそのまま使えてしまう という理解"
@@ -661,19 +668,6 @@
 	      (add-to-list 'completion-at-point-functions #'cape-tex)
 	      ))
 
-    (leaf *かっこや文字列のくくりを便利に操作------------------------------------------
-      :config
-      (leaf puni
-        :url "https://github.com/AmaiKinono/puni"
-        :ensure t
-        :global-minor-mode puni-global-mode
-        :bind
-        (("C-; e p m"   . puni-mark-list-around-point) ; 現在のリスト全体をマーク
-         ("C-c ; e p m" . puni-mark-list-around-point)
-         ("C-; e p e"   . puni-expand-region)          ; 現在のリストを拡張
-         ("C-c ; e p e" . puni-expand-region)))
-      )
-
     ) ; end of 各種便利機能============================================================
 
   (leaf *特定言語やメジャーモード設定==================================================
@@ -692,3 +686,16 @@
 
 
 ;;; init.el ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(cape nerd-icons-corfu corfu treemacs projectile orderless nerd-icons-completion marginalia consult vertico affe rg which-key volatile-highlights vundo beacon rainbow-delimiters nerd-icons colorful-mode solarized-theme no-littering leaf)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
