@@ -4,7 +4,7 @@
 {{ if eq .chezmoi.os "darwin" -}}
 npm install -g @devcontainers/cli
 {{ else if eq .chezmoi.osRelease.id "ubuntu" -}}
-npm install -g @devcontainers/cli
+sudo npm install -g @devcontainers/cli
 {{ else if eq .chezmoi.osRelease.id "amzn" -}}
 
 {{ else if eq .chezmoi.osRelease.id "arch" -}}
