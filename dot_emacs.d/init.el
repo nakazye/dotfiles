@@ -233,39 +233,39 @@
 		                 "UTF-32BE)"
 		               "UTF-32LE)"))))
 	          ;; 日本語関連 ***********************************************
-	          ((string-match "^euc-jp" coding) "EUC-JP")                        ; EUC-JP
-	          ((string-match "^iso-2022-jp" coding) "JIS (ISO-2022-JP)")        ; ISO-2022-JP
-	          ((string-match "^shift-jis" coding) "Shift-JIS")                  ; Shift_JIS
-	          ((string-match "^cp932" coding) "CP932")                          ; Windows Shift_JIS
-	          ((string-match "^jisx0201" coding) "JIS X 0201")                  ; JIS X 0201
-	          ((string-match "^jisx0213" coding) "JIS X 0213")                  ; JIS X 0213
+	          ((string-match "euc-jp" coding) "EUC-JP")                        ; EUC-JP
+	          ((string-match "iso-2022-jp" coding) "JIS (ISO-2022-JP)")        ; ISO-2022-JP
+	          ((string-match "shift-jis" coding) "Shift-JIS")                  ; Shift_JIS
+	          ((string-match "cp932" coding) "CP932")                          ; Windows Shift_JIS
+	          ((string-match "jisx0201" coding) "JIS X 0201")                  ; JIS X 0201
+	          ((string-match "jisx0213" coding) "JIS X 0213")                  ; JIS X 0213
 	          ;; 国際的な文字コード ***************************************
-	          ((string-match "^iso-8859-1" coding) "Latin-1 (ISO-8859-1)")      ; ラテン1
-	          ((string-match "^iso-8859-2" coding) "Latin-2 (ISO-8859-2)")      ; ラテン2
-	          ((string-match "^iso-8859-3" coding) "Latin-3 (ISO-8859-3)")      ; ラテン3
-	          ((string-match "^iso-8859-4" coding) "Latin-4 (ISO-8859-4)")      ; ラテン4
-	          ((string-match "^iso-8859-5" coding) "Cyrillic (ISO-8859-5)")     ; キリル文字
-	          ((string-match "^iso-8859-6" coding) "Arabic (ISO-8859-6)")       ; アラビア語
-	          ((string-match "^iso-8859-7" coding) "Greek (ISO-8859-7)")        ; ギリシャ語
-	          ((string-match "^iso-8859-8" coding) "Hebrew (ISO-8859-8)")       ; ヘブライ語
-	          ((string-match "^iso-8859-9" coding) "Turkish (ISO-8859-9)")      ; トルコ語
-	          ((string-match "^iso-8859-10" coding) "Nordic (ISO-8859-10)")     ; 北欧言語
-	          ((string-match "^iso-8859-11" coding) "Thai (ISO-8859-11)")       ; タイ語
-	          ((string-match "^iso-8859-13" coding) "Baltic (ISO-8859-13)")     ; バルト言語
-	          ((string-match "^iso-8859-14" coding) "Celtic (ISO-8859-14)")     ; ケルト言語
-	          ((string-match "^iso-8859-15" coding) "Latin-9 (ISO-8859-15)")    ; ラテン1改良版
-	          ((string-match "^iso-8859-16" coding) "Latin-10 (ISO-8859-16)")   ; 東南ヨーロッパ
+	          ((string-match "iso-8859-10" coding) "Nordic (ISO-8859-10)")     ; 北欧言語
+	          ((string-match "iso-8859-11" coding) "Thai (ISO-8859-11)")       ; タイ語
+	          ((string-match "iso-8859-13" coding) "Baltic (ISO-8859-13)")     ; バルト言語
+	          ((string-match "iso-8859-14" coding) "Celtic (ISO-8859-14)")     ; ケルト言語
+	          ((string-match "iso-8859-15" coding) "Latin-9 (ISO-8859-15)")    ; ラテン1改良版
+	          ((string-match "iso-8859-16" coding) "Latin-10 (ISO-8859-16)")   ; 東南ヨーロッパ
+	          ((string-match "iso-8859-1" coding) "Latin-1 (ISO-8859-1)")      ; ラテン1
+	          ((string-match "iso-8859-2" coding) "Latin-2 (ISO-8859-2)")      ; ラテン2
+	          ((string-match "iso-8859-3" coding) "Latin-3 (ISO-8859-3)")      ; ラテン3
+	          ((string-match "iso-8859-4" coding) "Latin-4 (ISO-8859-4)")      ; ラテン4
+	          ((string-match "iso-8859-5" coding) "Cyrillic (ISO-8859-5)")     ; キリル文字
+	          ((string-match "iso-8859-6" coding) "Arabic (ISO-8859-6)")       ; アラビア語
+	          ((string-match "iso-8859-7" coding) "Greek (ISO-8859-7)")        ; ギリシャ語
+	          ((string-match "iso-8859-8" coding) "Hebrew (ISO-8859-8)")       ; ヘブライ語
+	          ((string-match "iso-8859-9" coding) "Turkish (ISO-8859-9)")      ; トルコ語
 	          ;; 中国語・ロシア語・その他地域 *****************************
-	          ((string-match "^big5" coding) "Big5 (Traditional Chinese)")      ; 繁体字中国語
-	          ((string-match "^gb2312" coding) "GB2312 (Simplified Chinese)")   ; 簡体字中国語
-	          ((string-match "^gbk" coding) "GBK (Simplified Chinese)")         ; 簡体字中国語
-	          ((string-match "^gb18030" coding) "GB18030 (Simplified Chinese)") ; 簡体字中国語拡張
-	          ((string-match "^koi8-r" coding) "KOI8-R (Cyrillic, Russian)")    ; ロシア語
-	          ((string-match "^koi8-u" coding) "KOI8-U (Cyrillic, Ukrainian)")  ; ウクライナ語
+	          ((string-match "big5" coding) "Big5 (Traditional Chinese)")      ; 繁体字中国語
+	          ((string-match "gb2312" coding) "GB2312 (Simplified Chinese)")   ; 簡体字中国語
+	          ((string-match "gbk" coding) "GBK (Simplified Chinese)")         ; 簡体字中国語
+	          ((string-match "gb18030" coding) "GB18030 (Simplified Chinese)") ; 簡体字中国語拡張
+	          ((string-match "koi8-r" coding) "KOI8-R (Cyrillic, Russian)")    ; ロシア語
+	          ((string-match "koi8-u" coding) "KOI8-U (Cyrillic, Ukrainian)")  ; ウクライナ語
 	          ;; その他 ***************************************************
-	          ((string-match "^ebcdic" coding) "EBCDIC (IBM Mainframe)")        ; IBM文字コード
-	          ((string-match "^ibm437" coding) "IBM437 (MS-DOS English)")       ; MS-DOS英語
-	          ((string-match "^ibm850" coding) "IBM850 (MS-DOS Western Europ)") ; 西ヨーロッパ
+	          ((string-match "ebcdic" coding) "EBCDIC (IBM Mainframe)")        ; IBM文字コード
+	          ((string-match "ibm437" coding) "IBM437 (MS-DOS English)")       ; MS-DOS英語
+	          ((string-match "ibm850" coding) "IBM850 (MS-DOS Western Europ)") ; 西ヨーロッパ
 	          (t coding))                                                       ; その他ofその他の文字コードはそのまま表示
 	         ;; 改行コードの表示
 	         (cond
@@ -669,6 +669,8 @@
 	      (add-to-list 'completion-at-point-functions #'cape-tex)
 	      ))
 
+    
+
     ) ; end of 各種便利機能============================================================
 
   (leaf *特定言語やメジャーモード設定==================================================
@@ -685,18 +687,4 @@
   )
 (provide 'init)
 
-
 ;;; init.el ends here
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(cape nerd-icons-corfu corfu treemacs projectile orderless nerd-icons-completion marginalia consult vertico affe rg which-key volatile-highlights vundo beacon rainbow-delimiters nerd-icons colorful-mode solarized-theme no-littering leaf)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
