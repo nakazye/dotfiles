@@ -17,10 +17,17 @@
 ;;; ===================================================================================
 
 (leaf *init*
-  :config
+  :init
+  (define-key key-translation-map (kbd "C-c ;") (kbd "C-;"))
+  (define-key key-translation-map (kbd "C-c '") (kbd "C-'"))
+  )
 
   (leaf *一般設定======================================================================
     :config
+
+    (leaf *ショートカット設定---------------------------------------------------------
+      :doc "C-;とC-'をC-c ;、C-c 'で起動できる用にする"
+      
 
     (leaf *言語設定--------------------------------------------------------------------
       :doc "Emacsが扱う文字コードの設定"
@@ -163,8 +170,7 @@
       (leaf colorful-mode
 	      :url "https://github.com/DevelopmentCool2449/colorful-mode"
 	      :ensure t
-	      :bind (("C-; c"   . colorful-mode)
-               ("C-c ; c" . colorful-mode))
+	      :bind (("C-; c"   . colorful-mode))
 	      :custom ((colorful-use-prefix . t)
 		             (colorful-prefix-string . "󰏘 "))))
 
@@ -180,8 +186,7 @@
       (leaf rainbow-delimiters
         :url "https://github.com/Fanael/rainbow-delimiters"
         :ensure t
-        :bind (("C-; R"   . rainbow-delimiters-mode)
-               ("C-c ; R" . rainbow-delimiters-mode))
+        :bind (("C-; R"   . rainbow-delimiters-mode))
         :hook (prog-mode-hook . rainbow-delimiters-mode)))
 
     (leaf *カーソルを見失わない--------------------------------------------------------
@@ -333,13 +338,11 @@
       :global-minor-mode save-place-mode)
 
     (leaf *行末の空白文字（スペースやタブなど）を削除----------------------------------
-      :bind (("C-; e w"   . delete-trailing-whitespace)
-             ("C-c ; e w" . delete-trailing-whitespace)))
+      :bind (("C-; e w"   . delete-trailing-whitespace)))
 
     (leaf *コードインデント------------------------------------------------------------
       :doc "標準でキーバインド設定されているが、いつも忘れるので別で割り当てる"
-      :bind (("C-; e i"   . indent-region)
-             ("C-c ; e i" . indent-region)))
+      :bind (("C-; e i"   . indent-region)))
 
     (leaf *undoやredoを便利に----------------------------------------------------------
       :doc "undo-treeやundo-fuと悩んだけどvundoを利用してみる"
@@ -372,8 +375,7 @@
         :custom
         ((vundo-compact-display . t)) ; ツリーをコンパクトに表示
         :bind
-        (("C-; e v"   . vundo)
-         ("C-c ; e v" . vundo))))
+        (("C-; e v"   . vundo))))
 
       (leaf *操作にハイライトを--------------------------------------------------------
         :doc "yankやundoした際に編集箇所をわかりやすい様にハイライトを入れる"
@@ -401,18 +403,11 @@
 	      (which-key-mode)
 	      (which-key-add-keymap-based-replacements
 	        global-map
-	        "C-c ;"   "cui-global-map" ; なぜか効かない。後で調べる（が、仕様な気もする）
-	        "C-c '"   "cui-local-map"
 	        "C-; o"   "org-command-map"
-	        "C-c ; o" "org-command-map"
 	        "C-; a"   "affe-command-map"
-	        "C-c ; a" "affe-command-map"
 	        "C-; t"   "treemacs-command-map"
-	        "C-c ; t" "treemacs-command-map"
           "C-; e"   "edit-command-map"
-          "C-c ; e" "edit-command-map"
-          "C-; f"   "file-command-map"
-          "C-c ; f" "file-command-map")))
+          "C-; f"   "file-command-map")))
 
     (leaf *最近使ったファイル----------------------------------------------------------
       :doc "標準機能(recentf)として具備されている"
@@ -446,8 +441,7 @@
       (leaf rg
 	      :url "https://github.com/dajva/rg.el"
 	      :ensure t
-	      :bind (("C-; r"   . rg)
-	             ("C-c ; r" . rg))))
+	      :bind (("C-; r"   . rg))))
 
     (leaf *grepやfindを便利に----------------------------------------------------------
       :config
@@ -456,9 +450,7 @@
 	      :url "https://github.com/minad/affe"
 	      :ensure t
 	      :bind (("C-; a g"   . affe-grep)
-	             ("C-c ; a g" . affe-grep)
-	             ("C-; a f"   . affe-find)
-	             ("C-c ; a f" . affe-find))))
+	             ("C-; a f"   . affe-find))))
 
     (leaf *ミニバッファで補完UI--------------------------------------------------------
       :doc "Emacs28から標準添付されるfido-vertical-modeがあったりする"
@@ -546,8 +538,7 @@
 	      :ensure t
 	      :custom (projectile-dynamic-mode-line . nil)
 	      :bind (:projectile-mode-map
-	             (("C-; p" . projectile-command-map)
-		            ("C-c ; p" . projectile-command-map)))
+	             (("C-; p" . projectile-command-map)))
 	      :hook
 	      (after-init-hook . (lambda ()
 			                       (projectile-mode t)))
@@ -560,15 +551,10 @@
 	      :url "https://github.com/Alexander-Miller/treemacs"
 	      :ensure t
 	      :bind (("C-; t 0"   . treemacs-select-window)           ; treemacsのウィンドウにフォーカス
-	             ("C-c ; t 0" . treemacs-select-window)
 	             ("C-; t 1"   . treemacs-delete-other-windows)    ; treemacsのウィンドウを残して全部クローズ
-	             ("C-c ; t 1" . treemacs-delete-other-windows)
 	             ("C-; t t"   . treemacs)                         ; treemacsウィンドウをトグル
-	             ("C-c ; t t" . treemacs)
 	             ("C-; t d"   . treemacs-select-directory)        ; 特定のディレクトリを選択してルートノードに設定
-	             ("C-c ; t d" . treemacs-select-directory)
 	             ("C-; t b"   . treemacs-bookmark)                ; ブックマークを選択して Treemacs ビュー内で展開
-	             ("C-c ; t b" . treemacs-bookmark)
 	             ;; ("C-; t C-t" . treemacs-find-file)             ; 現在のバッファのファイルを Treemacs ビュー内で選択
 	             ;; ("C-; t M-t" . treemacs-find-tag)              ; 現在のバッファのファイル内のタグを Treemacs ビューで選択
 	             )
