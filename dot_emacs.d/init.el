@@ -17,17 +17,17 @@
 ;;; ===================================================================================
 
 (leaf *init*
-  :init
-  (define-key key-translation-map (kbd "C-c ;") (kbd "C-;"))
-  (define-key key-translation-map (kbd "C-c '") (kbd "C-'"))
-  )
+  :config
 
   (leaf *一般設定======================================================================
     :config
 
     (leaf *ショートカット設定---------------------------------------------------------
       :doc "C-;とC-'をC-c ;、C-c 'で起動できる用にする"
-      
+      :init
+      (define-key key-translation-map (kbd "C-c ;") (kbd "C-;"))
+      (define-key key-translation-map (kbd "C-c '") (kbd "C-'"))
+      )
 
     (leaf *言語設定--------------------------------------------------------------------
       :doc "Emacsが扱う文字コードの設定"
@@ -671,6 +671,7 @@
 
 
   )
+
 (provide 'init)
 
 ;;; init.el ends here
