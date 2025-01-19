@@ -3,7 +3,7 @@
 ;;; Commentary:
 ;;; Emacs Startup File
 
-;;; 全てをleaf.elで管理するぞ大作戦始動
+;;; 全てをleaf.elで管理するぞ大作戦2025始動
 ;;;
 ;;; --- キーバインド設定における個人的方針 ---
 ;;; * M-xを使ったら負けだと考える
@@ -23,7 +23,8 @@
     :config
 
     (leaf *ショートカット設定---------------------------------------------------------
-      :doc "C-;とC-'をC-c ;、C-c 'で起動できる用にする"
+      :doc "C-;とC-'をC-c ;、C-c 'で起動できる様にする"
+      :doc "terminal操作だとC-;やC-'が効かないので苦肉の策" ;; CUI操作用に今年はVim覚えたい
       :init
       (define-key key-translation-map (kbd "C-c ;") (kbd "C-;"))
       (define-key key-translation-map (kbd "C-c '") (kbd "C-'"))
@@ -165,7 +166,7 @@
       (leaf colorful-mode
         :url "https://github.com/DevelopmentCool2449/colorful-mode"
         :ensure t
-        :bind (("C-; c"   . colorful-mode))
+        :bind (("C-; v c"   . colorful-mode))
         :custom ((colorful-use-prefix . t)
                  (colorful-prefix-string . "󰏘 "))))
 
@@ -173,7 +174,13 @@
       :config
       (leaf nerd-icons
         :url "https://github.com/rainstormstudio/nerd-icons.el"
-        :ensure t))
+        :ensure t
+        :config (leaf *SymbolsNerdFontMonoが入ってなければHackGenのNerdFontを使う*
+                  :doc "HackGenのNerdFontだとアイコンが総じて半角になるので、最後の手段"
+                  :unless (member "Symbols Nerd Font Mono" (font-family-list))
+                  :custom (nerd-icons-font-family . "HackGen Console NF")
+                  )
+        ))
 
     (leaf *かっこの表示をわかりやすく--------------------------------------------------
       :doc "かっこの対応を異なる色付けで表示する"
@@ -196,121 +203,36 @@
 
     ) ; end of 一般表示系設定==========================================================
 
-
   (leaf *モードライン設定==============================================================
     :doc "情報として意味のある設定を入れていきたい（決意）"
     :config
 
-    (leaf *文字コードを短縮系じゃない形で表示------------------------------------------
-      :doc "chatGPT君に作ってもらったものであり、全ての形式の確認はしていないので注意"
-      :init
-      (defun my-mode-line-encoding ()
-        (let ((coding (symbol-name buffer-file-coding-system))
-              (eol (coding-system-eol-type buffer-file-coding-system)))
-          (concat
-           (cond
-            ;; ASCII ****************************************************
-            ((string-match "^us-ascii" coding) "ASCII")
-            ;; UTF系 (BOM付き/無し) *************************************
-            ((string-match "^utf-8" coding)
-             (if (string-match "with-signature" coding)
-                 "UTF-8(BOM)"
-               "UTF-8"))
-            ((string-match "^utf-16" coding)
-             (if (string-match "be-with-signature" coding)
-                 "UTF-16BE(BOM)"
-               (if (string-match "le-with-signature" coding)
-                   "UTF-16LE(BOM)"
-                 (if (string-match "be" coding)
-                     "UTF-16BE)"
-                   "UTF-16LE)"))))
-            ((string-match "^utf-32" coding)
-             (if (string-match "be-with-signature" coding)
-                 "UTF-32BE(BOM)"
-               (if (string-match "le-with-signature" coding)
-                   "UTF-32LE(BOM)"
-                 (if (string-match "be" coding)
-                     "UTF-32BE)"
-                   "UTF-32LE)"))))
-            ;; 日本語関連 ***********************************************
-            ((string-match "euc-jp" coding) "EUC-JP")                        ; EUC-JP
-            ((string-match "iso-2022-jp" coding) "JIS (ISO-2022-JP)")        ; ISO-2022-JP
-            ((string-match "shift-jis" coding) "Shift-JIS")                  ; Shift_JIS
-            ((string-match "cp932" coding) "CP932")                          ; Windows Shift_JIS
-            ((string-match "jisx0201" coding) "JIS X 0201")                  ; JIS X 0201
-            ((string-match "jisx0213" coding) "JIS X 0213")                  ; JIS X 0213
-            ;; 国際的な文字コード ***************************************
-            ((string-match "iso-8859-10" coding) "Nordic (ISO-8859-10)")     ; 北欧言語
-            ((string-match "iso-8859-11" coding) "Thai (ISO-8859-11)")       ; タイ語
-            ((string-match "iso-8859-13" coding) "Baltic (ISO-8859-13)")     ; バルト言語
-            ((string-match "iso-8859-14" coding) "Celtic (ISO-8859-14)")     ; ケルト言語
-            ((string-match "iso-8859-15" coding) "Latin-9 (ISO-8859-15)")    ; ラテン1改良版
-            ((string-match "iso-8859-16" coding) "Latin-10 (ISO-8859-16)")   ; 東南ヨーロッパ
-            ((string-match "iso-8859-1" coding) "Latin-1 (ISO-8859-1)")      ; ラテン1
-            ((string-match "iso-8859-2" coding) "Latin-2 (ISO-8859-2)")      ; ラテン2
-            ((string-match "iso-8859-3" coding) "Latin-3 (ISO-8859-3)")      ; ラテン3
-            ((string-match "iso-8859-4" coding) "Latin-4 (ISO-8859-4)")      ; ラテン4
-            ((string-match "iso-8859-5" coding) "Cyrillic (ISO-8859-5)")     ; キリル文字
-            ((string-match "iso-8859-6" coding) "Arabic (ISO-8859-6)")       ; アラビア語
-            ((string-match "iso-8859-7" coding) "Greek (ISO-8859-7)")        ; ギリシャ語
-            ((string-match "iso-8859-8" coding) "Hebrew (ISO-8859-8)")       ; ヘブライ語
-            ((string-match "iso-8859-9" coding) "Turkish (ISO-8859-9)")      ; トルコ語
-            ;; 中国語・ロシア語・その他地域 *****************************
-            ((string-match "big5" coding) "Big5 (Traditional Chinese)")      ; 繁体字中国語
-            ((string-match "gb2312" coding) "GB2312 (Simplified Chinese)")   ; 簡体字中国語
-            ((string-match "gbk" coding) "GBK (Simplified Chinese)")         ; 簡体字中国語
-            ((string-match "gb18030" coding) "GB18030 (Simplified Chinese)") ; 簡体字中国語拡張
-            ((string-match "koi8-r" coding) "KOI8-R (Cyrillic, Russian)")    ; ロシア語
-            ((string-match "koi8-u" coding) "KOI8-U (Cyrillic, Ukrainian)")  ; ウクライナ語
-            ;; その他 ***************************************************
-            ((string-match "ebcdic" coding) "EBCDIC (IBM Mainframe)")        ; IBM文字コード
-            ((string-match "ibm437" coding) "IBM437 (MS-DOS English)")       ; MS-DOS英語
-            ((string-match "ibm850" coding) "IBM850 (MS-DOS Western Europ)") ; 西ヨーロッパ
-            (t coding))                                                       ; その他ofその他の文字コードはそのまま表示
-           ;; 改行コードの表示
-           (cond
-            ((eq eol 0) ":LF")    ; UNIX (LF)
-            ((eq eol 1) ":CRLF")  ; DOS/Windows (CRLF)
-            ((eq eol 2) ":CR")    ; Mac (CR)
-            (t "")))))              ; デフォルト（改行コードなし）
-      :custom (mode-line-mule-info . '(:eval (format "%s" (my-mode-line-encoding)))))
-
-    (leaf *編集状態をわかりやすく------------------------------------------------------
-      :doc "こちらもChatGPTより"
-      :doc "mode-line-buffer-identificationに設定しても、元々の---が残ってしまったので、まずは関数定義"
-      :init
-      (defun my-mode-line-buffer-state ()
-        (cond
-         ((and buffer-read-only (buffer-modified-p)) "読専(けど編集中!)") ; 読み取り専用 + 変更あり
-         (buffer-read-only "読専")                                        ; 読み取り専用 + 未変更
-         ((buffer-modified-p) "未保存")                                   ; 編集可能 + 変更あり
-         (t "未変更")))                                                   ; 編集可能 + 未変更
-      )
-
-    (leaf *モードラインを自分好みに並べ替え--------------------------------------------
+    (leaf *素敵なモードラインを作るぞ！------------------------------------------------
+      :doc "doom-modelineを導入して、自分好みのモードラインを作るぞ"
       :config
-      (setq-default mode-line-format
-                    '( "%e"                                ; エラー情報
-                       mode-line-front-space               ; 余白
-                       "%b"                                ; バッファ名
-                       " | "
-                       mode-line-mule-info                 ; 文字コードおよび改行コード
-                       " | "
-                       (:eval (my-mode-line-buffer-state)) ; バッファの状態を表示
-                       " | "
-                       "Line%l/Col%c %p "                  ; 行番号と列番号とバッファの位置（%表示）
-                       ;; emacs 30から↓が効く
-                       ;; mode-line-format-right-align        ; ここから右寄せ
-                       ;; が、バージョンアップ面倒なので一旦普通にセパレーターを配置する
-                       " | "
-                       (:eval (if mode-name                ; メジャーモード名を表示
-                                  mode-name
-                                "no major-mode"))
-                       " | "
-                       (:eval (if vc-mode                  ; バージョン管理情報を表示
-                                  (substring vc-mode 1)
-                                "no VC"))
-                       )))
+      (leaf doom-modeline
+        :ensure t
+        :init
+        (doom-modeline-mode 1)
+        :custom-face
+        ;; 下線が引かれるのを消す。ChatGPTにやり方聞いてそのままコピペしたら、普通に動いてびっくり
+        (mode-line . '((t (:underline nil))))
+        (mode-line-inactive . '((t (:underline nil))))
+        :custom
+        (doom-modeline-height . 20)             ;; モードラインの高さを設定します（ピクセル単位）
+        (doom-modeline-minor-modes . nil)       ;; モードラインにマイナーモードを表示するかどうか
+        (doom-modeline-vcs-max-length . 12)     ;; バージョン管理システム（VCS）のブランチ名の最大長
+        (doom-modeline-indent-info . t)         ;; 現在のインデント情報を表示するかどうか。
+        ))
+
+    (leaf *ニャンするぞ----------------------------------------------------------------
+      :config
+      (leaf nyan-mode
+        :url "https://github.com/TeMPOraL/nyan-mode"
+        :ensure t
+        :init (nyan-mode t)
+        :custom ((nyan-animate-nyancat . t)
+                 (nyan-cat-face-number . 4))))
 
     ) ; end of モードライン設定========================================================
 
@@ -405,16 +327,18 @@
         (which-key-mode)
         (which-key-add-keymap-based-replacements
           global-map
-          "C-; o" "org-command-map"
-          "C-; a" "affe-command-map"
-          "C-; t" "treemacs-command-map"
-          "C-; v" "view-command-map"
-          "C-; s" "search-command-map"
-          "C-; e" "edit-command-map"
-          "C-; f" "file-command-map"
-          "C-; g" "general-programming-map"
-          "C-' l" "lsp-command-map"
-          "C-' t" "lsp-treemacs-command-map")))
+          "C-; o"   "org-command-map"
+          "C-; o C" "org-clock-command-map"
+          "C-; a"   "affe-command-map"
+          "C-; t"   "treemacs-command-map"
+          "C-; m"   "minibuffer-command-map"
+          "C-; v"   "view-command-map"
+          "C-; s"   "search-command-map"
+          "C-; e"   "edit-command-map"
+          "C-; f"   "file-command-map"
+          "C-; g"   "general-programming-map"
+          "C-' l"   "lsp-command-map"
+          "C-' t"   "lsp-treemacs-command-map")))
 
     (leaf *最近使ったファイル----------------------------------------------------------
       :doc "標準機能(recentf)として具備されている"
@@ -589,7 +513,7 @@
 
     (leaf *編集中にぺろんと補完するやつ------------------------------------------------
       :doc "companyにお世話になっていたけど、令和はcorfu+capeらしいので試す"
-      :doc "なお、CUIでは動作しない。Emacs 31から動作するとのこと。先は長い・・・"
+      :doc "なお、標準ではCUIで動作しない（corfu-terminalが別途必要）。Emacs 31から動作するとのこと。先は長い・・・"
       :config
       (leaf corfu
         :url "https://github.com/minad/corfu"
@@ -666,7 +590,33 @@
         (with-eval-after-load 'lsp-mode (setq lsp-completion-provider :none))
         ))
 
-    (leaf *flymakeの諸々---------------------------------------------------------------
+    (leaf *アクション決めて対象選択ではなく、対象からアクションを実行する--------------
+      :config
+      (leaf embark
+        :url "https://github.com/oantolin/embark"
+        :ensure t
+        :bind (("C-; m a" . embark-act)
+               ("C-; m e" . embark-export)
+               ("C-; m d" . embark-dwim)
+               ("C-; m h" . embark-bindings))
+        :custom (prefix-help-command . #'embark-prefix-help-command) ;; Embarkを用いたキーバインドヘルプ改善
+        :config
+        ;; Embark のアクションや変換候補を、which-key を使って視覚的に表示する設定
+        (setq embark-action-indicator
+              (lambda (map _target)
+                (which-key--show-keymap "Embark" map nil nil 'no-paging)
+                #'which-key--hide-popup-ignore-command)
+              embark-become-indicator embark-action-indicator))
+      ;; embark-consultの導入
+      (leaf embark-consult
+        :ensure t
+        :hook
+        (embark-collect-mode . consult-preview-at-point-mode))
+      )
+    
+
+    (leaf *構文チェック----------------------------------------------------------------
+      :doc "flymakeかflycheckか悩んだけど、flymakeでいくことにした。どちらでも良さそうではある"
       :config
       (leaf flymake
         :hook
@@ -680,6 +630,23 @@
         )
       )
 
+    (leaf *git使うための諸々-----------------------------------------------------------
+      :config
+      (leaf magit
+        :doc "git扱う時の定番"
+        :url "https://github.com/magit/magit"
+        :ensure t
+        ;; 以下パフォーマンス改善の設定。see->https://misohena.jp/blog/2022-11-13-improve-magit-commiting-performance-on-windows.html
+        :custom (magit-auto-revert-mode . nil)
+        :bind ("C-; g g" . magit-status)) ; magit-statusで?キーを押すとコマンド一覧が出るので「迷ったらまず?」を覚えておくとよい とのこと
+      (leaf forge
+        :doc "GitHubのプルリクエストやissueの操作。Gitlabとかも対応しているぽい"
+        :url "https://github.com/magit/forge"
+        :ensure t
+        :after magit
+        :bind ("C-; g p" . forge-pull))) ; 操作自体は、magitで行う(forgeがmagitのサブモジュールなので)
+    
+    
     ) ; end of 各種便利機能============================================================
 
   (leaf *メジャーモード設定============================================================
@@ -693,25 +660,35 @@
         :ensure t
         :preface
         (defun business-journal ()
-          "お仕事用Journalエントリ"
+          "お仕事用(見せちゃだめ)Journalエントリ"
           (interactive)
-          (setq org-journal-dir "~/org/journal/business")
+          (setq org-journal-dir "~/org/business/journal")
           (org-journal-new-entry t))
         (defun private-journal ()
-          "プライベート用Journalエントリ"
+          "プライベート(見せても良い)用Journalエントリ"
           (interactive)
-          (setq org-journal-dir "~/org/journal/private")
+          (setq org-journal-dir "~/org/public/journal")
           (org-journal-new-entry t))
         :bind (("C-; o l" . org-store-link)          ; カーソル位置でリンク（dired上などでも使える）
                ("C-; o L" . org-insert-link)         ; リンクの挿入（org-store-linkされたものもここから）
                ("C-; o o" . org-open-at-point)       ; リンクを開く
                ("C-; o a" . org-agenda)
-               ; ("C-; o c" . org-capture)     ; 一旦ジャーナルだけで良いかなと思ってる
+               ("C-; o c" . org-capture)
                ("C-; o b" . business-journal)
                ("C-; o p" . private-journal)
+               ("C-; o C i" . org-clock-in)
+               ("C-; o C o" . org-clock-out)
+               ("C-; o C d" . org-clock-display)
+               ("C-; o C c" . org-clock-cancel)
+               ("C-; o C r" . org-clock-report)
                )
-        :custom
-        (org-agenda-files . '("~/org/"))
+        :custom ((org-agenda-files . '("~/org/"))
+                 (org-capture-templates .'(("e" "Emacs Note" entry
+                                            (file+headline "~/org/public/note/tech/emacs.org" "Emacsノート") "* %?\n:PROPERTIES:\n:CREATED:  %T\n:END:\n")
+                                           ("v" "Vim Note" entry
+                                            (file+headline "~/org/public/note/tech/vim.org" "Vimノート") "* %?\n:PROPERTIES:\n:CREATED:  %T\n:END:\n")
+                                           ;; 随時追加していく
+                                           )))
         :config
         ;; org-babelで使用できる言語を追加
         (org-babel-do-load-languages
@@ -752,7 +729,8 @@
         :hook ((java-mode-hook . lsp)
                (lsp-mode-hook . lsp-enable-which-key-integration)))
       (leaf lsp-ui
-        :doc "ハイレベルなUIを提供してくれるらしい"
+        :doc "ハイレベルなUIを提供してくれるらしい。が、まだちゃんとわかってない"
+        :doc "https://qiita.com/Ladicle/items/feb5f9dce9adf89652cf#emacs26の機能をフル活用したモダンなui----lsp-ui を参考にすると良いかもしれない"
         :url "https://github.com/emacs-lsp/lsp-ui"
         :ensure t
         :hook ((lsp-mode-hook . lsp-ui-mode)))
@@ -779,6 +757,21 @@
     ) ; end of 特定言語やメジャーモード設定============================================
 
   )
+
 (provide 'init)
 
 ;;; init.el ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(lsp-java lsp-treemacs lsp-ui lsp-mode org-journal org forge magit embark-consult embark cape nerd-icons-corfu corfu treemacs projectile orderless nerd-icons-completion marginalia consult vertico affe rg which-key volatile-highlights vundo nyan-mode doom-modeline beacon rainbow-delimiters nerd-icons colorful-mode solarized-theme no-littering leaf)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(mode-line ((t (:underline nil))) nil "Customized with leaf in `doom-modeline' block at `/Users/nakazye/.emacs.d/init.el'")
+ '(mode-line-inactive ((t (:underline nil))) nil "Customized with leaf in `doom-modeline' block at `/Users/nakazye/.emacs.d/init.el'"))

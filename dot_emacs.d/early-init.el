@@ -4,6 +4,8 @@
 ;;; Emacs Startup File
 
 ;;; ===================================================================================
+;;; 全てをleaf.elで管理するぞ大作戦2025始動
+;;;
 ;;; early-init.el は、Emacs の起動プロセスの初期段階（GUIフレームが作成される前）で実行される。
 ;;; このファイルは init.el の前に読み込まれるため、起動時間の短縮やフレーム全体に関わる設定を記述するのに適している。
 ;;;
@@ -55,23 +57,23 @@
 
   (leaf *起動速度の向上================================================================
     :config
-    
+
     (leaf *起動時のGC抑制--------------------------------------------------------------
       :doc "まずは最大に"
       :custom (gc-cons-threshold . most-positive-fixnum)
       :config
       (leaf *起動後にGCを戻す
-	:doc "デフォルトは800000。最後に戻す"
-	:doc "hookだとうまく動かなかったので、configで対応する"
-	:config (add-hook 'emacs-startup-hook
-			  (lambda () (setq gc-cons-threshold 800000))))
+        :doc "デフォルトは800000。最後に戻す"
+        :doc "hookだとうまく動かなかったので、configで対応する"
+        :config (add-hook 'emacs-startup-hook
+                          (lambda () (setq gc-cons-threshold 800000))))
       )
-    
+
     (leaf *メニューバーやツールバーを表示しない----------------------------------------
       :doc "(menu-bar-mode -1)とか(tool-bar-mode -1)だと速度的には意味ないので注意"
       :push ((default-frame-alist . '(menu-bar-lines . 0))
-	     (default-frame-alist . '(tool-bar-lines . 0))))
-    
+             (default-frame-alist . '(tool-bar-lines . 0))))
+
     (leaf *スタートアップメッセージの非表示--------------------------------------------
       :doc "このタイミングが良いのか正直自信無いが、early-initでやっている人が多いので僕も習う"
       :custom (inhibit-startup-message . t))
@@ -79,7 +81,7 @@
 
   (leaf *GUI周り設定===================================================================
     :config
-    
+
     (leaf *新規フレームに対してフォント設定--------------------------------------------
       :url "https://apribase.net/2024/07/06/emacs-default-frame-alist/"
       :doc "↑のURLを参考に設定。early-initなので、再読み込みはしない前提でadd-to-listではなくpushしている"
@@ -89,8 +91,8 @@
       :url "https://www.grugrut.net/posts/201910202227/"
       :doc "display-line-numbers-width-startは、skk使ってた時の名残（↑URL参照）"
       :custom ((global-display-line-numbers-mode . t)
-	       (custom-set-variables . '(display-line-numbers-width-start t))))
-  )
+               (custom-set-variables . '(display-line-numbers-width-start t))))
+    )
   (leaf *その他フレーム起動前にやりたい設定============================================
     :config
 
@@ -118,9 +120,9 @@
       :doc "普通に書くなら「global-unset-key」なんてのも用意されている"
       :doc "が、leaf.elに集約したいのでbindで設定"
       :bind (([C-mouse-1] . nil)
-	     ([C-down-mouse-1] . nil)
-	     ([C-mouse-3] . nil)
-	     ([C-down-mouse-3] . nil))
+             ([C-down-mouse-1] . nil)
+             ([C-mouse-3] . nil)
+             ([C-down-mouse-3] . nil))
       )
     )
   )
