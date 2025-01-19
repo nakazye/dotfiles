@@ -759,19 +759,3 @@
   )
 
 (provide 'init)
-
-;;; init.el ends here
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(lsp-java lsp-treemacs lsp-ui lsp-mode org-journal org forge magit embark-consult embark cape nerd-icons-corfu corfu treemacs projectile orderless nerd-icons-completion marginalia consult vertico affe rg which-key volatile-highlights vundo nyan-mode doom-modeline beacon rainbow-delimiters nerd-icons colorful-mode solarized-theme no-littering leaf)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(mode-line ((t (:underline nil))) nil "Customized with leaf in `doom-modeline' block at `/Users/nakazye/.emacs.d/init.el'")
- '(mode-line-inactive ((t (:underline nil))) nil "Customized with leaf in `doom-modeline' block at `/Users/nakazye/.emacs.d/init.el'"))
