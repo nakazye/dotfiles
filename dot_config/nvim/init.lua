@@ -4,7 +4,7 @@ vim.scriptencoding = 'utf-8'
 vim.opt.fileencoding = 'utf-8'
 vim.opt.fileencodings = 'ucs-bom,utf-8,euc-jp,cp932'
 vim.opt.fileformats = 'unix,dos,mac'
-vim.opt.ambiwidth = 'double'
+vim.opt.ambiwidth = 'single'
 
 -- バックアップ等ファイル設定(*.swpだけ作って*.~や*.un~を作らない
 vim.opt.swapfile = false
