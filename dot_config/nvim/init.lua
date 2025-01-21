@@ -74,11 +74,24 @@ vim.cmd('packadd vim-jetpack')
 require('jetpack.packer').add {
   -- JetPack本体
   'tani/vim-jetpack',
-  -- カラースキーマ
-  {'beikome/cosme.vim', run = vim.cmd[[colorscheme cosme]]},
   -- ファジーファインダ(telescoope)
   {'nvim-telescope/telescope.nvim',
    requires = {{'nvim-lua/plenary.nvim'}}
  }
+}
+
+-- ファジーファインダ(telescoope)
+require('telescope').setup{
+  defaults = {
+    mappings = {
+      i = {
+        ["<C-h>"] = "which_key"
+      }
+    }
+  },
+  pickers = {
+  },
+  extensions = {
+  }
 }
 
