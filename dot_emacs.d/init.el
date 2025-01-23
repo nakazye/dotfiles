@@ -37,7 +37,8 @@
       (set-file-name-coding-system  'utf-8-unix)
       (set-keyboard-coding-system  'utf-8-unix)
       (set-terminal-coding-system  'utf-8-unix)
-      (set-default 'buffer-file-coding-system 'utf-8-unix))
+      (set-default 'buffer-file-coding-system 'utf-8-unix)
+      (modify-coding-system-alist 'file "" 'utf-8-unix))
 
     (leaf *Windowsでの文字化け対策-----------------------------------------------------
       :doc "外部プロセスとのやりとりや外部コマンド実行で文字化けを防ぐ"
