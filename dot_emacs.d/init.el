@@ -638,7 +638,7 @@
         :url "https://github.com/magit/magit"
         :ensure t
         ;; 以下パフォーマンス改善の設定。see->https://misohena.jp/blog/2022-11-13-improve-magit-commiting-performance-on-windows.html
-        :custom (magit-auto-revert-mode . nil)
+        :setq-default (magit-auto-revert-mode . nil)
         :bind ("C-; g g" . magit-status)) ; magit-statusで?キーを押すとコマンド一覧が出るので「迷ったらまず?」を覚えておくとよい とのこと
       (leaf forge
         :doc "GitHubのプルリクエストやissueの操作。Gitlabとかも対応しているぽい"
