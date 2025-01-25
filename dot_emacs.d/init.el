@@ -130,9 +130,9 @@
         :if (eq system-type 'darwin)
         :config (set-fontset-font (frame-parameter nil 'font) '(#x1F004 . #x1FFFD) (font-spec :family "Apple Color Emoji" :size 10)))
       (leaf *Windowsでの設定
-        :doc "設定サイズは未確認"
+        :doc "フォントサイズ設定すると、14でも小さい感じでなんかおかしいので、いったんフォントサイズ指定をやめている"
         :if (eq system-type 'windows-nt)
-        :config (set-fontset-font (frame-parameter nil 'font) '(#x1F004 . #x1FFFD) (font-spec :family "Segoe UI Emoji" :size 10)))
+        :config (set-fontset-font (frame-parameter nil 'font) '(#x1F004 . #x1FFFD) (font-spec :family "Segoe UI Emoji")))
       )
 
     (leaf *カーソルを自分好みに--------------------------------------------------------
@@ -177,7 +177,7 @@
         :url "https://github.com/rainstormstudio/nerd-icons.el"
         :ensure t
         :config (leaf *SymbolsNerdFontMonoが入ってなければHackGenのNerdFontを使う*
-                  :doc "HackGenのNerdFontだとアイコンが総じて半角になるので、最後の手段"
+                  :doc "HackGenのNerdFontだとアイコンが総じて半角になるので、Symbols Nerd Font Monoを優先"
                   :unless (member "Symbols Nerd Font Mono" (font-family-list))
                   :custom (nerd-icons-font-family . "HackGen Console NF")
                   )
