@@ -219,11 +219,14 @@
         ;; 下線が引かれるのを消す。ChatGPTにやり方聞いてそのままコピペしたら、普通に動いてびっくり
         (mode-line . '((t (:underline nil))))
         (mode-line-inactive . '((t (:underline nil))))
+        :config
+        (column-number-mode t) ;; 列番号表示(doom-modelineの設定ではないけど、ここであわせて設定)
         :custom
         (doom-modeline-height . 20)             ;; モードラインの高さを設定します（ピクセル単位）
         (doom-modeline-minor-modes . nil)       ;; モードラインにマイナーモードを表示するかどうか
         (doom-modeline-vcs-max-length . 12)     ;; バージョン管理システム（VCS）のブランチ名の最大長
         (doom-modeline-indent-info . t)         ;; 現在のインデント情報を表示するかどうか。
+        (doom-modeline-position-column-line-format . '("L:%l C:%c")) ;; 行番号＆列番号の表示フォーマット
         ))
 
     (leaf *ニャンするぞ----------------------------------------------------------------
@@ -688,6 +691,8 @@
                                             (file+headline "~/org/public/note/tech/emacs.org" "Emacsノート") "* %?\n:PROPERTIES:\n:CREATED:  %T\n:END:\n")
                                            ("v" "Vim Note" entry
                                             (file+headline "~/org/public/note/tech/vim.org" "Vimノート") "* %?\n:PROPERTIES:\n:CREATED:  %T\n:END:\n")
+                                           ("t" "Temp Note" entry
+                                            (file+headline "~/org/public/note/tech/tmp.org" "新しく思いついちゃった何か") "* %?\n:PROPERTIES:\n:CREATED:  %T\n:END:\n")
                                            ;; 随時追加していく
                                            )))
         :config
