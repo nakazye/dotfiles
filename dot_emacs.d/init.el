@@ -759,6 +759,12 @@
         :custom (lsp-java-jdt-download-url . "https://www.eclipse.org/downloads/download.php?file=/jdtls/milestones/1.43.0/jdt-language-server-1.43.0-202412191447.tar.gz")
         :ensure t)
       )
+
+    (leaf *Nixをやるぞ--------------------------------------------------------------------
+      :config
+      (leaf nix-mode
+        :ensure t
+        :mode "\\.nix\\'"))
     
     ) ; end of 特定言語やメジャーモード設定===============================================
 
