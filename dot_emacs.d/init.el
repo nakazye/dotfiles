@@ -40,6 +40,17 @@
       (set-default 'buffer-file-coding-system 'utf-8-unix)
       (modify-coding-system-alist 'file "" 'utf-8-unix))
 
+    (leaf *特にWSLな日本語入力設定--------------------------------------------------------
+      :doc "mozcとの接続設定（GUIかつLinuxの時）"
+      :when window-system
+      :when (eq system-type 'gnu/linux)
+      :config
+      (leaf mozc
+        :ensure t
+        :require t
+        :bind (("C-SPC"   . toggle-input-method))
+        :custom (default-input-method . "japanese-mozc")))
+
     (leaf *Windowsでの文字化け対策--------------------------------------------------------
       :doc "外部プロセスとのやりとりや外部コマンド実行で文字化けを防ぐ"
       :doc "「windowsネイティブのemacs（wslではない）で外部プロセス連携がうまく行かないときに出てきた話だったはず」とのコメントもらいました"
