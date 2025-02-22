@@ -200,7 +200,7 @@
       (leaf rainbow-delimiters
         :url "https://github.com/Fanael/rainbow-delimiters"
         :ensure t
-        :bind (("C-; R"   . rainbow-delimiters-mode))
+        :bind (("C-; v r"   . rainbow-delimiters-mode))
         :hook (prog-mode-hook . rainbow-delimiters-mode)))
 
     (leaf *カーソルを見失わない-----------------------------------------------------------
