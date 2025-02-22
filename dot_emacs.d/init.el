@@ -710,7 +710,8 @@
         ;; org-babelで使用できる言語を追加
         (org-babel-do-load-languages
          'org-babel-load-languages
-         '((plantuml . t)
+         '((shell    . t)
+           (plantuml . t)
            (dot      . t)
            (gnuplot  . t)
            (latex    . t)
