@@ -100,7 +100,3 @@ alias vi="vim"
 alias tmain="tmux attach -t main || tmux new-session -s main"
 alias tvsc="tmux attach -t vsc || tmux new-session -s vsc"
 alias rep='cd $(ghq list -p | peco)'
-
-{{ if eq .chezmoi.os "linux" }}
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-{{ end }}

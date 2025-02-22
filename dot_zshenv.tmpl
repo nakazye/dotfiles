@@ -1,7 +1,0 @@
-{{ if eq .chezmoi.os "linux" }}
-  export PATH=~/.local/bin/:$PATH
-  {{ if eq .chezmoi.osRelease.id "ubuntu" }}
-  {{ end }}
-{{ else if eq .chezmoi.os "darwin" }}
-
-{{ end }}
