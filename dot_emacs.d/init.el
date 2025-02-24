@@ -677,12 +677,12 @@
         (defun business-journal ()
           "お仕事用(見せちゃだめ)Journalエントリ"
           (interactive)
-          (setq org-journal-dir "~/org/business/journal")
+          (setq org-journal-dir "~/note/business/journal")
           (org-journal-new-entry t))
         (defun private-journal ()
           "プライベート(見せても良い)用Journalエントリ"
           (interactive)
-          (setq org-journal-dir "~/org/public/journal")
+          (setq org-journal-dir "~/note/public/journal")
           (org-journal-new-entry t))
         :bind (("C-; o l" . org-store-link)                   ; カーソル位置でリンク（dired上などでも使える）
                ("C-; o L" . org-insert-link)                  ; リンクの挿入（org-store-linkされたものもここから）
@@ -699,13 +699,13 @@
                ("C-; o C c" . org-clock-cancel)
                ("C-; o C r" . org-clock-report)
                )
-        :custom ((org-agenda-files . '("~/org/"))
+        :custom ((org-agenda-files . '("~/note/"))
                  (org-capture-templates .'(("e" "Emacs Note" entry
-                                            (file+headline "~/org/public/note/tech/emacs.org" "Emacsノート") "* %?\n:PROPERTIES:\n:CREATED:  %T\n:END:\n")
+                                            (file+headline "~/note/public/memo/tech/emacs.org" "Emacsノート") "* %?\n:PROPERTIES:\n:CREATED:  %T\n:END:\n")
                                            ("v" "Vim Note" entry
-                                            (file+headline "~/org/public/note/tech/vim.org" "Vimノート") "* %?\n:PROPERTIES:\n:CREATED:  %T\n:END:\n")
+                                            (file+headline "~/note/public/memo/tech/vim.org" "Vimノート") "* %?\n:PROPERTIES:\n:CREATED:  %T\n:END:\n")
                                            ("t" "Temp Note" entry
-                                            (file+headline "~/org/public/note/tech/tmp.org" "新しく思いついちゃった何か") "* %?\n:PROPERTIES:\n:CREATED:  %T\n:END:\n")
+                                            (file+headline "~/note/public/memo/tech/tmp.org" "新しく思いついちゃった何か") "* %?\n:PROPERTIES:\n:CREATED:  %T\n:END:\n")
                                            ;; 随時追加していく
                                            )))
         :config
