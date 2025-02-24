@@ -78,10 +78,10 @@
       :custom
       ;; バックアップファイル設定
       (make-backup-files . t)
-      (backup-directory-alist . '((".*" . "~/.emacs.d/backup/")))
+      (backup-directory-alist . '((".*" . "~/.config/emacs/backup/")))
       ;; 自動保存ファイル設定
       (auto-save-default . t)
-      (auto-save-file-name-transforms . '((".*" "~/.emacs.d/backup/" t)))
+      (auto-save-file-name-transforms . '((".*" "~/.config/emacs/backup/" t)))
       ;; 自動保存リストファイル設定
       (auto-save-list-file-prefix . nil)
       ;; ロックファイル設定
@@ -95,8 +95,8 @@
         :ensure t
         :require t
         :custom
-        (no-littering-etc-directory . "~/.emacs.d/etc/")
-        (no-littering-var-directory . "~/.emacs.d/var/")))
+        (no-littering-etc-directory . "~/.config/emacs/etc/")
+        (no-littering-var-directory . "~/.config/emacs/var/")))
 
     (leaf *自動revert設定-----------------------------------------------------------------
       :doc "他でファイル変更があった際の再読み込み"
@@ -366,9 +366,9 @@
       (recentf-auto-cleanup    . 'never)
       (recentf-exclude
        . '((expand-file-name package-user-dir)
-           "~/.emacs.d/backup"
-           "~/.emacs.d/etc"
-           "~/.emacs.d/var"
+           "~/.local/emacs/backup"
+           "~/.local/emacs/etc"
+           "~/.local/emacs/var"
            "*.png"
            "*.jpeg"
            ".org_archive"
@@ -794,3 +794,17 @@
 (provide 'init)
 
 ;;; init.el ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(nix-mode lsp-java lsp-treemacs lsp-ui lsp-mode org-journal org vterm forge magit embark-consult embark cape nerd-icons-corfu corfu treemacs projectile orderless nerd-icons-completion marginalia consult vertico affe rg which-key volatile-highlights vundo nyan-mode doom-modeline beacon rainbow-delimiters nerd-icons colorful-mode solarized-theme no-littering mozc leaf)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(mode-line ((t (:underline nil))) nil "Customized with leaf in `doom-modeline' block at `/home/nixos/.config/emacs/init.el'")
+ '(mode-line-inactive ((t (:underline nil))) nil "Customized with leaf in `doom-modeline' block at `/home/nixos/.config/emacs/init.el'"))
