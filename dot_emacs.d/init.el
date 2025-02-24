@@ -10,7 +10,6 @@
 ;;; * モード問わず利用するものは、C-;からのコンビネーションで設定する
 ;;; * モード特有で利用するものは、C-'からのコンビネーションで設定する
 ;;; * 自分が使うものについては、この中に詰まってる状況を作るのである
-;;; と思ってたが、CUIだと<C-;>も<C-'>も効かないので、<C-c ;>と<C-c '>を併用する
 
 ;;; code:
 
@@ -25,6 +24,8 @@
     (leaf *ショートカット設定-------------------------------------------------------------
       :doc "C-;とC-'をC-c ;、C-c 'で起動できる様にする"
       :doc "terminal操作だとC-;やC-'が効かないので苦肉の策" ;; CUI操作用に今年はVim覚えたい
+      :doc "干渉するケース出てきたので、一旦disable"
+      :disabled
       :init
       (define-key key-translation-map (kbd "C-c ;") (kbd "C-;"))
       (define-key key-translation-map (kbd "C-c '") (kbd "C-'"))
@@ -373,8 +374,7 @@
            ".org_archive"
            "COMMIT_EDITMSG\\'"))
       :bind
-      (("C-; f o"   . recentf-open-files)
-       ("C-c ; f o" . recentf-open-files)))
+      (("C-; f o"   . recentf-open-files)))
 
     (leaf *ripgrep使うよ------------------------------------------------------------------
       :doc "検索後にhでヘルプが表示される。以下の追加コマンドが便利"
@@ -628,7 +628,7 @@
         :hook
         (embark-collect-mode . consult-preview-at-point-mode))
       )
-    
+
 
     (leaf *構文チェック----------------------------------------------------------------
       :doc "flymakeかflycheckか悩んだけど、flymakeでいくことにした。どちらでも良さそうではある"
@@ -660,8 +660,8 @@
         :ensure t
         :after magit
         :bind ("C-; g p" . forge-pull))) ; 操作自体は、magitで行う(forgeがmagitのサブモジュールなので)
-    
-    
+
+
     ) ; end of 各種便利機能===============================================================
 
   (leaf *メジャーモード設定===============================================================
@@ -684,9 +684,11 @@
           (interactive)
           (setq org-journal-dir "~/org/public/journal")
           (org-journal-new-entry t))
-        :bind (("C-; o l" . org-store-link)          ; カーソル位置でリンク（dired上などでも使える）
-               ("C-; o L" . org-insert-link)         ; リンクの挿入（org-store-linkされたものもここから）
-               ("C-; o o" . org-open-at-point)       ; リンクを開く
+        :bind (("C-; o l" . org-store-link)                   ; カーソル位置でリンク（dired上などでも使える）
+               ("C-; o L" . org-insert-link)                  ; リンクの挿入（org-store-linkされたものもここから）
+               ("C-; o i" . org-insert-structure-template)    ; コードブロックとかのテンプレート挿入
+               ("C-; o s" . org-edit-special)                 ; コードブロックを当該言語のメジャーモードで開く
+               ("C-; o o" . org-open-at-point)                ; リンクを開く
                ("C-; o a" . org-agenda)
                ("C-; o c" . org-capture)
                ("C-; o b" . business-journal)
@@ -777,7 +779,7 @@
       (leaf nix-mode
         :ensure t
         :mode "\\.nix\\'"))
-    
+
     ) ; end of 特定言語やメジャーモード設定===============================================
 
   )
