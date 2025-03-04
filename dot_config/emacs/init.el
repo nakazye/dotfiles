@@ -345,7 +345,7 @@
           global-map
           "C-; o"   "org-command-map"
           "C-; o C" "org-clock-command-map"
-          "C-; a"   "affe-command-map"
+          "C-; c"   "context-command-map"
           "C-; t"   "treemacs-command-map"
           "C-; m"   "minibuffer-command-map"
           "C-; v"   "view-command-map"
@@ -610,10 +610,10 @@
       (leaf embark
         :url "https://github.com/oantolin/embark"
         :ensure t
-        :bind (("C-; m a" . embark-act)
-               ("C-; m e" . embark-export)
-               ("C-; m d" . embark-dwim)
-               ("C-; m h" . embark-bindings))
+        :bind (("C-; c a" . embark-act)
+               ("C-; c e" . embark-export)
+               ("C-; c d" . embark-dwim)
+               ("C-; c h" . embark-bindings))
         :custom (prefix-help-command . #'embark-prefix-help-command) ;; Embarkを用いたキーバインドヘルプ改善
         :config
         ;; Embark のアクションや変換候補を、which-key を使って視覚的に表示する設定
