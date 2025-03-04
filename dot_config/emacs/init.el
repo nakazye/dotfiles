@@ -345,9 +345,9 @@
           global-map
           "C-; o"   "org-command-map"
           "C-; o C" "org-clock-command-map"
+          "C-; a"   "affe-command-map"
           "C-; c"   "context-command-map"
           "C-; t"   "treemacs-command-map"
-          "C-; m"   "minibuffer-command-map"
           "C-; v"   "view-command-map"
           "C-; s"   "search-command-map"
           "C-; e"   "edit-command-map"
