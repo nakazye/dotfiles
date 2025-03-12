@@ -706,7 +706,9 @@
                ("C-; o C c" . org-clock-cancel)
                ("C-; o C r" . org-clock-report)
                )
-        :custom ((org-agenda-files . '("~/note/"))
+        :custom ((org-agenda-files . '("~/note/business/journal"
+                                       "~/note/public/journal"
+                                       "~/note/public/memo/tech"))
                  (org-capture-templates .'(("e" "Emacs Note" entry
                                             (file+headline "~/note/public/memo/tech/emacs.org" "Emacsノート") "* %?\n:PROPERTIES:\n:CREATED:  %T\n:END:\n")
                                            ("v" "Vim Note" entry
