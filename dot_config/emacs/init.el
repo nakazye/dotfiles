@@ -659,8 +659,12 @@
         :url "https://github.com/magit/forge"
         :ensure t
         :after magit
-        :bind ("C-; g p" . forge-pull))) ; 操作自体は、magitで行う(forgeがmagitのサブモジュールなので)
-
+        :bind ("C-; g p" . forge-pull)) ; 操作自体は、magitで行う(forgeがmagitのサブモジュールなので)
+      (leaf git-gutter
+        :doc "gitの差分表示"
+        :url ""
+        :ensure t
+        :global-minor-mode global-git-gutter-mode))
 
     ) ; end of 各種便利機能===============================================================
 
