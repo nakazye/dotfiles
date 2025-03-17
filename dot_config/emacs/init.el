@@ -34,12 +34,8 @@
     (leaf *言語設定-----------------------------------------------------------------------
       :doc "Emacsが扱う文字コードの設定"
       :config
-      (prefer-coding-system  'utf-8-unix)
-      (set-file-name-coding-system  'utf-8-unix)
-      (set-keyboard-coding-system  'utf-8-unix)
-      (set-terminal-coding-system  'utf-8-unix)
-      (set-default 'buffer-file-coding-system 'utf-8-unix)
-      (modify-coding-system-alist 'file "" 'utf-8-unix))
+      (set-language-environment "Japanese")
+      (prefer-coding-system  'utf-8-unix))
 
     (leaf *特にWSLな日本語入力設定--------------------------------------------------------
       :doc "mozcとの接続設定（GUIかつLinuxの時）"
