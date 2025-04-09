@@ -29,7 +29,6 @@ vim.opt.laststatus = 2
 vim.opt.wildmenu = true
 -- シンタックスハイライトの有効化
 vim.cmd('syntax on')
-
 -- 不可視文字表示
 vim.opt.list = true
 vim.opt.listchars={tab = '»-', trail = '･', eol = '↲', extends = '»', precedes = '«',nbsp = '%'}
@@ -74,24 +73,20 @@ vim.cmd('packadd vim-jetpack')
 require('jetpack.packer').add {
   -- JetPack本体
   'tani/vim-jetpack',
-  -- ファジーファインダ(telescoope)
+  -- カラースキーム（かわいい）
+  {'beikome/cosme.vim', config = function() vim.cmd.colorscheme 'cosme' end},
+  -- ファジーにファインド
   {'nvim-telescope/telescope.nvim',
-   requires = {{'nvim-lua/plenary.nvim'}}
- }
-}
-
--- ファジーファインダ(telescoope)
-require('telescope').setup{
-  defaults = {
-    mappings = {
-      i = {
-        ["<C-h>"] = "which_key"
-      }
+   requires = {{'nvim-lua/plenary.nvim'}},
+   config = function()
+    require('telescope').setup{
+      defaults = {
+        mappings = { i = {["<C-h>"] = "which_key"}}
+      },
+      pickers = {},
+      extensions = {}
     }
-  },
-  pickers = {
-  },
-  extensions = {
-  }
+  end
+ }
 }
 
