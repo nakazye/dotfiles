@@ -55,14 +55,14 @@ vim.opt.hlsearch = true
 vim.keymap.set('n', '<Esc><Esc>', ':nohlsearch<CR><Esc>', {remap = true})
 
 -- インサートモードをEmacsライクに
-vim.keymap.set('i', '<C-d>', '<Del>', { remap = true })
-vim.keymap.set('i', '<C-h>', '<BS>', { remap = true })
-vim.keymap.set('i', '<C-a>', '<home>', { remap = true })
-vim.keymap.set('i', '<C-e>', '<End>', { remap = true })
-vim.keymap.set('i', '<C-p>', '<Up>', { remap = true })
-vim.keymap.set('i', '<C-n>', '<Down>', { remap = true })
-vim.keymap.set('i', '<C-f>', '<right>', { remap = true })
-vim.keymap.set('i', '<C-b>', '<left>', { remap = true })
+vim.keymap.set('i', '<C-d>', '<Del>', { remap = false })
+vim.keymap.set('i', '<C-h>', '<BS>', { remap = false })
+vim.keymap.set('i', '<C-a>', '<home>', { remap = false })
+vim.keymap.set('i', '<C-e>', '<End>', { remap = false })
+vim.keymap.set('i', '<C-p>', '<Up>', { remap = false })
+vim.keymap.set('i', '<C-n>', '<Down>', { remap = false })
+vim.keymap.set('i', '<C-f>', '<right>', { remap = false })
+vim.keymap.set('i', '<C-b>', '<left>', { remap = false })
 
 
 -- プラグインマネージャ(JetPack)
@@ -90,6 +90,15 @@ require('jetpack.packer').add {
       extensions = {}
     }
   end
- }
+ },
+ -- terminalを使いたい
+ {'akinsho/toggleterm.nvim',
+ config = function() 
+  require("toggleterm").setup {
+    open_mapping = [[<c-t>]],
+    direction = 'float',
+    vim.keymap.set('t', [[<ESC><ESC>]], [[<C-\><C-n>]], {remap = false})
+  }
+ end}
 }
 
