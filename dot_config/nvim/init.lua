@@ -13,6 +13,9 @@ vim.opt.undofile = false
 vim.opt.writebackup = true
 vim.opt.hidden = true
 
+-- マウス操作を無効
+vim.opt.mouse = ''
+
 -- 行番号表示
 vim.opt.number = true
 -- 現在の行を強調表示
