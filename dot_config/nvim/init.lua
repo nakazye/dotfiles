@@ -87,7 +87,8 @@ require('jetpack.packer').add {
         mappings = { i = {["<C-h>"] = "which_key"}}
       },
       pickers = {},
-      extensions = {}
+      extensions = {},
+      vim.keymap.set('n', [[<C-x><C-b>]], [[<cmd>Telescope buffers<cr>]], {remap = false})
     }
   end
  },
