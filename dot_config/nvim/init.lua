@@ -84,14 +84,16 @@ require('jetpack.packer').add {
    config = function()
     require('telescope').setup{
       defaults = {
-        mappings = { i = {["<C-h>"] = "which_key"}}
+        mappings = { i = {["<F1>"] = "which_key"}}
       },
       pickers = {},
       extensions = {},
-      vim.keymap.set('n', [[<C-x><C-b>]], [[<cmd>Telescope buffers<cr>]], {remap = false})
+      vim.keymap.set('n', [[<C-x>b]], [[<cmd>Telescope buffers<cr>]], {remap = false})
     }
   end
  },
+ {'nvim-telescope/telescope-file-browser.nvim',
+ requires = { 'nvim-telescope/telescope.nvim', 'nvim-lua/plenary.nvim' }},
  -- terminalを使いたい
  {'akinsho/toggleterm.nvim',
  config = function() 
