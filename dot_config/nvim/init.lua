@@ -88,7 +88,8 @@ require('jetpack.packer').add {
       },
       pickers = {},
       extensions = {},
-      vim.keymap.set('n', [[<C-x>b]], [[<cmd>Telescope buffers<cr>]], {remap = false})
+      vim.keymap.set('n', [[<C-x>b]], [[<cmd>Telescope buffers<cr>]], {remap = false}),
+      vim.keymap.set('n', [[<C-x><C-f>]], [[<cmd>Telescope file_browser<cr>]], {remap = false}),
     }
   end
  },
