@@ -96,7 +96,5 @@ darwin*)
 esac
 alias du="du -h"
 alias df="df -h"
-alias vi="vim"
-alias tmain="tmux attach -t main || tmux new-session -s main"
-alias tvsc="tmux attach -t vsc || tmux new-session -s vsc"
+alias vi="nvim"
 alias rep='cd $(ghq list -p | peco)'
