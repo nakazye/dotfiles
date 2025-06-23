@@ -95,6 +95,25 @@
     (leaf *カレントディレクトリの変更-----------------------------------------------------
       :config (cd "~/"))
 
+    (leaf *MacでGUI起動時に環境変数読んでくれない問題---------------------------------
+      :doc "MacでGUIな時に環境変数読むよ"
+      :when window-system
+      :when (eq system-type 'darwin)
+      :config
+      (leaf exec-path-from-shell
+        :ensure t
+        :defun (exec-path-from-shell-initialize)
+          :custom
+          ((exec-path-from-shell-check-startup-files . nil)
+           (exec-path-from-shell-arguments . nil)
+           (exec-path-from-shell-variables
+            . '(
+                "PATH"
+                "SHELL"
+                )))
+          :config
+          (exec-path-from-shell-initialize)))
+
     ) ; end of 一般設定 ==================================================================
 
 
