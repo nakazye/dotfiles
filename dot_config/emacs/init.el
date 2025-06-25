@@ -680,7 +680,9 @@
       (leaf vterm
         :doc "日本語が入力できなかったり出力おかしかったりするけど、でも最低限使えるので良いかなと"
         :url "https://github.com/akermu/emacs-libvterm"
-        :ensure t))
+        :ensure t
+        :hook
+        (vterm-mode-hook . (lambda() (display-line-numbers-mode 0)))))
 
     (leaf *今度こそorg-modeと仲良くなる---------------------------------------------------
       :config
