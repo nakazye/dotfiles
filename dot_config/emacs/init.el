@@ -1,4 +1,4 @@
-;;; init.el --- Initialization file for Emacs -*- lexical-binding: t -*-
+;; init.el --- Initialization file for Emacs -*- lexical-binding: t -*-
 
 ;;; Commentary:
 ;;; Emacs Startup File
@@ -27,16 +27,24 @@
       (set-language-environment "Japanese")
       (prefer-coding-system  'utf-8-unix))
 
-    (leaf *特にWSLな日本語入力設定--------------------------------------------------------
-      :doc "mozcとの接続設定（GUIかつLinuxの時）"
-      :when window-system
-      :when (eq system-type 'gnu/linux)
+    (leaf *日本語入力設定-----------------------------------------------------------------
       :config
       (leaf mozc
         :ensure t
         :require t
+        :doc "mozcとの接続設定（GUIかつLinuxの時）"
+        :when window-system
+        :when (eq system-type 'gnu/linux)
         :bind (("C-SPC"   . toggle-input-method))
-        :custom (default-input-method . "japanese-mozc")))
+        :custom (default-input-method . "japanese-mozc"))
+      (leaf *skk
+        :doc "skk"
+        :when (eq system-type 'darwin)
+        :custom
+        (default-input-method . "japanese-skk")
+        (skk-server-host . "localhost")
+        (skk-server-portnum . 1178))
+      )
 
     (leaf *Windowsでの文字化け対策--------------------------------------------------------
       :doc "外部プロセスとのやりとりや外部コマンド実行で文字化けを防ぐ"
@@ -351,7 +359,8 @@
           "C-; o C" "org-clock-command-map"
           "C-; a"   "affe-command-map"
           "C-; c"   "context-command-map"
-          "C-; t"   "treemacs-command-map"
+          "C-; t"   "toggle-buffer-map"
+          "C-; T"   "treemacs-command-map"
           "C-; v"   "view-command-map"
           "C-; s"   "search-command-map"
           "C-; e"   "edit-command-map"
@@ -500,13 +509,13 @@
       (leaf treemacs
         :url "https://github.com/Alexander-Miller/treemacs"
         :ensure t
-        :bind (("C-; t 0"   . treemacs-select-window)           ; treemacsのウィンドウにフォーカス
-               ("C-; t 1"   . treemacs-delete-other-windows)    ; treemacsのウィンドウを残して全部クローズ
-               ("C-; t t"   . treemacs)                         ; treemacsウィンドウをトグル
-               ("C-; t d"   . treemacs-select-directory)        ; 特定のディレクトリを選択してルートノードに設定
-               ("C-; t b"   . treemacs-bookmark)                ; ブックマークを選択して Treemacs ビュー内で展開
-               ;; ("C-; t C-t" . treemacs-find-file)             ; 現在のバッファのファイルを Treemacs ビュー内で選択
-               ;; ("C-; t M-t" . treemacs-find-tag)              ; 現在のバッファのファイル内のタグを Treemacs ビューで選択
+        :bind (("C-; T 0"   . treemacs-select-window)           ; treemacsのウィンドウにフォーカス
+               ("C-; T 1"   . treemacs-delete-other-windows)    ; treemacsのウィンドウを残して全部クローズ
+               ("C-; t T"   . treemacs)                         ; treemacsウィンドウをトグル
+               ("C-; T d"   . treemacs-select-directory)        ; 特定のディレクトリを選択してルートノードに設定
+               ("C-; T b"   . treemacs-bookmark)                ; ブックマークを選択して Treemacs ビュー内で展開
+               ;; ("C-; T C-t" . treemacs-find-file)             ; 現在のバッファのファイルを Treemacs ビュー内で選択
+               ;; ("C-; T M-t" . treemacs-find-tag)              ; 現在のバッファのファイル内のタグを Treemacs ビューで選択
                )
         :custom
         (treemacs-no-png-images . t)                    ; pngイメージを使わない
@@ -516,19 +525,13 @@
         (treemacs-filewatch-mode t)                     ; 外部でファイルが増えたり減ったり名前変わっても反映
         (treemacs-fringe-indicator-mode 'always)        ; 選択されてるインジケーターを常に表示
         (treemacs-hide-gitignored-files-mode nil)       ; gitignore指定されていても表示
-        ;; 以下、徐々に育てていきたい
-        (treemacs-create-theme "my-treemacs-theme"
-                               :config
-                               (progn
-                                 (treemacs-create-icon :icon " " :extensions (root-open) :fallback 'same-as-icon)
-                                 (treemacs-create-icon :icon " " :extensions (root-closed) :fallback 'same-as-icon)
-                                 (treemacs-create-icon :icon " " :extensions (dir-open) :fallback 'same-as-icon)
-                                 (treemacs-create-icon :icon " " :extensions (dir-closed) :fallback 'same-as-icon)
-                                 (treemacs-create-icon :icon " " :extensions (fallback) :fallback 'same-as-icon)))
-        (treemacs-load-theme "my-treemacs-theme")
-        :hook (treemacs-mode-hook . (lambda ()
-                                      (setq mode-line-format nil)
-                                      (display-line-numbers-mode 0)))))
+        )
+      (leaf treemacs-nerd-icons
+        :url "https://github.com/rainstormstudio/treemacs-nerd-icons"
+        :ensure t
+        :require t ;; reuire入れないとロードされない
+        :config (treemacs-load-theme "nerd-icons"))
+      )
 
     (leaf *編集中にぺろんと補完するやつ---------------------------------------------------
       :doc "companyにお世話になっていたけど、令和はcorfu+capeらしいので試す"
@@ -681,8 +684,15 @@
         :doc "日本語が入力できなかったり出力おかしかったりするけど、でも最低限使えるので良いかなと"
         :url "https://github.com/akermu/emacs-libvterm"
         :ensure t
+        :custom
+        (vterm-max-scrollbacck . 100000)
+        (vterm-buffer-name-string . "vterm: %s")
         :hook
-        (vterm-mode-hook . (lambda() (display-line-numbers-mode 0)))))
+        (vterm-mode-hook . (lambda() (display-line-numbers-mode 0))))
+      (leaf vterm-toggle
+        :ensure t
+        :bind ("C-; t t" . vterm-toggle)
+        ))
 
     (leaf *今度こそorg-modeと仲良くなる---------------------------------------------------
       :config
@@ -818,3 +828,16 @@
 (provide 'init)
 
 ;;; init.el ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages nil))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(mode-line ((t (:underline nil))) nil "Customized with leaf in `doom-modeline' block at `/Users/yutaka.nakajima/.config/emacs/init.el'")
+ '(mode-line-inactive ((t (:underline nil))) nil "Customized with leaf in `doom-modeline' block at `/Users/yutaka.nakajima/.config/emacs/init.el'"))
