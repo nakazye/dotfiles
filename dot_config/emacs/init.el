@@ -828,22 +828,8 @@
         :mode "\\.csv\\'"))
 
     ) ; end of 特定言語やメジャーモード設定===============================================
-
   )
 
 (provide 'init)
 
 ;;; init.el ends here
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages nil))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(mode-line ((t (:underline nil))) nil "Customized with leaf in `doom-modeline' block at `/Users/yutaka.nakajima/.config/emacs/init.el'")
- '(mode-line-inactive ((t (:underline nil))) nil "Customized with leaf in `doom-modeline' block at `/Users/yutaka.nakajima/.config/emacs/init.el'"))
