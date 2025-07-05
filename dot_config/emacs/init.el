@@ -733,6 +733,12 @@
                                             (file+headline "~/note/public/memo/tech/emacs.org" "Emacsノート") "* %?\n:PROPERTIES:\n:CREATED:  %T\n:END:\n")
                                            ("v" "Vim Note" entry
                                             (file+headline "~/note/public/memo/tech/vim.org" "Vimノート") "* %?\n:PROPERTIES:\n:CREATED:  %T\n:END:\n")
+                                           ("n" "Nix Note" entry
+                                            (file+headline "~/note/public/memo/tech/nix.org" "Nixノート") "* %?\n:PROPERTIES:\n:CREATED:  %T\n:END:\n")
+                                           ("g" "Git Note" entry
+                                            (file+headline "~/note/public/memo/tech/git.org" "Gitノート") "* %?\n:PROPERTIES:\n:CREATED:  %T\n:END:\n")
+                                           ("j" "JS Note" entry
+                                            (file+headline "~/note/public/memo/tech/js.org" "JSノート") "* %?\n:PROPERTIES:\n:CREATED:  %T\n:END:\n")
                                            ("t" "Temp Note" entry
                                             (file+headline "~/note/public/memo/tech/tmp.org" "新しく思いついちゃった何か") "* %?\n:PROPERTIES:\n:CREATED:  %T\n:END:\n")
                                            ;; 随時追加していく
