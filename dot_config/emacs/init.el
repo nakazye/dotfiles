@@ -37,13 +37,6 @@
         :when (eq system-type 'gnu/linux)
         :bind (("C-SPC"   . toggle-input-method))
         :custom (default-input-method . "japanese-mozc"))
-      (leaf *skk
-        :doc "skk"
-        :when (eq system-type 'darwin)
-        :custom
-        (default-input-method . "japanese-skk")
-        (skk-server-host . "localhost")
-        (skk-server-portnum . 1178))
       )
 
     (leaf *Windowsでの文字化け対策--------------------------------------------------------
@@ -151,11 +144,11 @@
       :doc "簡単に指定するような方法は見つからず、OS標準を使いたいなら、それごとに設定が必要な気がする"
       :config
       (leaf *Macでの設定
-        :doc "基本のフォントサイズ14でちょうど良い(高さが大きくズレない)数値を設定"
+        :doc "基本のフォントサイズからでちょうど良い(高さが大きくズレない)数値を設定"
         :if (eq system-type 'darwin)
-        :config (set-fontset-font (frame-parameter nil 'font) '(#x1F004 . #x1FFFD) (font-spec :family "Apple Color Emoji" :size 10)))
+        :config (set-fontset-font (frame-parameter nil 'font) '(#x1F004 . #x1FFFD) (font-spec :family "Apple Color Emoji" :size 13)))
       (leaf *Windowsでの設定
-        :doc "フォントサイズ設定すると、14でも小さい感じでなんかおかしいので、いったんフォントサイズ指定をやめている"
+        :doc "フォントサイズ設定するとなんかおかしいので、いったんフォントサイズ指定をやめている"
         :if (eq system-type 'windows-nt)
         :config (set-fontset-font (frame-parameter nil 'font) '(#x1F004 . #x1FFFD) (font-spec :family "Segoe UI Emoji")))
       )
@@ -232,7 +225,7 @@
   (leaf *モードライン設定=================================================================
     :config
 
-    (leaf *素敵なモードラインを作るぞ！---------------------------------------------------
+    (leaf *モードラインを作るぞ！---------------------------------------------------
       :doc "doom-modelineを導入して、自分好みのモードラインを作るぞ"
       :config
       (leaf doom-modeline
@@ -782,6 +775,7 @@
         :ensure t
         :custom (lsp-keymap-prefix . "C-' l")
         :hook ((java-mode-hook . lsp)
+               (python-mode . lsp)
                (lsp-mode-hook . lsp-enable-which-key-integration)))
       (leaf lsp-ui
         :doc "ハイレベルなUIを提供してくれるらしい。が、まだちゃんとわかってない"
@@ -802,10 +796,36 @@
                               ("C-' t d" . lsp-treemacs-java-deps-follow)   ; 依存関係の表示
                               ("C-' t d" . lsp-treemacs-java-deps-refresh)  ; 依存関係Viewのリフレッシュ
                               )))
+
+    (leaf *web開発の諸々 ----------------------------------------------------------------
+      :config
+      (leaf web-mode
+        :doc "HTMLとかその他諸々"
+        :url "https://web-mode.org"
+        :ensure t
+        :mode ("\\.html\\'"
+               "\\.htm\\'"
+               "\\.[agj]sp\\'"
+               "\\.as[cp]x\\'"
+               "\\.djhtml\\'")
+        )
+      )
+
+    (leaf *Java開発の諸々 ----------------------------------------------------------------
+      :config
       (leaf lsp-java
         :doc "JavaなLSP"
         :url "https://github.com/emacs-lsp/lsp-java"
         :custom (lsp-java-jdt-download-url . "https://www.eclipse.org/downloads/download.php?file=/jdtls/milestones/1.43.0/jdt-language-server-1.43.0-202412191447.tar.gz")
+        :ensure t)
+      ))
+
+    (leaf *Python開発の諸々 --------------------------------------------------------------
+      :config
+      (leaf python-mode
+        :doc "基本的な機能(インデントやコード実行など)"
+        :doc "python-mode"
+        :url "https://gitlab.com/python-mode-devs/python-mode"
         :ensure t)
       )
 
