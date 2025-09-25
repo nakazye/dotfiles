@@ -512,12 +512,16 @@
                )
         :custom
         (treemacs-no-png-images . t)                    ; pngイメージを使わない
+        ; TODO cliではエラー出るので分岐入れたい
+        (treemacs-text-scale . -1)                      ; テキストサイズが大きいのを小さく
         :config
         (treemacs-follow-mode t)                        ; 追従させる
         (treemacs-project-follow-mode t)                ; projectileと連動
         (treemacs-filewatch-mode t)                     ; 外部でファイルが増えたり減ったり名前変わっても反映
         (treemacs-fringe-indicator-mode 'always)        ; 選択されてるインジケーターを常に表示
         (treemacs-hide-gitignored-files-mode nil)       ; gitignore指定されていても表示
+        :hook
+        (treemacs-mode-hook . (lambda() (display-line-numbers-mode 0)))
         )
       (leaf treemacs-nerd-icons
         :url "https://github.com/rainstormstudio/treemacs-nerd-icons"
