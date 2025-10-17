@@ -96,7 +96,7 @@
     (leaf *カレントディレクトリの変更-----------------------------------------------------
       :config (cd "~/"))
 
-    (leaf *MacでGUI起動時に環境変数読んでくれない問題---------------------------------
+    (leaf *MacでGUI起動時に環境変数読んでくれない問題 ------------------------------------
       :doc "MacでGUIな時に環境変数読むよ"
       :when window-system
       :when (eq system-type 'darwin)
@@ -114,6 +114,15 @@
                 )))
           :config
           (exec-path-from-shell-initialize)))
+
+    (leaf *direnvを使える様にする -------------------------------------------------------
+      :config
+      (leaf envrc
+        :doc "emacs-direnvの後継"
+        :url "https://github.com/purcell/envrc"
+        :ensure t
+        :hook (after-init-hook . envrc-global-mode))
+      )
 
     ) ; end of 一般設定 ==================================================================
 
@@ -219,6 +228,28 @@
         :custom (beacon-color . "pink")
         :config
         (beacon-mode 1)))
+
+    (leaf *tree-sitter使うよ--------------------------------------------------------------
+      :config
+      (leaf tree-sitter
+        :doc "tree-sitterそのもの"
+        :ensure t
+        :hook ((typescript-ts-mode . tree-sitter-hl-mode)
+               (tsx-ts-mode . tree-sitter-hl-mode))
+        :config
+        (global-tree-sitter-mode))
+      (leaf treesit
+        :doc "ハイライトレベルの設定Max(4)"
+        :config
+        (setq treesit-font-lock-level 4))
+      (leaf treesit-auto
+        :doc "tree-sitterの自動インストール"
+        :ensure t
+        :require t
+        :custom ((treesit-auto-install . 'prompt))
+        :config
+        (treesit-auto-add-to-auto-mode-alist 'all)
+        (global-treesit-auto-mode)))
 
     ) ; end of 一般表示系設定=============================================================
 
@@ -809,10 +840,24 @@
         :ensure t
         :mode ("\\.html\\'"
                "\\.htm\\'"
-               "\\.[agj]sp\\'"
-               "\\.as[cp]x\\'"
-               "\\.djhtml\\'")
-        )
+               "\\.jsp\\'"
+               "\\.djhtml\\'")))
+
+    (leaf *JSやTS開発の諸々 --------------------------------------------------------------
+      :config
+      (leaf typescript-ts-mode
+        :doc "TypeScriptのビルトインモード"
+        :mode (("\\.ts\\'" . typescript-ts-mode)
+               ("\\.tsx\\'" . tsx-ts-mode))
+        :hook ((typescript-ts-mode-hook . lsp-deferred)
+               (tsx-ts-mode-hook . lsp-deferred)))
+      (leaf js-ts-mode
+        :doc "JavaScriptのビルトインモード"
+        :mode (("\\.js\\'" . js-ts-mode)
+               ("\\.mjs\\'" . js-ts-mode)
+               ("\\.jsx\\'" . jsx-ts-mode))
+        :hook ((js-ts-mode-hook . lsp-deferred)
+               (jsx-ts-mode-hook . lsp-deferred)))
       )
 
     (leaf *Java開発の諸々 ----------------------------------------------------------------

@@ -85,7 +85,7 @@
     (leaf *新規フレームに対してフォント設定--------------------------------------------
       :url "https://apribase.net/2024/07/06/emacs-default-frame-alist/"
       :doc "↑のURLを参考に設定。early-initなので、再読み込みはしない前提でadd-to-listではなくpushしている"
-      :push ((default-frame-alist . '(font . "HackGen Console NF-14"))))
+      :push ((default-frame-alist . '(font . "HackGen Console NF-18"))))
 
     (leaf *行番号を表示する------------------------------------------------------------
       :url "https://www.grugrut.net/posts/201910202227/"
