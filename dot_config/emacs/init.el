@@ -104,16 +104,16 @@
       (leaf exec-path-from-shell
         :ensure t
         :defun (exec-path-from-shell-initialize)
-          :custom
-          ((exec-path-from-shell-check-startup-files . nil)
-           (exec-path-from-shell-arguments . nil)
-           (exec-path-from-shell-variables
-            . '(
-                "PATH"
-                "SHELL"
-                )))
-          :config
-          (exec-path-from-shell-initialize)))
+        :custom
+        ((exec-path-from-shell-check-startup-files . nil)
+         (exec-path-from-shell-arguments . nil)
+         (exec-path-from-shell-variables
+          . '(
+              "PATH"
+              "SHELL"
+              )))
+        :config
+        (exec-path-from-shell-initialize)))
 
     (leaf *direnvを使える様にする -------------------------------------------------------
       :config
@@ -239,17 +239,37 @@
         :config
         (global-tree-sitter-mode))
       (leaf treesit
-        :doc "ハイライトレベルの設定Max(4)"
+        :doc "諸々設定"
         :config
-        (setq treesit-font-lock-level 4))
-      (leaf treesit-auto
-        :doc "tree-sitterの自動インストール"
-        :ensure t
-        :require t
-        :custom ((treesit-auto-install . 'prompt))
-        :config
-        (treesit-auto-add-to-auto-mode-alist 'all)
-        (global-treesit-auto-mode)))
+        ;;; ハイライトレベルの設定Max(4)
+        (setq treesit-font-lock-level 4)
+        :custom
+        ;;; 構文定義ファイル
+        (treesit-language-source-alist
+         . '(
+             ;; 公式
+             (bash "https://github.com/tree-sitter/tree-sitter-bash")
+             (c "https://github.com/tree-sitter/tree-sitter-c")
+             (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+             (css "https://github.com/tree-sitter/tree-sitter-css")
+             (html "https://github.com/tree-sitter/tree-sitter-html")
+             (java "https://github.com/tree-sitter/tree-sitter-java")
+             (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+             (json "https://github.com/tree-sitter/tree-sitter-json")
+             (nix "https://github.com/nix-community/tree-sitter-nix")
+             (python "https://github.com/tree-sitter/tree-sitter-python")
+             (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
+             (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+             ;; 3rd party
+             (make "https://github.com/alemuller/tree-sitter-make")
+             (yaml "https://github.com/ikatyang/tree-sitter-yaml")
+             ))
+        :init
+        (mapc (lambda (lang)
+                (unless (treesit-language-available-p lang nil)
+                  (treesit-install-language-grammar lang)))
+              (mapcar #'car treesit-language-source-alist))
+        ))
 
     ) ; end of 一般表示系設定=============================================================
 
@@ -543,7 +563,7 @@
                )
         :custom
         (treemacs-no-png-images . t)                    ; pngイメージを使わない
-        ; TODO cliではエラー出るので分岐入れたい
+                                        ; TODO cliではエラー出るので分岐入れたい
         (treemacs-text-scale . -1)                      ; テキストサイズが大きいのを小さく
         :config
         (treemacs-follow-mode t)                        ; 追従させる
@@ -809,9 +829,7 @@
         :url "https://github.com/emacs-lsp/lsp-mode"
         :ensure t
         :custom (lsp-keymap-prefix . "C-' l")
-        :hook ((java-mode-hook . lsp)
-               (python-mode . lsp)
-               (lsp-mode-hook . lsp-enable-which-key-integration)))
+        :hook (lsp-mode-hook . lsp-enable-which-key-integration))
       (leaf lsp-ui
         :doc "ハイレベルなUIを提供してくれるらしい。が、まだちゃんとわかってない"
         :doc "https://qiita.com/Ladicle/items/feb5f9dce9adf89652cf#emacs26の機能をフル活用したモダンなui----lsp-ui を参考にすると良いかもしれない"
@@ -832,63 +850,93 @@
                               ("C-' t d" . lsp-treemacs-java-deps-refresh)  ; 依存関係Viewのリフレッシュ
                               )))
 
-    (leaf *web開発の諸々 ----------------------------------------------------------------
-      :config
-      (leaf web-mode
-        :doc "HTMLとかその他諸々"
-        :url "https://web-mode.org"
-        :ensure t
-        :mode ("\\.html\\'"
-               "\\.htm\\'"
-               "\\.jsp\\'"
-               "\\.djhtml\\'")))
+      (leaf *web開発の諸々 ----------------------------------------------------------------
+        :config
+        (leaf web-mode
+          :doc "HTMLとかその他諸々"
+          :url "https://web-mode.org"
+          :ensure t
+          :mode ("\\.html\\'"
+                 "\\.htm\\'"
+                 "\\.jsp\\'"
+                 "\\.djhtml\\'"))
+        (leaf css-ts-mode
+          :mode ("\\.css\\'")))
 
-    (leaf *JSやTS開発の諸々 --------------------------------------------------------------
-      :config
-      (leaf typescript-ts-mode
-        :doc "TypeScriptのビルトインモード"
-        :mode (("\\.ts\\'" . typescript-ts-mode)
-               ("\\.tsx\\'" . tsx-ts-mode))
-        :hook ((typescript-ts-mode-hook . lsp-deferred)
-               (tsx-ts-mode-hook . lsp-deferred)))
-      (leaf js-ts-mode
-        :doc "JavaScriptのビルトインモード"
-        :mode (("\\.js\\'" . js-ts-mode)
-               ("\\.mjs\\'" . js-ts-mode)
-               ("\\.jsx\\'" . jsx-ts-mode))
-        :hook ((js-ts-mode-hook . lsp-deferred)
-               (jsx-ts-mode-hook . lsp-deferred)))
-      )
+      (leaf *JSやTS開発の諸々 --------------------------------------------------------------
+        :config
+        (leaf typescript-ts-mode
+          :doc "TypeScriptのビルトインモード"
+          :mode (("\\.ts\\'" . typescript-ts-mode)
+                 ("\\.tsx\\'" . tsx-ts-mode))
+          :hook ((typescript-ts-mode-hook . lsp-deferred)
+                 (tsx-ts-mode-hook . lsp-deferred)))
+        (leaf js-ts-mode
+          :doc "JavaScriptのビルトインモード"
+          :mode (("\\.js\\'" . js-ts-mode)
+                 ("\\.mjs\\'" . js-ts-mode)
+                 ("\\.jsx\\'" . jsx-ts-mode))
+          :hook ((js-ts-mode-hook . lsp-deferred)
+                 (jsx-ts-mode-hook . lsp-deferred)))
+        (leaf json-ts-mode
+          :mode ("\\.json\\'"))
+        )
 
-    (leaf *Java開発の諸々 ----------------------------------------------------------------
+    (leaf *yaml ---------------------------------------------------------------------------
       :config
-      (leaf lsp-java
-        :doc "JavaなLSP"
-        :url "https://github.com/emacs-lsp/lsp-java"
-        :custom (lsp-java-jdt-download-url . "https://www.eclipse.org/downloads/download.php?file=/jdtls/milestones/1.43.0/jdt-language-server-1.43.0-202412191447.tar.gz")
-        :ensure t)
-      ))
+      (leaf yaml-ts-mode
+        :mode "\\.yml\\'" "\\.yaml\\'"))
+
+      (leaf *Java開発の諸々 ----------------------------------------------------------------
+        :config
+        (leaf lsp-java
+          :doc "JavaなLSP"
+          :url "https://github.com/emacs-lsp/lsp-java"
+          :custom (lsp-java-jdt-download-url . "https://www.eclipse.org/downloads/download.php?file=/jdtls/milestones/1.43.0/jdt-language-server-1.43.0-202412191447.tar.gz")
+          :hook ((java-mode-hook . lsp-deferred)
+                 (java-mode-hook . java-ts-mode))
+          :ensure t)
+        ))
 
     (leaf *Python開発の諸々 --------------------------------------------------------------
       :config
       (leaf python-mode
-        :doc "基本的な機能(インデントやコード実行など)"
-        :doc "python-mode"
-        :url "https://gitlab.com/python-mode-devs/python-mode"
-        :ensure t)
-      )
+        :ensure t
+        :hook ((python-mode-hook . python-ts-mode)
+;;               (python-mode-hook . lsp-deferred)
+               )
+        :mode ("\\.py\\'")))
 
     (leaf *Nixをやるぞ--------------------------------------------------------------------
       :config
-      (leaf nix-mode
+      (leaf nix-ts-mode
         :ensure t
-        :mode "\\.nix\\'"))
+        :mode "\\.nix\\'"
+;;        :hook (nix-ts-mode-hook . lsp-defrred)
+        ))
 
     (leaf *nvimの設定をEmacsでやることもあるよね（Lua弄ることもあるよね）-----------------
+      :doc "activeなluaのtreesitter見つけられなかったのでlua-ts-modeではなくlua-mode使う"
       :config
       (leaf lua-mode
         :ensure t
         :mode "\\.lua\\'"))
+
+    (leaf *shell(bash) -------------------------------------------------------------------
+      :doc "activeなluaのtreesitter見つけられなかったのでlua-ts-modeではなくlua-mode使う"
+      :config
+      (leaf bash-ts-mode
+        :mode "\\.sh\\'"))
+
+    (leaf *cやc++を扱うぞ ----------------------------------------------------------------
+      :config
+      (leaf c-ts-mode
+        :ensure t
+        :mode ("\\.c\\'" "\\.C\\'" "\\.sqc\\'" "\\.sqC\\'"))
+      (leaf c++-ts-mode
+        :mode ("\\.cpp\\'"))
+      (leaf makefile-mode
+        :mode ("\\.make\\'")))
 
     (leaf *CSVを扱うぞ--------------------------------------------------------------------
       :config
