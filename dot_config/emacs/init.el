@@ -271,6 +271,18 @@
               (mapcar #'car treesit-language-source-alist))
         ))
 
+    (leaf *ウィンドウ操作を便利に --------------------------------------------------------
+      :config
+      (leaf ace-window
+        :url "https://github.com/abo-abo/ace-window"
+        :ensure t
+        :config
+        (with-eval-after-load 'ace-window
+          (ace-window-posframe-mode t))
+        :bind (("C-; w w"   . ace-window))
+        ))
+
+
     ) ; end of 一般表示系設定=============================================================
 
   (leaf *モードライン設定=================================================================
@@ -410,8 +422,7 @@
           "C-; e"   "edit-command-map"
           "C-; f"   "file-command-map"
           "C-; g"   "general-programming-map"
-          "C-' l"   "lsp-command-map"
-          "C-' t"   "lsp-treemacs-command-map")))
+          "C-; w"   "window-command-map")))
 
     (leaf *最近使ったファイル-------------------------------------------------------------
       :doc "標準機能(recentf)として具備されている"
@@ -861,7 +872,12 @@
                  "\\.jsp\\'"
                  "\\.djhtml\\'"))
         (leaf css-ts-mode
-          :mode ("\\.css\\'")))
+          :doc "cssを色付け"
+          :mode ("\\.css\\'"))
+        (leaf impatient-mode
+          :doc "HTTPサーバ立ててのライブプレビュー"
+          :url "https://github.com/skeeto/impatient-mode"
+          :ensure t))
 
       (leaf *JSやTS開発の諸々 --------------------------------------------------------------
         :config
@@ -931,10 +947,13 @@
     (leaf *cやc++を扱うぞ ----------------------------------------------------------------
       :config
       (leaf c-ts-mode
-        :ensure t
-        :mode ("\\.c\\'" "\\.C\\'" "\\.sqc\\'" "\\.sqC\\'"))
+        :mode ("\\.c\\'" "\\.C\\'" "\\.sqc\\'" "\\.sqC\\'")
+        :hook (c-ts-mode-hook . lsp-deferred))
+      (leaf c-or-c++-ts-mode
+        :mode ("\\.h\\'"))
       (leaf c++-ts-mode
-        :mode ("\\.cpp\\'"))
+        :mode ("\\.cpp\\'")
+        :hook (c++-ts-mode-hook . lsp-deferred))
       (leaf makefile-mode
         :mode ("\\.make\\'")))
 
