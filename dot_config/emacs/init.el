@@ -8,7 +8,6 @@
 ;;; --- キーバインド設定における個人的方針 ---
 ;;; * M-xを使ったら負けだと考える
 ;;; * モード問わず利用するものは、C-;からのコンビネーションで設定する
-;;; * モード特有で利用するものは、C-'からのコンビネーションで設定する
 ;;; * 自分が使うものについては、この中に詰まってる状況を作るのである
 
 ;;; code:
@@ -839,7 +838,7 @@
         :doc "LSPクライアント本体"
         :url "https://github.com/emacs-lsp/lsp-mode"
         :ensure t
-        :custom (lsp-keymap-prefix . "C-' l")
+        :custom (lsp-keymap-prefix . "C-c l")
         :hook (lsp-mode-hook . lsp-enable-which-key-integration))
       (leaf lsp-ui
         :doc "ハイレベルなUIを提供してくれるらしい。が、まだちゃんとわかってない"
@@ -851,15 +850,7 @@
         :doc "treemacsを使ってシンボル一覧を出したり階層出したり色々やる"
         :url "https://github.com/emacs-lsp/lsp-treemacs"
         :ensure t
-        :config (lsp-treemacs-sync-mode 1)
-        :bind (:lsp-mode-map (("C-' t e" . lsp-treemacs-errors-list)        ; エラー一覧
-                              ("C-' t s" . lsp-treemacs-symbols)            ; シンボル一覧
-                              ("C-' t r" . lsp-treemacs-references)         ; リファレンス一覧
-                              ("C-' t i" . lsp-treemacs-implementations)    ; 実装箇所一覧
-                              ("C-' t h" . lsp-treemacs-call-hierarchy)     ; 呼び出し階層
-                              ("C-' t d" . lsp-treemacs-java-deps-follow)   ; 依存関係の表示
-                              ("C-' t d" . lsp-treemacs-java-deps-refresh)  ; 依存関係Viewのリフレッシュ
-                              )))
+        :config (lsp-treemacs-sync-mode 1))
 
       (leaf *web開発の諸々 ----------------------------------------------------------------
         :config
