@@ -412,7 +412,7 @@
           global-map
           "C-; o"   "org-command-map"
           "C-; o C" "org-clock-command-map"
-          "C-; a"   "affe-command-map"
+          "C-; a"   "ai-command-map"
           "C-; c"   "context-command-map"
           "C-; t"   "toggle-buffer-map"
           "C-; T"   "treemacs-command-map"
@@ -455,15 +455,6 @@
         :url "https://github.com/dajva/rg.el"
         :ensure t
         :bind (("C-; s r"   . rg))))
-
-    (leaf *grepやfindを便利に-------------------------------------------------------------
-      :config
-      (leaf affe
-        :doc "ripgrepやfdをfuzzyに利用する(ファイル多すぎるとエラーが出る気もしている)"
-        :url "https://github.com/minad/affe"
-        :ensure t
-        :bind (("C-; a g"   . affe-grep)
-               ("C-; a f"   . affe-find))))
 
     (leaf *ミニバッファで補完UI-----------------------------------------------------------
       :doc "Emacs28から標準添付されるfido-vertical-modeがあったりする"
