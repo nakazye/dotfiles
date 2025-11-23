@@ -413,6 +413,7 @@
           "C-; o"   "org-command-map"
           "C-; o C" "org-clock-command-map"
           "C-; a"   "ai-command-map"
+          "C-; a c" "claude-code-command-map"
           "C-; c"   "context-command-map"
           "C-; t"   "toggle-buffer-map"
           "C-; T"   "treemacs-command-map"
@@ -722,6 +723,21 @@
         :ensure t
         :global-minor-mode global-git-gutter-mode))
 
+    (leaf *Claude Code統合----------------------------------------------------------------
+      :doc "EmacsからClaude Codeを使えるようにする"
+      :config
+      (leaf claude-code-ide
+        :url "https://github.com/manzaltu/claude-code-ide.el"
+        :doc "Claude Code IDE integration for Emacs with MCP"
+        :vc (:url "https://github.com/manzaltu/claude-code-ide.el")
+        :require t
+        :bind (("C-; a c i" . claude-code-ide)
+               ("C-; a c m" . claude-code-ide-menu)
+               ("C-; a c s" . claude-code-ide-send-region)
+               ("C-; a c f" . claude-code-ide-fix-error))
+        :config
+        (claude-code-ide-emacs-tools-setup)))
+
     ) ; end of 各種便利機能===============================================================
 
   (leaf *メジャーモード設定===============================================================
@@ -951,3 +967,19 @@
 (provide 'init)
 
 ;;; init.el ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages nil)
+ '(package-vc-selected-packages
+   '((claude-code-ide :url
+                      "https://github.com/manzaltu/claude-code-ide.el"))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(mode-line ((t (:underline nil))) nil "Customized with leaf in `doom-modeline' block at `/Users/nakazye/.config/emacs/init.el'")
+ '(mode-line-inactive ((t (:underline nil))) nil "Customized with leaf in `doom-modeline' block at `/Users/nakazye/.config/emacs/init.el'"))
