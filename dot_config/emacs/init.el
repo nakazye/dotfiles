@@ -394,6 +394,11 @@
         (volatile-highlights-mode t))
       )
 
+    (leaf *ファイルを自動でリードオンリーに-----------------------------------------------
+      :doc "ファイルを開いたときに自動的にリードオンリーモードにする"
+      :doc "編集したい場合は C-x C-q でトグルする"
+      :hook (find-file-hook . (lambda () (read-only-mode 1))))
+
     ) ; end of ファイル編集設定===========================================================
 
 
@@ -966,20 +971,3 @@
 
 (provide 'init)
 
-;;; init.el ends here
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages nil)
- '(package-vc-selected-packages
-   '((claude-code-ide :url
-                      "https://github.com/manzaltu/claude-code-ide.el"))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(mode-line ((t (:underline nil))) nil "Customized with leaf in `doom-modeline' block at `/Users/nakazye/.config/emacs/init.el'")
- '(mode-line-inactive ((t (:underline nil))) nil "Customized with leaf in `doom-modeline' block at `/Users/nakazye/.config/emacs/init.el'"))
