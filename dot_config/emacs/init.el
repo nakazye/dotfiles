@@ -751,7 +751,7 @@
     (leaf *Emacsでterminalを使うぞ--------------------------------------------------------
       :config
       (leaf vterm
-        :doc "日本語が入力できなかったり出力おかしかったりするけど、でも最低限使えるので良いかなと"
+        :doc "wsl上だと日本語が入力できなかったり出力おかしかったりするけど、でも最低限使えるので良いかなと"
         :url "https://github.com/akermu/emacs-libvterm"
         :ensure t
         :custom
