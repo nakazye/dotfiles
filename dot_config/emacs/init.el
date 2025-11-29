@@ -89,10 +89,6 @@
       :custom (auto-revert-interval . 1)
       :global-minor-mode global-auto-revert-mode)
 
-    (leaf *ediff設定----------------------------------------------------------------------
-      :doc "ediffを1フレーム内で左右分割表示にする（デフォルトの複数フレーム表示を避ける）"
-      :custom (ediff-window-setup-function . 'ediff-setup-windows-plain))
-
     (leaf *ファイル削除をゴミ箱移動に-----------------------------------------------------
       :custom (delete-by-moving-to-trash . t))
 
@@ -695,8 +691,11 @@
         (embark-collect-mode . consult-preview-at-point-mode))
       )
 
+    (leaf *ediff設定----------------------------------------------------------------------
+      :doc "ediffを1フレーム内で左右分割表示にする（デフォルトの複数フレーム表示を避ける）"
+      :custom (ediff-window-setup-function . 'ediff-setup-windows-plain))
 
-    (leaf *構文チェック----------------------------------------------------------------
+    (leaf *構文チェック-------------------------------------------------------------------
       :doc "flymakeかflycheckか悩んだけど、flymakeでいくことにした。どちらでも良さそうではある"
       :config
       (leaf flymake
