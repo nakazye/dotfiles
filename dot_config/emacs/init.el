@@ -427,6 +427,7 @@
           "C-; e"   "edit-command-map"
           "C-; f"   "file-command-map"
           "C-; g"   "general-programming-map"
+          "C-; j"   "jump-command-map"
           "C-; w"   "window-command-map")))
 
     (leaf *最近使ったファイル-------------------------------------------------------------
@@ -745,6 +746,17 @@
                ("C-; a c f" . claude-code-ide-fix-error))
         :config
         (claude-code-ide-emacs-tools-setup)))
+
+    (leaf *ジャンプ操作を便利に -----------------------------------------------------------
+      :config
+      (leaf avy
+        :url "https://github.com/abo-abo/avy"
+        :ensure t
+        :bind (("C-; j c" . avy-goto-char-2)
+               ("C-; j l" . avy-goto-line)
+               ("C-; j t" . avy-goto-char-timer)
+               ("C-; j w" . avy-goto-word-1))
+        :custom (avy-timeout-seconds . 0.5)))
 
     ) ; end of 各種便利機能===============================================================
 
