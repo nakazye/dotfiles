@@ -932,7 +932,6 @@
         (leaf lsp-java
           :doc "JavaなLSP"
           :url "https://github.com/emacs-lsp/lsp-java"
-          :custom (lsp-java-jdt-download-url . "https://www.eclipse.org/downloads/download.php?file=/jdtls/milestones/1.43.0/jdt-language-server-1.43.0-202412191447.tar.gz")
           :hook ((java-mode-hook . lsp-deferred)
                  (java-mode-hook . java-ts-mode))
           :ensure t)
