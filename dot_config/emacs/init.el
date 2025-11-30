@@ -406,7 +406,6 @@
     :config
 
     (leaf *キーバインド表示---------------------------------------------------------------
-      :doc "!!!!今はwhich-keyを使っているけど、emacs30では機能が同梱されるとのこと!!!!"
       :config
       (leaf which-key
         :url "https://github.com/justbur/emacs-which-key"
@@ -420,14 +419,12 @@
           "C-; a"   "ai-command-map"
           "C-; a c" "claude-code-command-map"
           "C-; c"   "context-command-map"
-          "C-; t"   "toggle-buffer-map"
-          "C-; T"   "treemacs-command-map"
+          "C-; t"   "toggle-command-map"
           "C-; v"   "view-command-map"
-          "C-; s"   "search-command-map"
           "C-; e"   "edit-command-map"
-          "C-; f"   "file-command-map"
-          "C-; g"   "general-programming-map"
+          "C-; p"   "programming-command-map"
           "C-; j"   "jump-command-map"
+          "C-; j r" "rg-command-map"
           "C-; w"   "window-command-map")))
 
     (leaf *最近使ったファイル-------------------------------------------------------------
@@ -448,7 +445,7 @@
            ".org_archive"
            "COMMIT_EDITMSG\\'"))
       :bind
-      (("C-; f o"   . recentf-open-files)))
+      (("C-; j f"   . recentf-open-files)))
 
     (leaf *ripgrep使うよ------------------------------------------------------------------
       :doc "検索後にhでヘルプが表示される。以下の追加コマンドが便利"
@@ -461,7 +458,8 @@
       (leaf rg
         :url "https://github.com/dajva/rg.el"
         :ensure t
-        :bind (("C-; s r"   . rg))))
+        :bind (("C-; j r r"   . rg)
+               ("C-; j r p"   . rg-project))))
 
     (leaf *ミニバッファで補完UI-----------------------------------------------------------
       :doc "Emacs28から標準添付されるfido-vertical-modeがあったりする"
@@ -561,11 +559,12 @@
       (leaf treemacs
         :url "https://github.com/Alexander-Miller/treemacs"
         :ensure t
-        :bind (("C-; T 0"   . treemacs-select-window)           ; treemacsのウィンドウにフォーカス
-               ("C-; T 1"   . treemacs-delete-other-windows)    ; treemacsのウィンドウを残して全部クローズ
-               ("C-; t T"   . treemacs)                         ; treemacsウィンドウをトグル
-               ("C-; T d"   . treemacs-select-directory)        ; 特定のディレクトリを選択してルートノードに設定
-               ("C-; T b"   . treemacs-bookmark)                ; ブックマークを選択して Treemacs ビュー内で展開
+        :bind (
+               ;; ("C-; T 0"   . treemacs-select-window)           ; treemacsのウィンドウにフォーカス
+               ;; ("C-; T 1"   . treemacs-delete-other-windows)    ; treemacsのウィンドウを残して全部クローズ
+               ("C-; t t"   . treemacs)                         ; treemacsウィンドウをトグル
+               ;; ("C-; T d"   . treemacs-select-directory)        ; 特定のディレクトリを選択してルートノードに設定
+               ;; ("C-; T b"   . treemacs-bookmark)                ; ブックマークを選択して Treemacs ビュー内で展開
                ;; ("C-; T C-t" . treemacs-find-file)             ; 現在のバッファのファイルを Treemacs ビュー内で選択
                ;; ("C-; T M-t" . treemacs-find-tag)              ; 現在のバッファのファイル内のタグを Treemacs ビューで選択
                )
@@ -776,7 +775,7 @@
         (vterm-mode-hook . (lambda() (display-line-numbers-mode 0))))
       (leaf vterm-toggle
         :ensure t
-        :bind ("C-; t t" . vterm-toggle)
+        :bind ("C-; t v" . vterm-toggle)
         ))
 
     (leaf *今度こそorg-modeと仲良くなる---------------------------------------------------
@@ -916,10 +915,10 @@
           :mode ("\\.json\\'"))
         )
 
-    (leaf *yaml ---------------------------------------------------------------------------
-      :config
-      (leaf yaml-ts-mode
-        :mode "\\.yml\\'" "\\.yaml\\'"))
+      (leaf *yaml ---------------------------------------------------------------------------
+        :config
+        (leaf yaml-ts-mode
+          :mode "\\.yml\\'" "\\.yaml\\'"))
 
       (leaf *Java開発の諸々 ----------------------------------------------------------------
         :config
@@ -937,7 +936,7 @@
       (leaf python-mode
         :ensure t
         :hook ((python-mode-hook . python-ts-mode)
-;;               (python-mode-hook . lsp-deferred)
+               ;;               (python-mode-hook . lsp-deferred)
                )
         :mode ("\\.py\\'")))
 
@@ -946,7 +945,7 @@
       (leaf nix-ts-mode
         :ensure t
         :mode "\\.nix\\'"
-;;        :hook (nix-ts-mode-hook . lsp-defrred)
+        ;;        :hook (nix-ts-mode-hook . lsp-defrred)
         ))
 
     (leaf *nvimの設定をEmacsでやることもあるよね（Lua弄ることもあるよね）-----------------
