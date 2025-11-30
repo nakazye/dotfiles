@@ -277,7 +277,14 @@
         :ensure t
         :config
         (with-eval-after-load 'ace-window
-          (ace-window-posframe-mode t))
+          (ace-window-posframe-mode t)
+          ;; treemacsがaw-ignored-buffersにtreemacs-modeを追加するのを取り消す
+          ;; treemacs-compatibilityがace-window読み込み後に追加するので、
+          ;; ace-window実行前に毎回削除する
+          (defun my/ace-window-include-treemacs (&rest _)
+            "Remove treemacs-mode from aw-ignored-buffers."
+            (setq aw-ignored-buffers (delq 'treemacs-mode aw-ignored-buffers)))
+          (advice-add 'ace-window :before #'my/ace-window-include-treemacs))
         :bind (("C-; w w"   . ace-window))
         ))
 
