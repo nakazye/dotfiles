@@ -414,21 +414,25 @@
         :ensure t
         :config
         (which-key-mode)
-        (which-key-add-keymap-based-replacements
-          global-map
-          "C-; o"   "org-command-map"
-          "C-; o C" "org-clock-command-map"
-          "C-; a"   "ai-command-map"
-          "C-; a c" "claude-code-command-map"
-          "C-; c"   "context-command-map"
-          "C-; t"   "toggle-command-map"
-          "C-; v"   "view-command-map"
-          "C-; e"   "edit-command-map"
-          "C-; p"   "programming-command-map"
-          "C-; p d" "dap-command-map"
-          "C-; j"   "jump-command-map"
-          "C-; j r" "rg-command-map"
-          "C-; w"   "window-command-map")))
+        ;; キーバインドが全て定義された後にラベルを設定する
+        (with-eval-after-load 'which-key
+          (add-hook 'emacs-startup-hook
+                    (lambda ()
+                      (which-key-add-keymap-based-replacements
+                        global-map
+                        "C-; o"   "org-command-map"
+                        "C-; o C" "org-clock-command-map"
+                        "C-; a"   "ai-command-map"
+                        "C-; a c" "claude-code-command-map"
+                        "C-; c"   "context-command-map"
+                        "C-; t"   "toggle-command-map"
+                        "C-; v"   "view-command-map"
+                        "C-; e"   "edit-command-map"
+                        "C-; p"   "programming-command-map"
+                        "C-; p d" "dap-command-map"
+                        "C-; j"   "jump-command-map"
+                        "C-; j r" "rg-command-map"
+                        "C-; w"   "window-command-map"))))))
 
     (leaf *最近使ったファイル-------------------------------------------------------------
       :doc "標準機能(recentf)として具備されている"
