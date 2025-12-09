@@ -299,8 +299,7 @@
       :config
       (leaf doom-modeline
         :ensure t
-        :init
-        (doom-modeline-mode 1)
+        :hook (after-init-hook . doom-modeline-mode)
         :custom-face
         ;; 下線が引かれるのを消す
         (mode-line . '((t (:underline nil))))
@@ -430,6 +429,7 @@
           "C-; v"   "view-command-map"
           "C-; e"   "edit-command-map"
           "C-; p"   "programming-command-map"
+          "C-; p d" "dap-command-map"
           "C-; j"   "jump-command-map"
           "C-; j r" "rg-command-map"
           "C-; w"   "window-command-map")))
@@ -509,7 +509,7 @@
         :ensure t
         :bind (("C-s" . consult-line)                       ; 標準の置き換え（検索）
                ("C-x b" . consult-buffer)                   ; 標準の置き換え（バッファ切り替え）
-               ("C-; g f" . consult-flymake)                ; flymakeエラー一覧
+               ("C-; p f" . consult-flymake)                ; flymakeエラー一覧
                ("C-; e p" . consult-yank-from-kill-ring)    ; killringから選んでyank
                )))
 
@@ -554,7 +554,7 @@
         :ensure t
         :custom (projectile-dynamic-mode-line . nil)
         :bind (:projectile-mode-map
-               (("C-; p" . projectile-command-map)))
+               (("C-; j p" . projectile-command-map)))
         :hook
         (after-init-hook . (lambda ()
                              (projectile-mode t)))
@@ -591,7 +591,8 @@
       (leaf treemacs-nerd-icons
         :url "https://github.com/rainstormstudio/treemacs-nerd-icons"
         :ensure t
-        :require t ;; reuire入れないとロードされない
+        :after treemacs
+        :require t
         :config (treemacs-load-theme "nerd-icons"))
       )
 
@@ -713,7 +714,7 @@
          (flymake-start-on-save-buffer . t)   ; 保存時にもチェックを実行
          (flymake-start-on-flymake-mode . t)) ; flymake-mode 有効化時にすぐチェック
         :bind
-        ("C-; g F" . flymake-mode)      ; flymake-modeのtoggle
+        ("C-; p F" . flymake-mode)      ; flymake-modeのtoggle
         )
       )
 
@@ -725,13 +726,13 @@
         :ensure t
         ;; 以下パフォーマンス改善の設定。see->https://misohena.jp/blog/2022-11-13-improve-magit-commiting-performance-on-windows.html
         :setq-default (magit-auto-revert-mode . nil)
-        :bind ("C-; g g" . magit-status)) ; magit-statusで?キーを押すとコマンド一覧が出るので「迷ったらまず?」を覚えておくとよい とのこと
+        :bind ("C-; p g" . magit-status)) ; magit-statusで?キーを押すとコマンド一覧が出るので「迷ったらまず?」を覚えておくとよい とのこと
       (leaf forge
         :doc "GitHubのプルリクエストやissueの操作。Gitlabとかも対応しているぽい"
         :url "https://github.com/magit/forge"
         :ensure t
         :after magit
-        :bind ("C-; g p" . forge-pull)) ; 操作自体は、magitで行う(forgeがmagitのサブモジュールなので)
+        :bind ("C-; p p" . forge-pull)) ; 操作自体は、magitで行う(forgeがmagitのサブモジュールなので)
       (leaf git-gutter
         :doc "gitの差分表示"
         :url ""
@@ -745,7 +746,7 @@
         :url "https://github.com/manzaltu/claude-code-ide.el"
         :doc "Claude Code IDE integration for Emacs with MCP"
         :vc (:url "https://github.com/manzaltu/claude-code-ide.el")
-        :require t
+        :commands (claude-code-ide claude-code-ide-menu claude-code-ide-send-region claude-code-ide-fix-error)
         :bind (("C-; a c i" . claude-code-ide)
                ("C-; a c m" . claude-code-ide-menu)
                ("C-; a c s" . claude-code-ide-send-region)
@@ -834,22 +835,28 @@
                                             (file+headline "~/note/public/memo/tech/tmp.org" "新しく思いついちゃった何か") "* %?\n:PROPERTIES:\n:CREATED:  %T\n:END:\n")
                                            ;; 随時追加していく
                                            )))
+        :preface
+        ;; org-babelの言語設定を一度だけ遅延ロード
+        (defvar my/org-babel-loaded nil)
+        (defun my/org-babel-load-languages ()
+          (unless my/org-babel-loaded
+            (org-babel-do-load-languages
+             'org-babel-load-languages
+             '((shell    . t)
+               (plantuml . t)
+               (dot      . t)
+               (gnuplot  . t)
+               (latex    . t)
+               (C        . t)
+               (java     . t)
+               (clojure  . t)
+               (python   . t)
+               (js       . t)
+               (css      . t)
+               (sql      . t)))
+            (setq my/org-babel-loaded t)))
+        :hook (org-mode-hook . my/org-babel-load-languages)
         :config
-        ;; org-babelで使用できる言語を追加
-        (org-babel-do-load-languages
-         'org-babel-load-languages
-         '((shell    . t)
-           (plantuml . t)
-           (dot      . t)
-           (gnuplot  . t)
-           (latex    . t)
-           (C        . t)
-           (java     . t)
-           (clojure  . t)
-           (python   . t)
-           (js       . t)
-           (css      . t)
-           (sql      . t)))
         ;; org-journalを利用する
         (leaf org-journal
           :doc "ジャーナル"
@@ -883,7 +890,9 @@
         :doc "treemacsを使ってシンボル一覧を出したり階層出したり色々やる"
         :url "https://github.com/emacs-lsp/lsp-treemacs"
         :ensure t
-        :config (lsp-treemacs-sync-mode 1))
+        :after lsp-mode
+        :commands (lsp-treemacs-errors-list lsp-treemacs-symbols)
+        :hook (lsp-mode-hook . (lambda () (lsp-treemacs-sync-mode 1))))
 
       (leaf *web開発の諸々 ----------------------------------------------------------------
         :config
@@ -935,6 +944,23 @@
           :hook ((java-mode-hook . lsp-deferred)
                  (java-mode-hook . java-ts-mode))
           :ensure t)
+        (leaf dap-mode
+          :doc "デバッグ機能 (Debug Adapter Protocol)"
+          :url "https://github.com/emacs-lsp/dap-mode"
+          :ensure t
+          :after lsp-java
+          :config
+          (require 'dap-java)
+          ;; UIを有効化
+          (dap-auto-configure-mode 1)
+          :bind (("C-; p d d" . dap-debug)                ; デバッグ開始
+                 ("C-; p d b" . dap-breakpoint-toggle)    ; ブレークポイントのトグル
+                 ("C-; p d n" . dap-next)                 ; ステップオーバー
+                 ("C-; p d i" . dap-step-in)              ; ステップイン
+                 ("C-; p d o" . dap-step-out)             ; ステップアウト
+                 ("C-; p d c" . dap-continue)             ; 続行
+                 ("C-; p d r" . dap-ui-repl)              ; REPLを開く
+                 ("C-; p d q" . dap-disconnect)))         ; デバッグ終了
         ))
 
     (leaf *Python開発の諸々 --------------------------------------------------------------
