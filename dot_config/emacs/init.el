@@ -947,7 +947,14 @@
         :ensure t
         :after lsp-mode
         :commands (lsp-treemacs-errors-list lsp-treemacs-symbols)
-        :hook (lsp-mode-hook . (lambda () (lsp-treemacs-sync-mode 1))))
+        :hook (lsp-mode-hook . (lambda () (lsp-treemacs-sync-mode 1)))
+        :bind (("C-; p s" . lsp-treemacs-symbols)         ; シンボル一覧
+               ("C-; p e" . lsp-treemacs-errors-list)     ; エラー一覧
+               ("C-; p r" . lsp-treemacs-references)      ; 参照箇所
+               ("C-; p i" . lsp-treemacs-implementations) ; 実装箇所
+               ("C-; p c" . lsp-treemacs-call-hierarchy)  ; コール階層
+               ("C-; p t" . lsp-treemacs-type-hierarchy)) ; 型階層
+        )
 
       (leaf *web開発の諸々 ----------------------------------------------------------------
         :config
