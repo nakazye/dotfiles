@@ -546,8 +546,24 @@
       (leaf consult
         :url "https://github.com/minad/consult"
         :ensure t
-        :bind (("C-s" . consult-line)                       ; 標準の置き換え（検索）
-               ("C-x b" . consult-buffer)                   ; 標準の置き換え（バッファ切り替え）
+        :bind (;; 標準コマンドの置き換え
+               ("C-s" . consult-line)                       ; isearch-forward → バッファ内検索
+               ("C-x b" . consult-buffer)                   ; switch-to-buffer → バッファ切替
+               ("C-x 4 b" . consult-buffer-other-window)    ; 別ウィンドウでバッファ切替
+               ("C-x 5 b" . consult-buffer-other-frame)     ; 別フレームでバッファ切替
+               ("C-x p b" . consult-project-buffer)         ; プロジェクト内バッファ切替
+               ("C-x r b" . consult-bookmark)               ; bookmark-jump → ブックマーク
+               ([remap yank-pop] . consult-yank-pop)        ; M-y: kill-ringをプレビュー選択
+               ([remap goto-line] . consult-goto-line)      ; M-g g: 行番号プレビュー
+               ;; ナビゲーション
+               ("C-; j i" . consult-imenu)                  ; 関数・見出し等へジャンプ
+               ("C-; j o" . consult-outline)                ; アウトラインへジャンプ
+               ("C-; j m" . consult-mark)                   ; マーク履歴へジャンプ
+               ("C-; j k" . consult-global-mark)            ; グローバルマーク履歴(ファイルを跨いだマーク履歴)へジャンプ
+               ;; 検索
+               ("C-; j g" . consult-ripgrep)                ; grepでファイル内容検索
+               ("C-; j d" . consult-fd)                     ; fdでファイル名検索
+               ;; カスタム
                ("C-; p f" . consult-flymake)                ; flymakeエラー一覧
                ("C-; e y" . consult-yank-from-kill-ring)    ; killringから選んでyank
                )))
