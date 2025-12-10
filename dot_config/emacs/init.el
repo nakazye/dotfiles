@@ -396,6 +396,48 @@
         (volatile-highlights-mode t))
       )
 
+    (leaf *括弧やS式の構造化編集-----------------------------------------------------------
+      :doc "puniで構造を壊さない編集を実現する"
+      :doc "構造を壊して強制削除したい場合は C-c DEL (puni-force-delete)"
+      :doc "  - リージョン選択中: リージョン全体を強制削除"
+      :doc "  - リージョンなし: 後方1文字を強制削除"
+      :doc "  - kill-ringには入らないので注意"
+      :config
+      (leaf puni
+        :url "https://github.com/AmaiKinono/puni"
+        :doc "=== デフォルトキーマップ（puni-mode有効時に自動設定）==="
+        :doc "C-d       : puni-forward-delete-char   (構造を壊さず1文字削除)"
+        :doc "DEL       : puni-backward-delete-char  (構造を壊さず後方1文字削除)"
+        :doc "M-d       : puni-forward-kill-word     (構造を壊さず単語kill)"
+        :doc "M-DEL     : puni-backward-kill-word    (構造を壊さず後方単語kill)"
+        :doc "C-k       : puni-kill-line             (構造を壊さず行kill)"
+        :doc "C-S-k     : puni-backward-kill-line    (構造を壊さず後方行kill)"
+        :doc "C-w       : puni-kill-active-region    (構造を壊さずリージョンkill)"
+        :doc "C-c DEL   : puni-force-delete          (強制削除：構造を無視して削除)"
+        :doc "C-M-f     : puni-forward-sexp          (次のS式へ移動)"
+        :doc "C-M-b     : puni-backward-sexp         (前のS式へ移動)"
+        :doc "C-M-a     : puni-beginning-of-sexp     (S式の先頭へ)"
+        :doc "C-M-e     : puni-end-of-sexp           (S式の末尾へ)"
+        :doc "M-(       : puni-syntactic-forward-punct  (次の括弧へ)"
+        :doc "M-)       : puni-syntactic-backward-punct (前の括弧へ)"
+        :ensure t
+        :global-minor-mode puni-global-mode
+        :bind (;; 選択
+               ("C-; e p m" . puni-mark-sexp-at-point)      ; ポイント位置のS式を選択
+               ("C-; e p l" . puni-mark-list-around-point)  ; 括弧の中身を選択
+               ("C-; e p M" . puni-mark-sexp-around-point)  ; 括弧を含めて選択
+               ("C-; e p e" . puni-expand-region)           ; 選択範囲を拡張
+               ;; 括弧制御
+               ("C-; e p (" . puni-wrap-round)              ; ()で囲む
+               ("C-; e p [" . puni-wrap-square)             ; []で囲む
+               ("C-; e p {" . puni-wrap-curly)              ; {}で囲む
+               ("C-; e p <" . puni-wrap-angle)              ; <>で囲む
+               ("C-; e p p" . puni-splice)                  ; 括弧を削除
+               ;; Slurp Barf
+               ("C-; e p s" . puni-slurp-forward)           ; 次の要素を取り込む
+               ("C-; e p b" . puni-barf-forward)            ; 要素を吐き出す
+               )))
+
     (leaf *ファイルを自動でリードオンリーに-----------------------------------------------
       :doc "ファイルを開いたときに自動的にリードオンリーモードにする"
       :doc "編集したい場合は C-x C-q でトグルする"
@@ -424,6 +466,7 @@
           "C-; t"   "toggle-command-map"
           "C-; v"   "view-command-map"
           "C-; e"   "edit-command-map"
+          "C-; e p" "puni-command-map"
           "C-; p"   "programming-command-map"
           "C-; p d" "dap-command-map"
           "C-; j"   "jump-command-map"
@@ -506,7 +549,7 @@
         :bind (("C-s" . consult-line)                       ; 標準の置き換え（検索）
                ("C-x b" . consult-buffer)                   ; 標準の置き換え（バッファ切り替え）
                ("C-; p f" . consult-flymake)                ; flymakeエラー一覧
-               ("C-; e p" . consult-yank-from-kill-ring)    ; killringから選んでyank
+               ("C-; e y" . consult-yank-from-kill-ring)    ; killringから選んでyank
                )))
 
     (leaf *補完パネルに追加情報を表示-----------------------------------------------------
