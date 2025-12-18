@@ -156,22 +156,40 @@
       (dolist (char (number-sequence #x2500 #x257F))
         (aset char-width-table char 1)))
 
+    (leaf *曖昧幅文字を全角として扱う-------------------------------------------------------
+      :doc "vterm上でClaude Codeなどの特殊Unicode文字がガタガタになる問題を修正"
+      :doc "半角にしても改善しない場合は nil に戻す"
+      :custom (cjk-ambiguous-chars-are-wide . t))
+
     (leaf *日本語の表示に中華フォントが混ざるのを防ぐ-------------------------------------
       :doc "なんかmacで表示がガタガタするなと思ったら、漢字が中華フォントになっていたので設定"
       :config (set-language-environment "Japanese"))
 
     (leaf *絵文字のサイズを設定-----------------------------------------------------------
-      :doc "簡単に指定するような方法は見つからず、OS標準を使いたいなら、それごとに設定が必要な気がする"
+      :doc "Noto Emoji（モノクロ版）を使用。サイズ調整が効くので幅・高さが崩れにくい"
       :config
-      (leaf *Macでの設定
-        :doc "基本のフォントサイズからでちょうど良い(高さが大きくズレない)数値を設定"
-        :if (eq system-type 'darwin)
-        :config (set-fontset-font (frame-parameter nil 'font) '(#x1F004 . #x1FFFD) (font-spec :family "Apple Color Emoji" :size 13)))
-      (leaf *Windowsでの設定
-        :doc "フォントサイズ設定するとなんかおかしいので、いったんフォントサイズ指定をやめている"
-        :if (eq system-type 'windows-nt)
-        :config (set-fontset-font (frame-parameter nil 'font) '(#x1F004 . #x1FFFD) (font-spec :family "Segoe UI Emoji")))
-      )
+      ;; 絵文字範囲にNoto Emojiを設定（フォールバックとしてApple Color Emoji/Segoe UI Emoji）
+      (let ((emoji-font (cond
+                         ((member "Noto Emoji" (font-family-list)) "Noto Emoji")
+                         ((eq system-type 'darwin) "Apple Color Emoji")
+                         ((eq system-type 'windows-nt) "Segoe UI Emoji")
+                         (t nil))))
+        (when emoji-font
+          ;; 絵文字 (Emoji範囲)
+          (set-fontset-font t '(#x1F300 . #x1FFFD)
+                            (font-spec :family emoji-font) nil 'prepend)
+          ;; Miscellaneous Symbols
+          (set-fontset-font t '(#x2600 . #x26FF)
+                            (font-spec :family emoji-font) nil 'prepend)
+          ;; Dingbats
+          (set-fontset-font t '(#x2700 . #x27BF)
+                            (font-spec :family emoji-font) nil 'prepend)
+          ;; Emoticons
+          (set-fontset-font t '(#x1F600 . #x1F64F)
+                            (font-spec :family emoji-font) nil 'prepend)
+          ;; Miscellaneous Symbols and Pictographs
+          (set-fontset-font t '(#x1F300 . #x1F5FF)
+                            (font-spec :family emoji-font) nil 'prepend))))
 
     (leaf *カーソルを自分好みに-----------------------------------------------------------
       :url "https://qiita.com/tadsan/items/f23d6db8efc0fcdcd225"
@@ -859,11 +877,15 @@
         (vterm-max-scrollbacck . 100000)
         (vterm-buffer-name-string . "vterm: %s")
         :hook
-        (vterm-mode-hook . (lambda() (display-line-numbers-mode 0))))
+        (vterm-mode-hook . (lambda()
+                             (display-line-numbers-mode 0)
+                             ;; 等幅フォントを設定（日本語・英語が同じ幅になるよう）
+                             (face-remap-add-relative 'default :family "HackGen Console NF"))))
       (leaf vterm-toggle
         :ensure t
         :bind ("C-; t v" . vterm-toggle)
         ))
+
 
     (leaf *今度こそorg-modeと仲良くなる---------------------------------------------------
       :config
