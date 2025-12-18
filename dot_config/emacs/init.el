@@ -509,6 +509,14 @@
       :bind
       (("C-; j f"   . recentf-open-files)))
 
+    (leaf *diredでバッファが増殖しないようにする------------------------------------------
+      :doc "ディレクトリ移動時に新しいバッファを作らず、既存のバッファを再利用する"
+      :doc "Emacs 28以降は組み込みの変数で対応可能（dired-singleは廃止された）"
+      :config
+      (leaf dired
+        :custom
+        (dired-kill-when-opening-new-dired-buffer . t)))
+
     (leaf *ripgrep使うよ------------------------------------------------------------------
       :doc "検索後にhでヘルプが表示される。以下の追加コマンドが便利"
       :doc "r: 検索ワードを変更"
