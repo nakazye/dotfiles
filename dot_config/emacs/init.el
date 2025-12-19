@@ -913,6 +913,7 @@
                ("C-; o c" . org-capture)
                ("C-; o b" . business-journal)
                ("C-; o p" . private-journal)
+               ("C-; o q" . org-agenda-Quit)
                ("C-; o C i" . org-clock-in)
                ("C-; o C o" . org-clock-out)
                ("C-; o C d" . org-clock-display)
