@@ -819,11 +819,31 @@
       :config
       (leaf magit
         :doc "git扱う時の定番"
+        :doc "magit-statusで?キーを押すとコマンド一覧が出るので「迷ったらまず?」を覚えておくとよい とのこと"
         :url "https://github.com/magit/magit"
         :ensure t
         ;; 以下パフォーマンス改善の設定。see->https://misohena.jp/blog/2022-11-13-improve-magit-commiting-performance-on-windows.html
         :setq-default (magit-auto-revert-mode . nil)
-        :bind ("C-; p g" . magit-status)) ; magit-statusで?キーを押すとコマンド一覧が出るので「迷ったらまず?」を覚えておくとよい とのこと
+        :preface
+        (defun my/magit ()
+          "magitを開く。vtermの場合はシェルのカレントディレクトリで開く"
+          (interactive)
+          (if (and (eq major-mode 'vterm-mode) (bound-and-true-p vterm--process))
+              ;; vterm: シェルのカレントディレクトリを取得してmagitを開く
+              (let* ((pid (process-id vterm--process))
+                     (dir (cond
+                           ;; Linux: /procからcwdを取得 (未検証)
+                           ((eq system-type 'gnu/linux)
+                            (file-truename (format "/proc/%d/cwd" pid)))
+                           ;; macOS: lsofでcwd取得し、awkでPIDフィルタリング
+                           ((eq system-type 'darwin)
+                            (string-trim
+                             (shell-command-to-string
+                              (format "lsof -d cwd 2>/dev/null | awk -v pid=%d '$2 == pid {print $NF}'" pid)))))))
+                (magit-status dir))
+            ;; vterm以外: 通常のmagit-status
+            (magit-status)))
+        :bind ("C-; p g" . my/magit))
       (leaf forge
         :doc "GitHubのプルリクエストやissueの操作。Gitlabとかも対応しているぽい"
         :url "https://github.com/magit/forge"
