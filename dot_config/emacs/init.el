@@ -879,8 +879,11 @@
         :hook
         (vterm-mode-hook . (lambda()
                              (display-line-numbers-mode 0)
-                             ;; 等幅フォントを設定（日本語・英語が同じ幅になるよう）
-                             (face-remap-add-relative 'default :family "HackGen Console NF"))))
+                             ;; vtermは読み取り専用バッファなので編集系モードを無効化
+                             (volatile-highlights-mode -1)
+                             (puni-disable-puni-mode)
+                             ;; C-hをバックスペースとしてターミナルに送信
+                             (define-key vterm-mode-map (kbd "C-h") #'vterm-send-C-h))))
       (leaf vterm-toggle
         :ensure t
         :bind ("C-; t v" . vterm-toggle)
