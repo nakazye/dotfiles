@@ -943,6 +943,12 @@
                ("C-; o C c" . org-clock-cancel)
                ("C-; o C r" . org-clock-report)
                )
+        :preface
+        (defun my/org-journal-find-location ()
+          "org-captureからbusiness journalの今日のエントリにキャプチャする"
+          (setq org-journal-dir "~/note/business/journal")
+          (org-journal-new-entry t)
+          (goto-char (point-max)))
         :custom ((org-todo-keywords . '((sequence "TODO(t)" "DOING(d)" "WAITING(w)" "|" "DONE(D)" "CANCELED(C)")))
                  (org-todo-keyword-faces . '(("TODO"     . warning)
                                              ("DOING"    . success)
@@ -950,22 +956,14 @@
                                              ("DONE"     . org-done)
                                              ("CANCELED" . shadow)))
                  (org-agenda-files . '("~/note/business/journal"
-                                       "~/note/public/journal"
-                                       "~/note/public/memo/tech"))
-                 (org-capture-templates .'(("e" "Emacs Note" entry
-                                            (file+headline "~/note/public/memo/tech/emacs.org" "Emacsノート") "* %?\n:PROPERTIES:\n:CREATED:  %T\n:END:\n")
-                                           ("v" "Vim Note" entry
-                                            (file+headline "~/note/public/memo/tech/vim.org" "Vimノート") "* %?\n:PROPERTIES:\n:CREATED:  %T\n:END:\n")
-                                           ("n" "Nix Note" entry
-                                            (file+headline "~/note/public/memo/tech/nix.org" "Nixノート") "* %?\n:PROPERTIES:\n:CREATED:  %T\n:END:\n")
-                                           ("g" "Git Note" entry
-                                            (file+headline "~/note/public/memo/tech/git.org" "Gitノート") "* %?\n:PROPERTIES:\n:CREATED:  %T\n:END:\n")
-                                           ("j" "JS Note" entry
-                                            (file+headline "~/note/public/memo/tech/js.org" "JSノート") "* %?\n:PROPERTIES:\n:CREATED:  %T\n:END:\n")
-                                           ("t" "Temp Note" entry
-                                            (file+headline "~/note/public/memo/tech/tmp.org" "新しく思いついちゃった何か") "* %?\n:PROPERTIES:\n:CREATED:  %T\n:END:\n")
-                                           ;; 随時追加していく
-                                           )))
+                                       "~/note/public/journal"))
+                 (org-capture-templates
+                  . '(("t" "TODO" plain (function my/org-journal-find-location)
+                       "** TODO [#B] %?")
+                      ("m" "MEMO" plain (function my/org-journal-find-location)
+                       "** MEMO %?")
+                      ("M" "MTG" plain (function my/org-journal-find-location)
+                       "** MTG %?\n   出席者: %^{出席者}\n   開始: %^T\n   終了: %^T\n   - %a"))))
         :preface
         ;; org-babelの言語設定を一度だけ遅延ロード
         (defvar my/org-babel-loaded nil)
