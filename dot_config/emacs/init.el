@@ -943,7 +943,13 @@
                ("C-; o C c" . org-clock-cancel)
                ("C-; o C r" . org-clock-report)
                )
-        :custom ((org-agenda-files . '("~/note/business/journal"
+        :custom ((org-todo-keywords . '((sequence "TODO(t)" "DOING(d)" "WAITING(w)" "|" "DONE(D)" "CANCELED(C)")))
+                 (org-todo-keyword-faces . '(("TODO"     . warning)
+                                             ("DOING"    . success)
+                                             ("WAITING"  . font-lock-constant-face)
+                                             ("DONE"     . org-done)
+                                             ("CANCELED" . shadow)))
+                 (org-agenda-files . '("~/note/business/journal"
                                        "~/note/public/journal"
                                        "~/note/public/memo/tech"))
                  (org-capture-templates .'(("e" "Emacs Note" entry
