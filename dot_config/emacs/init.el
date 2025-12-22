@@ -318,6 +318,23 @@
         :bind (("C-; w w"   . ace-window))
         ))
 
+      (leaf *ウィンドウサイズ変更-------------------------------------------------------------
+        :doc "hydraを使ってウィンドウサイズを簡単に変更する"
+        :config
+        (leaf hydra
+          :ensure t
+          :config
+          (defhydra hydra-window-resize (:hint nil)
+            "
+ウィンドウサイズ: _h_:←  _l_:→  _k_:↑  _j_:↓  _=_:均等  _q_:終了
+"
+            ("h" shrink-window-horizontally)
+            ("l" enlarge-window-horizontally)
+            ("k" shrink-window)
+            ("j" enlarge-window)
+            ("=" balance-windows)
+            ("q" nil :exit t))
+          :bind ("C-; w r" . hydra-window-resize/body)))
 
     ) ; end of 一般表示系設定=============================================================
 
