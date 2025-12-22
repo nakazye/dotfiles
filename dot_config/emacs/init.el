@@ -177,19 +177,19 @@
         (when emoji-font
           ;; 絵文字 (Emoji範囲)
           (set-fontset-font t '(#x1F300 . #x1FFFD)
-                            (font-spec :family emoji-font) nil 'prepend)
+                            (font-spec :family emoji-font :size 18) nil 'prepend)
           ;; Miscellaneous Symbols
           (set-fontset-font t '(#x2600 . #x26FF)
-                            (font-spec :family emoji-font) nil 'prepend)
+                            (font-spec :family emoji-font :size 18) nil 'prepend)
           ;; Dingbats
           (set-fontset-font t '(#x2700 . #x27BF)
-                            (font-spec :family emoji-font) nil 'prepend)
+                            (font-spec :family emoji-font :size 18) nil 'prepend)
           ;; Emoticons
           (set-fontset-font t '(#x1F600 . #x1F64F)
-                            (font-spec :family emoji-font) nil 'prepend)
+                            (font-spec :family emoji-font :size 18) nil 'prepend)
           ;; Miscellaneous Symbols and Pictographs
           (set-fontset-font t '(#x1F300 . #x1F5FF)
-                            (font-spec :family emoji-font) nil 'prepend))))
+                            (font-spec :family emoji-font :size 18) nil 'prepend))))
 
     (leaf *カーソルを自分好みに-----------------------------------------------------------
       :url "https://qiita.com/tadsan/items/f23d6db8efc0fcdcd225"
