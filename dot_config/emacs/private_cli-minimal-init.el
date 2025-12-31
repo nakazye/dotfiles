@@ -44,5 +44,7 @@
 
 ;; キーバインド
 (global-set-key (kbd "C-h") 'delete-backward-char)
+;; ターミナルでのDEL/BS対応（日本語入力時の挙動改善）
+(define-key function-key-map [?\C-h] [backspace])
 
 ;;; cli-minimal-init.el ends here
