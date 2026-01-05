@@ -49,6 +49,10 @@
     (leaf *yes-or-noをy-or-nに変更--------------------------------------------------------
       :custom (use-short-answers . t))
 
+    (leaf *バッファ境界の表示--------------------------------------------------------------
+      :doc "fringeにバッファの先頭・末尾を矢印で表示"
+      :custom (indicate-buffer-boundaries . 'left))
+
     (leaf *バックアップファイルをよしなに設定---------------------------------------------
       :url "http://yohshiy.blog.fc2.com/blog-entry-319.html"
       :doc "バックアップファイルにどんな種類があるかについては↑がわかりやすい"
@@ -358,7 +362,7 @@
         (doom-modeline-minor-modes . nil)       ;; モードラインにマイナーモードを表示するかどうか
         (doom-modeline-vcs-max-length . 12)     ;; バージョン管理システム（VCS）のブランチ名の最大長
         (doom-modeline-indent-info . t)         ;; 現在のインデント情報を表示するかどうか。
-        (doom-modeline-position-column-line-format . '("L:%l C:%c")) ;; 行番号＆列番号の表示フォーマット
+        (doom-modeline-position-column-line-format . '("L:%l/%I C:%c")) ;; 行番号/総行数＆列番号の表示フォーマット
         ))
 
     (leaf *ニャンするぞ-------------------------------------------------------------------

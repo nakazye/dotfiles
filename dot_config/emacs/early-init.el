@@ -87,11 +87,11 @@
       :doc "↑のURLを参考に設定。early-initなので、再読み込みはしない前提でadd-to-listではなくpushしている"
       :push ((default-frame-alist . '(font . "HackGen Console NF-18"))))
 
-    (leaf *行番号を表示する------------------------------------------------------------
-      :url "https://www.grugrut.net/posts/201910202227/"
-      :doc "display-line-numbers-width-startは、skk使ってた時の名残（↑URL参照）"
-      :custom ((global-display-line-numbers-mode . t)
-               (custom-set-variables . '(display-line-numbers-width-start t))))
+    ;; (leaf *行番号を表示する------------------------------------------------------------
+    ;;   :url "https://www.grugrut.net/posts/201910202227/"
+    ;;   :doc "display-line-numbers-width-startは、skk使ってた時の名残（↑URL参照）"
+    ;;   :custom ((global-display-line-numbers-mode . t)
+    ;;            (custom-set-variables . '(display-line-numbers-width-start t))))
     )
   (leaf *その他フレーム起動前にやりたい設定============================================
     :config
