@@ -362,7 +362,8 @@
         (doom-modeline-minor-modes . nil)       ;; モードラインにマイナーモードを表示するかどうか
         (doom-modeline-vcs-max-length . 12)     ;; バージョン管理システム（VCS）のブランチ名の最大長
         (doom-modeline-indent-info . t)         ;; 現在のインデント情報を表示するかどうか。
-        (doom-modeline-position-column-line-format . '("L:%l/%I C:%c")) ;; 行番号/総行数＆列番号の表示フォーマット
+        (doom-modeline-total-line-number . t)   ;; 総行数を表示する (例: L:100/250)
+        (doom-modeline-position-column-line-format . '("C:%c L:%l")) ;; 列番号＆行番号の表示フォーマット (総行数は行の後ろに追加される)
         ))
 
     (leaf *ニャンするぞ-------------------------------------------------------------------
