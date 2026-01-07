@@ -934,6 +934,32 @@
 
     (leaf *今度こそorg-modeと仲良くなる---------------------------------------------------
       :config
+      ;; 新規orgファイル作成時にヘッダを自動挿入
+      (leaf *org-auto-insert
+        :doc "auto-insert-modeを使って新規orgファイルにヘッダテンプレートを挿入"
+        :doc "--- OPTIONS設定 ---"
+        :doc "toc:t     → 目次を生成する"
+        :doc "num:t     → 見出しに番号を付ける"
+        :doc "^:nil     → _ や ^ を上付き・下付き文字として解釈しない（ファイル名等が崩れるのを防ぐ）"
+        :doc "--- PROPERTY設定 ---"
+        :doc ":exports both    → org-babelでコードと結果の両方をエクスポート"
+        :doc ":eval no-export  → エクスポート時はコードを実行しない（安全性のため）"
+        :doc "--- STARTUP設定 ---"
+        :doc "showall   → ファイルを開いた時にすべて展開"
+        :doc "indent    → 見出しレベルに応じてインデント表示"
+        :config
+        (auto-insert-mode t)
+        (setq auto-insert-query nil)  ; 挿入確認を省略
+        (define-auto-insert
+          '("\\.org\\'" . "Org-mode file")
+          '(nil
+            "#+TITLE: " (file-name-base (buffer-file-name)) "\n"
+            "#+LANGUAGE: ja\n"
+            "#+OPTIONS: toc:t num:t ^:nil\n"
+            "#+PROPERTY: header-args :exports both :eval no-export\n"
+            "#+STARTUP: showall indent\n"
+            "\n")))
+
       (leaf org
         :doc "org-mode設定"
         :url "https://git.savannah.gnu.org/cgit/emacs/org-mode.git/"
@@ -1013,12 +1039,17 @@
           :doc "ジャーナル"
           :doc "org-journal-dirは、org設定のprefaceで実施"
           :url "https://github.com/bastibe/org-journal"
+          :doc "--- ヘッダテンプレートの設定内容 ---"
+          :doc "show2levels → 日付(L1)と見出し(L2)まで表示、本文は畳む"
+          :doc "その他の設定は *org-auto-insert を参照"
           :ensure t
           :custom
           (org-journal-file-type . 'monthly)
           (org-journal-date-format . "%Y-%m-%d, %A")
           (org-journal-time-format . "")
-          (org-journal-file-format . "journal-%Y%m.org"))
+          (org-journal-file-format . "journal-%Y%m.org")
+          ;; 新規ジャーナルファイル作成時のヘッダテンプレート
+          (org-journal-file-header . "#+TITLE: Journal %Y-%m\n#+LANGUAGE: ja\n#+OPTIONS: toc:t num:t ^:nil\n#+PROPERTY: header-args :exports both :eval no-export\n#+STARTUP: show2levels indent\n\n"))
         )
       )
 
