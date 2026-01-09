@@ -494,10 +494,26 @@
                ("C-; e p b" . puni-barf-forward)            ; 要素を吐き出す
                )))
 
-    (leaf *ファイルを自動でリードオンリーに-----------------------------------------------
-      :doc "ファイルを開いたときに自動的にリードオンリーモードにする"
-      :doc "編集したい場合は C-x C-q でトグルする"
-      :hook (find-file-hook . (lambda () (read-only-mode 1))))
+    (leaf *モーダル編集(meow)----------------------------------------------------------------
+      :doc "軽量なモーダル編集。Kakoune風の選択→アクションモデル"
+      :doc "i: insertモード(カーソル前)、a: appendモード(カーソル後)、ESC: normalモードへ"
+      :doc "SPC ?: チートシート表示"
+      :config
+      (leaf meow
+        :url "https://github.com/meow-edit/meow"
+        :ensure t
+        :require t
+        :bind ((:meow-normal-state-keymap
+                ("i" . meow-insert)
+                ("a" . meow-append)
+                ("<escape>" . ignore))
+               (:meow-insert-state-keymap
+                ("C-[" . meow-insert-exit)))
+        :config
+        (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+        (meow-leader-define-key
+         '("?" . meow-cheatsheet))
+        (meow-global-mode 1)))
 
     ) ; end of ファイル編集設定===========================================================
 
