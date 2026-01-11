@@ -227,7 +227,6 @@
       (leaf colorful-mode
         :url "https://github.com/DevelopmentCool2449/colorful-mode"
         :ensure t
-        :bind (("C-; v c"   . colorful-mode))
         :custom ((colorful-use-prefix . t)
                  (colorful-prefix-string . "󰏘 "))))
 
@@ -249,7 +248,6 @@
       (leaf rainbow-delimiters
         :url "https://github.com/Fanael/rainbow-delimiters"
         :ensure t
-        :bind (("C-; v r"   . rainbow-delimiters-mode))
         :hook (prog-mode-hook . rainbow-delimiters-mode)))
 
     (leaf *カーソルを見失わない-----------------------------------------------------------
@@ -318,9 +316,12 @@
           (defun my/ace-window-include-treemacs (&rest _)
             "Remove treemacs-mode from aw-ignored-buffers."
             (setq aw-ignored-buffers (delq 'treemacs-mode aw-ignored-buffers)))
-          (advice-add 'ace-window :before #'my/ace-window-include-treemacs))
-        :bind (("C-; w w"   . ace-window))
-        ))
+          (advice-add 'ace-window :before #'my/ace-window-include-treemacs)))
+      (leaf *ace-window-keybinds
+        :after meow
+        :config
+        (meow-leader-define-key
+         '("w w" . ace-window))))
 
       (leaf *ウィンドウサイズ変更-------------------------------------------------------------
         :doc "hydraを使ってウィンドウサイズを簡単に変更する"
@@ -337,8 +338,12 @@
             ("k" shrink-window)
             ("j" enlarge-window)
             ("=" balance-windows)
-            ("q" nil :exit t))
-          :bind ("C-; w r" . hydra-window-resize/body)))
+            ("q" nil :exit t)))
+        (leaf *hydra-keybinds
+          :after meow
+          :config
+          (meow-leader-define-key
+           '("w r" . hydra-window-resize/body))))
 
     ) ; end of 一般表示系設定=============================================================
 
@@ -395,19 +400,17 @@
     (leaf *以前開いたファイルを再度開いたときに元のカーソル位置を復元してくれる-----------
       :global-minor-mode save-place-mode)
 
-    (leaf *行末の空白文字（スペースやタブなど）を削除-------------------------------------
-      :bind (("C-; e w"   . delete-trailing-whitespace)))
+    (leaf *便利機能キーバインド-----------------------------------------------------------
+      :doc "Benriカテゴリとしてまとめる"
+      :config
+      (leaf *benri-keybinds
+        :after meow
+        :config
+        (meow-leader-define-key
+         '("e w" . delete-trailing-whitespace)  ; 行末空白削除
+         '("e t" . untabify))))                  ; タブをスペースに変換
 
-    (leaf *タブをスペースに変換-----------------------------------------------------------
-      :bind (("C-; e t"   . untabify)))
 
-    (leaf *全選択-------------------------------------------------------------------------
-      :doc "C-x hをよく忘れるので・・・・"
-      :bind (("C-; e b"   . mark-whole-buffer)))
-
-    (leaf *コードインデント---------------------------------------------------------------
-      :doc "標準でキーバインド設定されているが、いつも忘れるので別で割り当てる"
-      :bind (("C-; e i"   . indent-region)))
 
     (leaf *undoやredoを便利に-------------------------------------------------------------
       :doc "undo-treeやundo-fuと悩んだけどvundoを利用してみる"
@@ -438,9 +441,12 @@
         :doc "       現在の undo 状態でバッファを保存する                                     "
         :ensure t
         :custom
-        ((vundo-compact-display . t)) ; ツリーをコンパクトに表示
-        :bind
-        (("C-; e v"   . vundo))))
+        ((vundo-compact-display . t))) ; ツリーをコンパクトに表示
+      (leaf *vundo-keybinds
+        :after meow
+        :config
+        (meow-leader-define-key
+         '("e u" . vundo))))
 
     (leaf *操作にハイライトを-------------------------------------------------------------
       :doc "yankやundoした際に編集箇所をわかりやすい様にハイライトを入れる"
@@ -478,21 +484,36 @@
         :doc "M-)       : puni-syntactic-backward-punct (前の括弧へ)"
         :ensure t
         :global-minor-mode puni-global-mode
-        :bind (;; 選択
-               ("C-; e p m" . puni-mark-sexp-at-point)      ; ポイント位置のS式を選択
-               ("C-; e p l" . puni-mark-list-around-point)  ; 括弧の中身を選択
-               ("C-; e p M" . puni-mark-sexp-around-point)  ; 括弧を含めて選択
-               ("C-; e p e" . puni-expand-region)           ; 選択範囲を拡張
-               ;; 括弧制御
-               ("C-; e p (" . puni-wrap-round)              ; ()で囲む
-               ("C-; e p [" . puni-wrap-square)             ; []で囲む
-               ("C-; e p {" . puni-wrap-curly)              ; {}で囲む
-               ("C-; e p <" . puni-wrap-angle)              ; <>で囲む
-               ("C-; e p p" . puni-splice)                  ; 括弧を削除
-               ;; Slurp Barf
-               ("C-; e p s" . puni-slurp-forward)           ; 次の要素を取り込む
-               ("C-; e p b" . puni-barf-forward)            ; 要素を吐き出す
-               )))
+        :config
+        ;; meow normalモードで p を押すとpuni用hydraを起動
+        (defhydra hydra-puni (:hint nil)
+          "
+puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
+      _(_:() _[_:[] _{_:{} _<_:<>
+      _p_:括弧削除 _s_:slurp _b_:barf  _q_:終了
+"
+          ;; 選択
+          ("m" puni-mark-sexp-at-point)
+          ("l" puni-mark-list-around-point)
+          ("M" puni-mark-sexp-around-point)
+          ("e" puni-expand-region)
+          ;; 括弧制御
+          ("(" puni-wrap-round)
+          ("[" puni-wrap-square)
+          ("{" puni-wrap-curly)
+          ("<" puni-wrap-angle)
+          ("p" puni-splice)
+          ;; Slurp Barf
+          ("s" puni-slurp-forward)
+          ("b" puni-barf-forward)
+          ("q" nil :exit t)))
+      ;; meow normalモードでpキーにhydra-puniをバインド
+      (leaf *puni-meow-keybind
+        :after meow
+        :config
+        (define-key meow-normal-state-keymap (kbd "p") #'hydra-puni/body)))
+
+    ) ; end of 括弧やS式の構造化編集
 
     (leaf *モーダル編集(meow)----------------------------------------------------------------
       :doc "軽量なモーダル編集。Kakoune風の選択→アクションモデル"
@@ -528,22 +549,23 @@
         :ensure t
         :config
         (which-key-mode)
-        ;; which-key-add-key-based-replacements を使用（グローバルキー用）
-        (which-key-add-key-based-replacements
-          "C-; o"   "org-command-map"
-          "C-; o C" "org-clock-command-map"
-          "C-; a"   "ai-command-map"
-          "C-; a c" "claude-code-command-map"
-          "C-; c"   "context-command-map"
-          "C-; t"   "toggle-command-map"
-          "C-; v"   "view-command-map"
-          "C-; e"   "edit-command-map"
-          "C-; e p" "puni-command-map"
-          "C-; p"   "programming-command-map"
-          "C-; p d" "dap-command-map"
-          "C-; j"   "jump-command-map"
-          "C-; j r" "rg-command-map"
-          "C-; w"   "window-command-map")))
+        ;; meowリーダーキー用（mode-specific-mapに設定）
+        ;; 注意: meowのkeypadではSPC後にc/x/h/m/gを押すとC-c/C-x/C-h/M-/C-M-として解釈される
+        ;;       そのためこれらのキーはリーダーの第一キーとして避けた方が良い
+        (which-key-add-keymap-based-replacements mode-specific-map
+          "a"   "AI"
+          "a c" "Claude Code IDE"
+          "e"   "Edit"
+          "d"   "Dev"
+          "d u" "Dev UI"
+          "d d" "DAP"
+          "p"   "Projectile" ;; ProjectileじゃなくてProjectとして、もう少し使うキーバインド厳選したい
+          "s"   "Search/Navigation"
+          "o"   "Org"
+          "o C" "Org Clock"
+          "d t" "Tool"
+          "w"   "Window"
+          "w r" "window resize")))
 
     (leaf *最近使ったファイル-------------------------------------------------------------
       :doc "標準機能(recentf)として具備されている"
@@ -561,9 +583,7 @@
            "*.png"
            "*.jpeg"
            ".org_archive"
-           "COMMIT_EDITMSG\\'"))
-      :bind
-      (("C-; j f"   . recentf-open-files)))
+           "COMMIT_EDITMSG\\'")))
 
     (leaf *diredでバッファが増殖しないようにする------------------------------------------
       :doc "ディレクトリ移動時に新しいバッファを作らず、既存のバッファを再利用する"
@@ -572,20 +592,6 @@
       (leaf dired
         :custom
         (dired-kill-when-opening-new-dired-buffer . t)))
-
-    (leaf *ripgrep使うよ------------------------------------------------------------------
-      :doc "検索後にhでヘルプが表示される。以下の追加コマンドが便利"
-      :doc "r: 検索ワードを変更"
-      :doc "f: 対象ファイル種を変更"
-      :doc "d: 検索ディレクトリの変更"
-      :doc "c: 大文字小文字の差を無視するかのオンオフ"
-      :doc "i: 無視設定のオン・オフ"
-      :config
-      (leaf rg
-        :url "https://github.com/dajva/rg.el"
-        :ensure t
-        :bind (("C-; j r r"   . rg)
-               ("C-; j r p"   . rg-project))))
 
     (leaf *ミニバッファで補完UI-----------------------------------------------------------
       :doc "Emacs28から標準添付されるfido-vertical-modeがあったりする"
@@ -634,19 +640,22 @@
                ("C-x p b" . consult-project-buffer)         ; プロジェクト内バッファ切替
                ("C-x r b" . consult-bookmark)               ; bookmark-jump → ブックマーク
                ([remap yank-pop] . consult-yank-pop)        ; M-y: kill-ringをプレビュー選択
-               ([remap goto-line] . consult-goto-line)      ; M-g g: 行番号プレビュー
-               ;; ナビゲーション
-               ("C-; j i" . consult-imenu)                  ; 関数・見出し等へジャンプ
-               ("C-; j o" . consult-outline)                ; アウトラインへジャンプ
-               ("C-; j m" . consult-mark)                   ; マーク履歴へジャンプ
-               ("C-; j k" . consult-global-mark)            ; グローバルマーク履歴(ファイルを跨いだマーク履歴)へジャンプ
-               ;; 検索
-               ("C-; j g" . consult-ripgrep)                ; grepでファイル内容検索
-               ("C-; j d" . consult-fd)                     ; fdでファイル名検索
-               ;; カスタム
-               ("C-; p f" . consult-flymake)                ; flymakeエラー一覧
-               ("C-; e y" . consult-yank-from-kill-ring)    ; killringから選んでyank
-               )))
+               ([remap goto-line] . consult-goto-line)))    ; M-g g: 行番号プレビュー
+      (leaf *consult-keybinds
+        :after meow
+        :config
+        (meow-leader-define-key
+         ;; ナビゲーション
+         '("s i" . consult-imenu)              ; 関数・見出し等へジャンプ
+         '("s o" . consult-outline)            ; アウトラインへジャンプ
+         '("s m" . consult-mark)               ; マーク履歴へジャンプ
+         '("s k" . consult-global-mark)        ; グローバルマーク履歴へジャンプ
+         ;; 検索
+         '("s g" . consult-ripgrep)            ; grepでファイル内容検索
+         '("s d" . consult-fd)                 ; fdでファイル名検索
+         ;; カスタム
+         '("s f" . consult-flymake)            ; flymakeエラー一覧
+         '("s y" . consult-yank-from-kill-ring)))) ; killringから選んでyank
 
     (leaf *補完パネルに追加情報を表示-----------------------------------------------------
       :config
@@ -688,12 +697,15 @@
         :url "https://github.com/bbatsov/projectile"
         :ensure t
         :custom (projectile-dynamic-mode-line . nil)
-        :bind (:projectile-mode-map
-               (("C-; j p" . projectile-command-map)))
         :hook
         (after-init-hook . (lambda ()
-                             (projectile-mode t)))
-        ))
+                             (projectile-mode t))))
+      ;; meowリーダーキーにprojectile-command-mapをバインド
+      (leaf *projectile-keybinds
+        :after meow
+        :config
+        (meow-leader-define-key
+         '("p" . projectile-command-map))))
 
     (leaf *ツリービュー設定---------------------------------------------------------------
       :doc "NeoTreeとかもあるけど、他のプラグインと統合しやすそうなTreemacsを選択"
@@ -701,15 +713,6 @@
       (leaf treemacs
         :url "https://github.com/Alexander-Miller/treemacs"
         :ensure t
-        :bind (
-               ;; ("C-; T 0"   . treemacs-select-window)           ; treemacsのウィンドウにフォーカス
-               ;; ("C-; T 1"   . treemacs-delete-other-windows)    ; treemacsのウィンドウを残して全部クローズ
-               ("C-; t t"   . treemacs)                         ; treemacsウィンドウをトグル
-               ;; ("C-; T d"   . treemacs-select-directory)        ; 特定のディレクトリを選択してルートノードに設定
-               ;; ("C-; T b"   . treemacs-bookmark)                ; ブックマークを選択して Treemacs ビュー内で展開
-               ;; ("C-; T C-t" . treemacs-find-file)             ; 現在のバッファのファイルを Treemacs ビュー内で選択
-               ;; ("C-; T M-t" . treemacs-find-tag)              ; 現在のバッファのファイル内のタグを Treemacs ビューで選択
-               )
         :custom
         (treemacs-no-png-images . t)                    ; pngイメージを使わない
                                         ; TODO cliではエラー出るので分岐入れたい
@@ -750,6 +753,7 @@
                ("TAB" . corfu-insert)      ; Tab キーで補完を確定
                ([tab] . corfu-insert)
                ("RET" . nil)               ; Enter キーで補完を無効化（デフォルトの動作に戻す）
+               ("C-[" . corfu-quit)        ; C-[で補完キャンセル
                )
         :config
         ;; nerd-iconの利用
@@ -815,10 +819,9 @@
       (leaf embark
         :url "https://github.com/oantolin/embark"
         :ensure t
-        :bind (("C-; c a" . embark-act)
-               ("C-; c e" . embark-export)
-               ("C-; c d" . embark-dwim)
-               ("C-; c h" . embark-bindings))
+        :bind (("C-." . embark-act))
+               ;; ("C-," . embark-dwim) ; embark-act → RET でデフォルトアクション実行と同じ
+               ;; embark-export は C-. → E、embark-bindings は C-h が embark形式になっているので専用キー不要
         :custom (prefix-help-command . #'embark-prefix-help-command) ;; Embarkを用いたキーバインドヘルプ改善
         :config
         ;; Embark のアクションや変換候補を、which-key を使って視覚的に表示する設定
@@ -848,9 +851,7 @@
         ((flymake-no-changes-timeout . 3.0)   ; 編集後のチェック開始までの待ち時間
          (flymake-start-on-save-buffer . t)   ; 保存時にもチェックを実行
          (flymake-start-on-flymake-mode . t)) ; flymake-mode 有効化時にすぐチェック
-        :bind
-        ("C-; p F" . flymake-mode)      ; flymake-modeのtoggle
-        )
+)
       )
 
     (leaf *git使うための諸々--------------------------------------------------------------
@@ -881,13 +882,25 @@
                 (magit-status dir))
             ;; vterm以外: 通常のmagit-status
             (magit-status)))
-        :bind ("C-; p g" . my/magit))
+)
+      (leaf *magit-keybinds
+        :after meow
+        :config
+        (meow-leader-define-key
+         '("d t g" . my/magit))
+        (which-key-add-keymap-based-replacements mode-specific-map
+          "d t g" "magit"))
       (leaf forge
         :doc "GitHubのプルリクエストやissueの操作。Gitlabとかも対応しているぽい"
         :url "https://github.com/magit/forge"
         :ensure t
-        :after magit
-        :bind ("C-; p p" . forge-pull)) ; 操作自体は、magitで行う(forgeがmagitのサブモジュールなので)
+        :after magit)
+      ;; forge操作自体はmagitで行う(forgeがmagitのサブモジュールなので)
+      (leaf *forge-keybinds
+        :after (meow forge)
+        :config
+        (meow-leader-define-key
+         '("d t f" . forge-pull)))
       (leaf git-gutter
         :doc "gitの差分表示"
         :url ""
@@ -902,23 +915,41 @@
         :doc "Claude Code IDE integration for Emacs with MCP"
         :vc (:url "https://github.com/manzaltu/claude-code-ide.el")
         :commands (claude-code-ide claude-code-ide-menu claude-code-ide-send-region claude-code-ide-fix-error)
-        :bind (("C-; a c i" . claude-code-ide)
-               ("C-; a c m" . claude-code-ide-menu)
-               ("C-; a c s" . claude-code-ide-send-region)
-               ("C-; a c f" . claude-code-ide-fix-error))
         :config
-        (claude-code-ide-emacs-tools-setup)))
+        (claude-code-ide-emacs-tools-setup))
+      (leaf *claude-code-keybinds
+        :doc ":commandsによる遅延ロードだと:config内が実行されないため、キーバインドは別ブロックで定義"
+        :after meow
+        :config
+        (meow-leader-define-key
+         '("a c i" . claude-code-ide)
+         '("a c m" . claude-code-ide-menu)
+         '("a c s" . claude-code-ide-send-region)
+         '("a c f" . claude-code-ide-fix-error))))
 
     (leaf *ジャンプ操作を便利に -----------------------------------------------------------
       :config
       (leaf avy
         :url "https://github.com/abo-abo/avy"
         :ensure t
-        :bind (("C-; j c" . avy-goto-char-2)
-               ("C-; j l" . avy-goto-line)
-               ("C-; j t" . avy-goto-char-timer)
-               ("C-; j w" . avy-goto-word-1))
-        :custom (avy-timeout-seconds . 0.5)))
+        :custom (avy-timeout-seconds . 0.5))
+      ;; vim-easymotion風に <Leader><Leader> + モーション でavyを起動
+      (leaf *avy-keybinds
+        :after meow
+        :config
+        (meow-leader-define-key
+         '("SPC w" . avy-goto-word-1)  ; <Leader><Leader>w 単語ジャンプ
+         '("SPC f" . avy-goto-char)    ; <Leader><Leader>f 文字検索
+         '("SPC j" . avy-goto-line)))) ; <Leader><Leader>j 行ジャンプ
+
+    (leaf *バッファとウィンドウを閉じる---------------------------------------------------
+      :doc "標準関数だがmeowリーダーに追加"
+      :config
+      (leaf *kill-buffer-and-window-keybinds
+        :after meow
+        :config
+        (meow-leader-define-key
+         '("w q" . kill-buffer-and-window))))
 
     ) ; end of 各種便利機能===============================================================
 
@@ -943,9 +974,18 @@
                              ;; C-hをバックスペースとしてターミナルに送信
                              (define-key vterm-mode-map (kbd "C-h") #'vterm-send-C-h))))
       (leaf vterm-toggle
-        :ensure t
-        :bind ("C-; t v" . vterm-toggle)
-        ))
+        :ensure t)
+      (leaf *vterm-keybinds
+        :after meow
+        :config
+        (meow-leader-define-key
+         '("d t v" . vterm-toggle)))
+      (leaf meow-vterm
+        :vc (:url "https://github.com/accelbread/meow-vterm")
+        :after (meow vterm)
+        :config
+        (meow-vterm-enable))
+      )
 
 
     (leaf *今度こそorg-modeと仲良くなる---------------------------------------------------
@@ -991,22 +1031,6 @@
           (interactive)
           (setq org-journal-dir "~/note/public/journal")
           (org-journal-new-entry t))
-        :bind (("C-; o l" . org-store-link)                   ; カーソル位置でリンク（dired上などでも使える）
-               ("C-; o L" . org-insert-link)                  ; リンクの挿入（org-store-linkされたものもここから）
-               ("C-; o i" . org-insert-structure-template)    ; コードブロックとかのテンプレート挿入
-               ("C-; o s" . org-edit-special)                 ; コードブロックを当該言語のメジャーモードで開く
-               ("C-; o o" . org-open-at-point)                ; リンクを開く
-               ("C-; o a" . org-agenda)
-               ("C-; o c" . org-capture)
-               ("C-; o b" . business-journal)
-               ("C-; o p" . private-journal)
-               ("C-; o q" . org-agenda-Quit)
-               ("C-; o C i" . org-clock-in)
-               ("C-; o C o" . org-clock-out)
-               ("C-; o C d" . org-clock-display)
-               ("C-; o C c" . org-clock-cancel)
-               ("C-; o C r" . org-clock-report)
-               )
         :preface
         (defun my/org-journal-find-location ()
           "org-captureからbusiness journalの今日のエントリにキャプチャする"
@@ -1067,6 +1091,24 @@
           ;; 新規ジャーナルファイル作成時のヘッダテンプレート
           (org-journal-file-header . "#+TITLE: Journal %Y-%m\n#+LANGUAGE: ja\n#+OPTIONS: toc:t num:t ^:nil\n#+PROPERTY: header-args :exports both :eval no-export\n#+STARTUP: show2levels indent\n\n"))
         )
+      (leaf *org-keybinds
+        :after meow
+        :config
+        (meow-leader-define-key
+         '("o l" . org-store-link)
+         '("o L" . org-insert-link)
+         '("o i" . org-insert-structure-template)
+         '("o s" . org-edit-special)
+         '("o o" . org-open-at-point)
+         '("o a" . org-agenda)
+         '("o c" . org-capture)
+         '("o b" . business-journal)
+         '("o p" . private-journal)
+         '("o C i" . org-clock-in)
+         '("o C o" . org-clock-out)
+         '("o C d" . org-clock-display)
+         '("o C c" . org-clock-cancel)
+         '("o C r" . org-clock-report)))
       )
 
     (leaf *Markdownを扱うよ----------------------------------------------------------------
@@ -1107,13 +1149,37 @@
         :after lsp-mode
         :commands (lsp-treemacs-errors-list lsp-treemacs-symbols)
         :hook (lsp-mode-hook . (lambda () (lsp-treemacs-sync-mode 1)))
-        :bind (("C-; p s" . lsp-treemacs-symbols)         ; シンボル一覧
-               ("C-; p e" . lsp-treemacs-errors-list)     ; エラー一覧
-               ("C-; p r" . lsp-treemacs-references)      ; 参照箇所
-               ("C-; p i" . lsp-treemacs-implementations) ; 実装箇所
-               ("C-; p c" . lsp-treemacs-call-hierarchy)  ; コール階層
-               ("C-; p t" . lsp-treemacs-type-hierarchy)) ; 型階層
-        )
+)
+      ;; 開発UI用hydra (ツリー表示、LSP、表示設定をまとめる)
+      (leaf *dev-ui-keybinds
+        :after (meow lsp-treemacs)
+        :config
+        (defhydra hydra-dev-ui (:hint nil)
+          "
+─── Dev UI ───────────────────────────────────────────
+ Tree     _t_:treemacs
+ LSP      _s_:symbols  _e_:errors  _r_:refs  _i_:impl  _c_:call  _y_:type
+ Display  _g_:git-gutter  _l_:line-num  _C_:colorful  _R_:rainbow  _f_:flymake
+─────────────────────────────────────────── _q_:quit ──
+"
+          ;; Tree
+          ("t" treemacs)
+          ;; LSP
+          ("s" lsp-treemacs-symbols)
+          ("e" lsp-treemacs-errors-list)
+          ("r" lsp-treemacs-references)
+          ("i" lsp-treemacs-implementations)
+          ("c" lsp-treemacs-call-hierarchy)
+          ("y" lsp-treemacs-type-hierarchy)
+          ;; Display
+          ("g" git-gutter-mode)
+          ("l" display-line-numbers-mode)
+          ("C" colorful-mode)
+          ("R" rainbow-delimiters-mode)
+          ("f" flymake-mode)
+          ("q" nil :exit t))
+        (meow-leader-define-key
+         '("d u" . hydra-dev-ui/body)))
 
       (leaf *web開発の諸々 ----------------------------------------------------------------
         :config
@@ -1174,15 +1240,25 @@
           (require 'dap-java)
           ;; UIを有効化
           (dap-auto-configure-mode 1)
-          :bind (("C-; p d d" . dap-debug)                ; デバッグ開始
-                 ("C-; p d b" . dap-breakpoint-toggle)    ; ブレークポイントのトグル
-                 ("C-; p d n" . dap-next)                 ; ステップオーバー
-                 ("C-; p d i" . dap-step-in)              ; ステップイン
-                 ("C-; p d o" . dap-step-out)             ; ステップアウト
-                 ("C-; p d c" . dap-continue)             ; 続行
-                 ("C-; p d r" . dap-ui-repl)              ; REPLを開く
-                 ("C-; p d q" . dap-disconnect)))         ; デバッグ終了
-        ))
+))
+      ;; DAP用hydra
+      (leaf *dap-keybinds
+        :after (meow dap-mode)
+        :config
+        (defhydra hydra-dap (:hint nil)
+          "
+DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_:repl _q_:quit
+"
+          ("d" dap-debug)
+          ("b" dap-breakpoint-toggle)
+          ("n" dap-next)
+          ("i" dap-step-in)
+          ("o" dap-step-out)
+          ("c" dap-continue)
+          ("r" dap-ui-repl)
+          ("q" dap-disconnect :exit t))
+        (meow-leader-define-key
+         '("d d" . hydra-dap/body)))
 
     (leaf *Python開発の諸々 --------------------------------------------------------------
       :config
@@ -1234,7 +1310,9 @@
         :mode "\\.csv\\'"))
 
     ) ; end of 特定言語やメジャーモード設定===============================================
-  )
+  ) ; end of *init*
 
 (provide 'init)
+
+;;; init.el ends here
 
