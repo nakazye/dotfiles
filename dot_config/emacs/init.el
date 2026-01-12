@@ -513,6 +513,60 @@ puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
         :config
         (define-key meow-normal-state-keymap (kbd "p") #'hydra-puni/body)))
 
+    (leaf *vimライク移動hydra----------------------------------------------------------------
+      :doc "vキーでVimライクな移動に"
+      :after (meow hydra)
+      :config
+      (defhydra hydra-vim-motion (:hint nil :foreign-keys run)
+        "
+ Vim Motion
+┌──────────────────┬───────────────────────────┐
+│ カーソル移動     │ 単語移動                  │
+│     _k_            │                           │
+│     ↑            │ _b_ <- word -> _w_            │
+│ _h_ <   > _l_        │       |                   │
+│     ↓            │      _e_(末尾)              │
+│     _j_            │                           │
+├──────────────────┴───────────────────────────┤
+│ 行内移動                                     │
+│ _0_──────────────_^_──────────────────────_$_      │
+│ 行頭        非空白先頭                行末   │
+├──────────────────┬───────────────────────────┤
+│ バッファ         │ ジャンプ                  │
+│ _g__g_ : 先頭(gg)    │ _f_ : 文字(avy)             │
+│ _G_  : 末尾        │ _/_ : 検索 (consult-line)   │
+│ _C-u_: 半画面↑     │                           │
+│ _C-d_: 半画面↓     │                           │
+└──────────────────┴───────────────────────────┘
+                                       _q_: 終了
+"
+        ;; 基本移動
+        ("h" backward-char)
+        ("j" next-line)
+        ("k" previous-line)
+        ("l" forward-char)
+        ;; 単語移動
+        ("w" forward-word)
+        ("e" (progn (forward-word) (backward-char)))
+        ("b" backward-word)
+        ;; 行内移動
+        ("0" move-beginning-of-line)
+        ("$" move-end-of-line)
+        ("^" back-to-indentation)
+        ;; バッファ移動 (gg対応)
+        ("g" beginning-of-buffer)
+        ("G" end-of-buffer)
+        ;; スクロール (半画面)
+        ("C-u" (scroll-down (/ (window-height) 2)))
+        ("C-d" (scroll-up (/ (window-height) 2)))
+        ;; 検索・ジャンプ
+        ("f" avy-goto-char)
+        ("/" consult-line)
+        ("q" nil :exit t))
+
+      ;; meow normalモードで「v」キーにバインド
+      (define-key meow-normal-state-keymap (kbd "v") #'hydra-vim-motion/body))
+
     ) ; end of 括弧やS式の構造化編集
 
     (leaf *モーダル編集(meow)----------------------------------------------------------------
