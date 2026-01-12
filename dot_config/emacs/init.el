@@ -19,7 +19,8 @@
     (leaf *言語設定-----------------------------------------------------------------------
       :doc "Emacsが扱う文字コードの設定"
       :config
-      (set-language-environment "Japanese")
+      ;; ↓入れるとCLI時に罫線がおかしくなる
+      ;; (set-language-environment "Japanese")
       (prefer-coding-system  'utf-8-unix))
 
     (leaf *日本語入力設定-----------------------------------------------------------------
