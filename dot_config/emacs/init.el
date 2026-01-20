@@ -614,10 +614,10 @@ puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
           "d"   "Dev"
           "d u" "Dev UI"
           "d d" "DAP"
-          "p"   "Projectile" ;; ProjectileじゃなくてProjectとして、もう少し使うキーバインド厳選したい
           "s"   "Search/Navigation"
           "o"   "Org"
           "o C" "Org Clock"
+          "p"   "Project"
           "d t" "Tool"
           "w"   "Window"
           "w r" "window resize")))
@@ -751,16 +751,48 @@ puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
       (leaf projectile
         :url "https://github.com/bbatsov/projectile"
         :ensure t
-        :custom (projectile-dynamic-mode-line . nil)
+        :custom
+        (projectile-dynamic-mode-line . nil)
+        (projectile-switch-project-action . #'projectile-dired)
         :hook
         (after-init-hook . (lambda ()
                              (projectile-mode t))))
-      ;; meowリーダーキーにprojectile-command-mapをバインド
+      ;; projectile用hydra（厳選コマンド）
       (leaf *projectile-keybinds
-        :after meow
+        :after (meow hydra)
         :config
+        (defhydra hydra-projectile (:hint nil :exit t)
+          "
+ 基本操作
+   _p_ プロジェクト切り替え   _f_ ファイル検索   _b_ バッファ切り替え
+   _D_ dired                  _k_ バッファ全削除 _i_ キャッシュ無効化
+
+ 検索系
+   _s_ ripgrep検索            _r_ 置換
+
+ テスト/ビルド
+   _t_ テスト⇔実装切り替え
+
+ その他
+   _v_ バージョン管理(magit等)  _!_ シェルコマンド  _q_ 終了
+"
+          ("p" projectile-switch-project)
+          ("f" projectile-find-file)
+          ("b" projectile-switch-to-buffer)
+          ("D" projectile-dired)
+          ("k" projectile-kill-buffers)
+          ("i" projectile-invalidate-cache)
+          ("s" projectile-ripgrep)
+          ("r" projectile-replace)
+          ("t" projectile-toggle-between-implementation-and-test)
+          ("v" projectile-vc)
+          ("!" projectile-run-shell-command-in-root)
+          ("q" nil))
         (meow-leader-define-key
-         '("p" . projectile-command-map))))
+         '("p" . hydra-projectile/body))
+        ;; which-keyで関数名をわかりやすく表示
+        (push '((nil . "hydra-projectile/body") . (nil . "Project"))
+              which-key-replacement-alist)))
 
     (leaf *ツリービュー設定---------------------------------------------------------------
       :doc "NeoTreeとかもあるけど、他のプラグインと統合しやすそうなTreemacsを選択"
