@@ -332,52 +332,6 @@
       (leaf *ace-window-keybinds
         :bind (("C-; w w" . ace-window))))
 
-      (leaf *ウィンドウサイズ変更-------------------------------------------------------------
-        :doc "hydraを使ってウィンドウサイズを簡単に変更する"
-        :config
-        (leaf hydra
-          :ensure t
-          :config
-          (defhydra hydra-window-resize (:hint nil)
-            "
-ウィンドウサイズ: _h_:←  _l_:→  _k_:↑  _j_:↓  _=_:均等  _q_:終了
-"
-            ("h" shrink-window-horizontally)
-            ("l" enlarge-window-horizontally)
-            ("k" shrink-window)
-            ("j" enlarge-window)
-            ("=" balance-windows)
-            ("q" nil :exit t)))
-        (leaf *hydra-keybinds
-          :bind (("C-; w r" . hydra-window-resize/body)))
-        ;; 開発UI用hydra (ツリー表示、LSP、表示設定をまとめる)
-        (defhydra hydra-dev-ui (:hint nil)
-          "
-─── Dev UI ───────────────────────────────────────────
- Tree     _t_:treemacs
- LSP      _s_:symbols  _e_:errors  _r_:refs  _i_:impl  _c_:call  _y_:type
- Display  _g_:git-gutter  _l_:line-num  _C_:colorful  _R_:rainbow  _f_:flymake
-─────────────────────────────────────────── _q_:quit ──
-"
-          ;; Tree
-          ("t" treemacs)
-          ;; LSP
-          ("s" lsp-treemacs-symbols)
-          ("e" lsp-treemacs-errors-list)
-          ("r" lsp-treemacs-references)
-          ("i" lsp-treemacs-implementations)
-          ("c" lsp-treemacs-call-hierarchy)
-          ("y" lsp-treemacs-type-hierarchy)
-          ;; Display
-          ("g" git-gutter-mode)
-          ("l" display-line-numbers-mode)
-          ("C" colorful-mode)
-          ("R" rainbow-delimiters-mode)
-          ("f" flymake-mode)
-          ("q" nil :exit t))
-        (leaf *dev-ui-keybinds
-          :bind (("C-; d u" . hydra-dev-ui/body))))
-
     ) ; end of 一般表示系設定=============================================================
 
   (leaf *モードライン設定=================================================================
@@ -433,15 +387,6 @@
     (leaf *以前開いたファイルを再度開いたときに元のカーソル位置を復元してくれる-----------
       :global-minor-mode save-place-mode)
 
-    (leaf *便利機能キーバインド-----------------------------------------------------------
-      :doc "Benriカテゴリとしてまとめる"
-      :config
-      (leaf *benri-keybinds
-        :bind (("C-; e w" . delete-trailing-whitespace)  ; 行末空白削除
-               ("C-; e t" . untabify))))                 ; タブをスペースに変換
-
-
-
     (leaf *undoやredoを便利に-------------------------------------------------------------
       :doc "undo-treeやundo-fuと悩んだけどvundoを利用してみる"
       :config
@@ -472,8 +417,7 @@
         :ensure t
         :custom
         ((vundo-compact-display . t))) ; ツリーをコンパクトに表示
-      (leaf *vundo-keybinds
-        :bind (("C-; e u" . vundo))))
+)
 
     (leaf *操作にハイライトを-------------------------------------------------------------
       :doc "yankやundoした際に編集箇所をわかりやすい様にハイライトを入れる"
@@ -510,38 +454,116 @@
         :doc "M-(       : puni-syntactic-forward-punct  (次の括弧へ)"
         :doc "M-)       : puni-syntactic-backward-punct (前の括弧へ)"
         :ensure t
-        :global-minor-mode puni-global-mode
-        :config
-        ;; C-; p でpuni用hydraを起動
-        (defhydra hydra-puni (:hint nil)
-          "
+        :global-minor-mode puni-global-mode)
+
+    ) ; end of 括弧やS式の構造化編集
+
+    ) ; end of ファイル編集設定===========================================================
+
+
+  (leaf *hydra設定=======================================================================
+    :doc "すべてのhydra定義を一箇所にまとめる"
+    :config
+    (leaf hydra
+      :ensure t
+      :config
+      ;; ウィンドウサイズ変更
+      (defhydra hydra-window-resize (:hint nil)
+        "
+ウィンドウサイズ: _h_:←  _l_:→  _k_:↑  _j_:↓  _=_:均等  _q_:終了
+"
+        ("h" shrink-window-horizontally)
+        ("l" enlarge-window-horizontally)
+        ("k" shrink-window)
+        ("j" enlarge-window)
+        ("=" balance-windows)
+        ("q" nil :exit t))
+
+      ;; 開発UI (ツリー表示、LSP、Git、Term、表示設定)
+      (defhydra hydra-dev-ui (:hint nil)
+        "
+─── Dev UI ───────────────────────────────────────────
+ Tree     _t_:treemacs
+ LSP      _s_:symbols  _e_:errors  _r_:refs  _i_:impl  _c_:call  _y_:type
+ Git      _g_:magit  _f_:forge-pull
+ Term     _v_:vterm
+ Display  _G_:git-gutter  _l_:line-num  _C_:colorful  _R_:rainbow  _F_:flymake
+─────────────────────────────────────────── _q_:終了 ──
+"
+        ;; Tree
+        ("t" treemacs)
+        ;; LSP
+        ("s" lsp-treemacs-symbols)
+        ("e" lsp-treemacs-errors-list)
+        ("r" lsp-treemacs-references)
+        ("i" lsp-treemacs-implementations)
+        ("c" lsp-treemacs-call-hierarchy)
+        ("y" lsp-treemacs-type-hierarchy)
+        ;; Git
+        ("g" my/magit :exit t)
+        ("f" forge-pull :exit t)
+        ;; Term
+        ("v" vterm-toggle :exit t)
+        ;; Display
+        ("G" git-gutter-mode)
+        ("l" display-line-numbers-mode)
+        ("C" colorful-mode)
+        ("R" rainbow-delimiters-mode)
+        ("F" flymake-mode)
+        ("q" nil :exit t))
+
+      ;; 開発ツール (Webプレビュー)
+      (defhydra hydra-dev-tool (:hint nil)
+        "
+─── Dev Tool ─────────────────────────────────────────
+ Web Preview (localhost:8080)
+   _s_:サーバ起動 (httpd-serve-directory)
+   _b_:ブラウザで開く (browse-url)
+   停止: M-x list-processes → d
+─────────────────────────────────────────── _q_:終了 ──
+"
+        ("s" httpd-serve-directory)
+        ("b" (browse-url "http://localhost:8080/"))
+        ("q" nil :exit t))
+
+      ;; 編集
+      (defhydra hydra-edit (:hint nil :exit t)
+        "
+─── Edit ─────────────────────────────────────────────
+ _w_:行末空白削除 (delete-trailing-whitespace)
+ _t_:タブ→スペース (untabify)
+ _u_:undo履歴 (vundo)
+─────────────────────────────────────────── _q_:終了 ──
+"
+        ("w" delete-trailing-whitespace)
+        ("t" untabify)
+        ("u" vundo)
+        ("q" nil))
+
+      ;; Puni (S式操作)
+      (defhydra hydra-puni (:hint nil)
+        "
 puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
       _(_:() _[_:[] _{_:{} _<_:<>
       _p_:括弧削除 _s_:slurp _b_:barf  _q_:終了
 "
-          ;; 選択
-          ("m" puni-mark-sexp-at-point)
-          ("l" puni-mark-list-around-point)
-          ("M" puni-mark-sexp-around-point)
-          ("e" puni-expand-region)
-          ;; 括弧制御
-          ("(" puni-wrap-round)
-          ("[" puni-wrap-square)
-          ("{" puni-wrap-curly)
-          ("<" puni-wrap-angle)
-          ("p" puni-splice)
-          ;; Slurp Barf
-          ("s" puni-slurp-forward)
-          ("b" puni-barf-forward)
-          ("q" nil :exit t)))
-      ;; C-; p にhydra-puniをバインド
-      (leaf *puni-keybind
-        :bind (("C-; p" . hydra-puni/body))))
+        ;; 選択
+        ("m" puni-mark-sexp-at-point)
+        ("l" puni-mark-list-around-point)
+        ("M" puni-mark-sexp-around-point)
+        ("e" puni-expand-region)
+        ;; 括弧制御
+        ("(" puni-wrap-round)
+        ("[" puni-wrap-square)
+        ("{" puni-wrap-curly)
+        ("<" puni-wrap-angle)
+        ("p" puni-splice)
+        ;; Slurp Barf
+        ("s" puni-slurp-forward)
+        ("b" puni-barf-forward)
+        ("q" nil :exit t))
 
-    (leaf *vimライク移動hydra----------------------------------------------------------------
-      :doc "C-; v でVimライクな移動に"
-      :after hydra
-      :config
+      ;; Vimライク移動
       (defhydra hydra-vim-motion (:hint nil :foreign-keys run)
         "
  Vim Motion
@@ -559,7 +581,7 @@ puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
 ├──────────────────┬───────────────────────────┤
 │ バッファ         │ ジャンプ                  │
 │ _g__g_ : 先頭(gg)    │ _f_ : 文字(avy)             │
-│ _G_  : 末尾        │ _/_ : 検索 (consult-line)   │
+│ _G_  : 末尾        │ _/_: 検索 (consult-line)   │
 │ _C-u_: 半画面↑     │                           │
 │ _C-d_: 半画面↓     │                           │
 └──────────────────┴───────────────────────────┘
@@ -589,11 +611,61 @@ puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
         ("/" consult-line)
         ("q" nil :exit t))
 
-      :bind (("C-; v" . hydra-vim-motion/body)))
+      ;; Projectile
+      (defhydra hydra-projectile (:hint nil :exit t)
+        "
+ 基本操作
+   _p_ プロジェクト切り替え   _f_ ファイル検索   _b_ バッファ切り替え
+   _D_ dired                  _k_ バッファ全削除 _i_ キャッシュ無効化
 
-    ) ; end of 括弧やS式の構造化編集
+ 検索系
+   _s_ ripgrep検索            _r_ 置換
 
-    ) ; end of ファイル編集設定===========================================================
+ テスト/ビルド
+   _t_ テスト⇔実装切り替え
+
+ その他
+   _v_ バージョン管理(magit等)  _!_ シェルコマンド  _q_ 終了
+"
+        ("p" projectile-switch-project)
+        ("f" projectile-find-file)
+        ("b" projectile-switch-to-buffer)
+        ("D" projectile-dired)
+        ("k" projectile-kill-buffers)
+        ("i" projectile-invalidate-cache)
+        ("s" projectile-ripgrep)
+        ("r" projectile-replace)
+        ("t" projectile-toggle-between-implementation-and-test)
+        ("v" projectile-vc)
+        ("!" projectile-run-shell-command-in-root)
+        ("q" nil))
+
+      ;; DAP (デバッグ)
+      (defhydra hydra-dap (:hint nil)
+        "
+DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_:repl _q_:quit
+"
+        ("d" dap-debug)
+        ("b" dap-breakpoint-toggle)
+        ("n" dap-next)
+        ("i" dap-step-in)
+        ("o" dap-step-out)
+        ("c" dap-continue)
+        ("r" dap-ui-repl)
+        ("q" dap-disconnect :exit t)))
+
+    ;; キーバインド
+    (leaf *hydra-keybinds
+      :bind (("C-; w r" . hydra-window-resize/body)
+             ("C-; d u" . hydra-dev-ui/body)
+             ("C-; d t" . hydra-dev-tool/body)
+             ("C-; e"   . hydra-edit/body)
+             ("C-; p"   . hydra-puni/body)
+             ("C-; v"   . hydra-vim-motion/body)
+             ("C-; P"   . hydra-projectile/body)
+             ("C-; d d" . hydra-dap/body)))
+
+    ) ; end of hydra設定===================================================================
 
 
   (leaf *各種便利機能=====================================================================
@@ -755,42 +827,7 @@ puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
         (projectile-switch-project-action . #'projectile-dired)
         :hook
         (after-init-hook . (lambda ()
-                             (projectile-mode t))))
-      ;; projectile用hydra（厳選コマンド）
-      (leaf *projectile-keybinds
-        :after hydra
-        :config
-        (defhydra hydra-projectile (:hint nil :exit t)
-          "
- 基本操作
-   _p_ プロジェクト切り替え   _f_ ファイル検索   _b_ バッファ切り替え
-   _D_ dired                  _k_ バッファ全削除 _i_ キャッシュ無効化
-
- 検索系
-   _s_ ripgrep検索            _r_ 置換
-
- テスト/ビルド
-   _t_ テスト⇔実装切り替え
-
- その他
-   _v_ バージョン管理(magit等)  _!_ シェルコマンド  _q_ 終了
-"
-          ("p" projectile-switch-project)
-          ("f" projectile-find-file)
-          ("b" projectile-switch-to-buffer)
-          ("D" projectile-dired)
-          ("k" projectile-kill-buffers)
-          ("i" projectile-invalidate-cache)
-          ("s" projectile-ripgrep)
-          ("r" projectile-replace)
-          ("t" projectile-toggle-between-implementation-and-test)
-          ("v" projectile-vc)
-          ("!" projectile-run-shell-command-in-root)
-          ("q" nil))
-        ;; which-keyで関数名をわかりやすく表示
-        (push '((nil . "hydra-projectile/body") . (nil . "Project"))
-              which-key-replacement-alist)
-        :bind (("C-; P" . hydra-projectile/body))))
+                             (projectile-mode t)))))
 
     (leaf *ツリービュー設定---------------------------------------------------------------
       :doc "NeoTreeとかもあるけど、他のプラグインと統合しやすそうなTreemacsを選択"
@@ -968,17 +1005,11 @@ puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
             ;; vterm以外: 通常のmagit-status
             (magit-status)))
 )
-      (leaf *magit-keybinds
-        :bind (("C-; d t g" . my/magit)))
       (leaf forge
         :doc "GitHubのプルリクエストやissueの操作。Gitlabとかも対応しているぽい"
         :url "https://github.com/magit/forge"
         :ensure t
         :after magit)
-      ;; forge操作自体はmagitで行う(forgeがmagitのサブモジュールなので)
-      (leaf *forge-keybinds
-        :after forge
-        :bind (("C-; d t f" . forge-pull)))
       (leaf git-gutter
         :doc "gitの差分表示"
         :url ""
@@ -1044,8 +1075,6 @@ puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
                              (define-key vterm-mode-map (kbd "C-h") #'vterm-send-C-h))))
       (leaf vterm-toggle
         :ensure t)
-      (leaf *vterm-keybinds
-        :bind (("C-; d t v" . vterm-toggle)))
       )
 
 
@@ -1222,10 +1251,11 @@ puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
         (leaf css-ts-mode
           :doc "cssを色付け"
           :mode ("\\.css\\'"))
-        (leaf impatient-mode
-          :doc "HTTPサーバ立ててのライブプレビュー"
-          :url "https://github.com/skeeto/impatient-mode"
-          :ensure t))
+        (leaf simple-httpd
+          :doc "シンプルなHTTPサーバ"
+          :url "https://github.com/skeeto/emacs-web-server"
+          :ensure t
+          :commands (httpd-start httpd-stop httpd-serve-directory)))
 
       (leaf *JSやTS開発の諸々 --------------------------------------------------------------
         :config
@@ -1269,23 +1299,7 @@ puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
           ;; UIを有効化
           (dap-auto-configure-mode 1)
 ))
-      ;; DAP用hydra
-      (leaf *dap-keybinds
-        :after dap-mode
-        :config
-        (defhydra hydra-dap (:hint nil)
-          "
-DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_:repl _q_:quit
-"
-          ("d" dap-debug)
-          ("b" dap-breakpoint-toggle)
-          ("n" dap-next)
-          ("i" dap-step-in)
-          ("o" dap-step-out)
-          ("c" dap-continue)
-          ("r" dap-ui-repl)
-          ("q" dap-disconnect :exit t))
-        :bind (("C-; d d" . hydra-dap/body)))
+      ) ; end of *lspモード
 
     (leaf *Python開発の諸々 --------------------------------------------------------------
       :config
