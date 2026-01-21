@@ -349,7 +349,34 @@
             ("=" balance-windows)
             ("q" nil :exit t)))
         (leaf *hydra-keybinds
-          :bind (("C-; w r" . hydra-window-resize/body))))
+          :bind (("C-; w r" . hydra-window-resize/body)))
+        ;; 開発UI用hydra (ツリー表示、LSP、表示設定をまとめる)
+        (defhydra hydra-dev-ui (:hint nil)
+          "
+─── Dev UI ───────────────────────────────────────────
+ Tree     _t_:treemacs
+ LSP      _s_:symbols  _e_:errors  _r_:refs  _i_:impl  _c_:call  _y_:type
+ Display  _g_:git-gutter  _l_:line-num  _C_:colorful  _R_:rainbow  _f_:flymake
+─────────────────────────────────────────── _q_:quit ──
+"
+          ;; Tree
+          ("t" treemacs)
+          ;; LSP
+          ("s" lsp-treemacs-symbols)
+          ("e" lsp-treemacs-errors-list)
+          ("r" lsp-treemacs-references)
+          ("i" lsp-treemacs-implementations)
+          ("c" lsp-treemacs-call-hierarchy)
+          ("y" lsp-treemacs-type-hierarchy)
+          ;; Display
+          ("g" git-gutter-mode)
+          ("l" display-line-numbers-mode)
+          ("C" colorful-mode)
+          ("R" rainbow-delimiters-mode)
+          ("f" flymake-mode)
+          ("q" nil :exit t))
+        (leaf *dev-ui-keybinds
+          :bind (("C-; d u" . hydra-dev-ui/body))))
 
     ) ; end of 一般表示系設定=============================================================
 
@@ -1181,35 +1208,6 @@ puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
         :commands (lsp-treemacs-errors-list lsp-treemacs-symbols)
         :hook (lsp-mode-hook . (lambda () (lsp-treemacs-sync-mode 1)))
 )
-      ;; 開発UI用hydra (ツリー表示、LSP、表示設定をまとめる)
-      (leaf *dev-ui-keybinds
-        :after lsp-treemacs
-        :config
-        (defhydra hydra-dev-ui (:hint nil)
-          "
-─── Dev UI ───────────────────────────────────────────
- Tree     _t_:treemacs
- LSP      _s_:symbols  _e_:errors  _r_:refs  _i_:impl  _c_:call  _y_:type
- Display  _g_:git-gutter  _l_:line-num  _C_:colorful  _R_:rainbow  _f_:flymake
-─────────────────────────────────────────── _q_:quit ──
-"
-          ;; Tree
-          ("t" treemacs)
-          ;; LSP
-          ("s" lsp-treemacs-symbols)
-          ("e" lsp-treemacs-errors-list)
-          ("r" lsp-treemacs-references)
-          ("i" lsp-treemacs-implementations)
-          ("c" lsp-treemacs-call-hierarchy)
-          ("y" lsp-treemacs-type-hierarchy)
-          ;; Display
-          ("g" git-gutter-mode)
-          ("l" display-line-numbers-mode)
-          ("C" colorful-mode)
-          ("R" rainbow-delimiters-mode)
-          ("f" flymake-mode)
-          ("q" nil :exit t))
-        :bind (("C-; d u" . hydra-dev-ui/body)))
 
       (leaf *web開発の諸々 ----------------------------------------------------------------
         :config
@@ -1350,6 +1348,7 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(package-selected-packages nil)
  '(package-vc-selected-packages
    '((claude-code-ide :url
                       "https://github.com/manzaltu/claude-code-ide.el"))))
