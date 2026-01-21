@@ -9,6 +9,10 @@
 ;; パッケージシステムを無効化（起動高速化）
 (setq package-enable-at-startup nil)
 
+;; eln-cacheをvar/に配置（-Qでもnative-compは動くため）
+(when (boundp 'native-comp-eln-load-path)
+  (startup-redirect-eln-cache "~/.config/emacs/var/eln-cache/"))
+
 ;; GCを抑制（起動時のみ）
 (setq gc-cons-threshold most-positive-fixnum)
 (add-hook 'emacs-startup-hook
