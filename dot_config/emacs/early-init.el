@@ -40,6 +40,16 @@
     (setq user-emacs-directory
           (expand-file-name
            (file-name-directory (or load-file-name byte-compile-current-file))))))
+
+;; --------------------------------------
+;; no-littering未対応のディレクトリをvar/etc配下に移動
+;; package-initializeより前に設定が必要
+;; --------------------------------------
+;; パッケージディレクトリ (elpa/)
+(setq package-user-dir (expand-file-name "var/elpa/" user-emacs-directory))
+;; ネイティブコンパイルキャッシュ (eln-cache/)
+(when (boundp 'native-comp-eln-load-path)
+  (startup-redirect-eln-cache (expand-file-name "var/eln-cache/" user-emacs-directory)))
 (eval-and-compile
   (customize-set-variable
    'package-archives '(("org"    . "https://orgmode.org/elpa/")

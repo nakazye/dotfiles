@@ -61,19 +61,15 @@
       :url "http://yohshiy.blog.fc2.com/blog-entry-319.html"
       :doc "バックアップファイルにどんな種類があるかについては↑がわかりやすい"
       :doc "ここでは、以下の設定にしている"
-      :doc "* バックアップファイル (foo.txt~) → 作る。~/.emacs.d/backupに配置する"
-      :doc "* 自動保存ファイル (#foo.txt#) → 作る(正常終了すれば消えるファイル)。~/.emacs.d/backupに配置する"
-      :doc "* 自動保存リストファイル (~/.emacs.d/auto-save-list/.saves-xxxx)→作らない"
+      :doc "* バックアップファイル (foo.txt~) → 作る。var/backup/に配置する（no-littering-theme-backups）"
+      :doc "* 自動保存ファイル (#foo.txt#) → 作る(正常終了すれば消えるファイル)。var/auto-save/に配置する（no-littering-theme-backups）"
+      :doc "* 自動保存リストファイル → var/auto-save/sessions/に配置する（no-littering）"
       :doc "* ロックファイル (.#foo.txt)→作らない"
       :custom
       ;; バックアップファイル設定
       (make-backup-files . t)
-      (backup-directory-alist . '((".*" . "~/.config/emacs/backup/")))
       ;; 自動保存ファイル設定
       (auto-save-default . t)
-      (auto-save-file-name-transforms . '((".*" "~/.config/emacs/backup/" t)))
-      ;; 自動保存リストファイル設定
-      (auto-save-list-file-prefix . nil)
       ;; ロックファイル設定
       (create-lockfiles . nil))
 
@@ -91,7 +87,13 @@
         :require t
         :custom
         (no-littering-etc-directory . "~/.config/emacs/etc/")
-        (no-littering-var-directory . "~/.config/emacs/var/")))
+        (no-littering-var-directory . "~/.config/emacs/var/")
+        :config
+        ;; バックアップ・自動保存ファイルをvar/配下に配置
+        (no-littering-theme-backups)
+        ;; カスタムテーマディレクトリをetc/配下に配置
+        (setq custom-theme-directory (no-littering-expand-etc-file-name "themes/"))
+        (make-directory custom-theme-directory t)))
 
     (leaf *自動revert設定-----------------------------------------------------------------
       :doc "他でファイル変更があった際の再読み込み"
@@ -217,12 +219,14 @@
       :doc "可愛い色でテンションぶちあげたい！"
       :url "https://conao3.com/blog/2020-13fc-43ec/"
       :doc "↑を参考に設定"
-      :doc ".emacs.d/themesフォルダを別の場所に動かしたいけど、色々試してできなかったので一旦TODOとして寝かせておく"
       :config
       (leaf solarized-theme
         :url "https://github.com/bbatsov/solarized-emacs"
         :ensure t
         :require t
+        :custom
+        ;; テーマファイルをetc/themes/に保存
+        (solarized-theme-dir . "~/.config/emacs/etc/themes/")
         :config
         (solarized-create-theme-file-with-palette
             'light 'my-solarized-light
@@ -604,9 +608,8 @@ puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
       (recentf-auto-cleanup    . 'never)
       (recentf-exclude
        . '((expand-file-name package-user-dir)
-           "~/.local/emacs/backup"
-           "~/.local/emacs/etc"
-           "~/.local/emacs/var"
+           "~/.config/emacs/var/"
+           "~/.config/emacs/etc/"
            "*.png"
            "*.jpeg"
            ".org_archive"
@@ -1342,3 +1345,18 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
 
 ;;; init.el ends here
 
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-vc-selected-packages
+   '((claude-code-ide :url
+                      "https://github.com/manzaltu/claude-code-ide.el"))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(mode-line ((t (:underline nil))) nil "Customized with leaf in `doom-modeline' block at `/Users/yutaka.nakajima/.config/emacs/init.el'")
+ '(mode-line-inactive ((t (:underline nil))) nil "Customized with leaf in `doom-modeline' block at `/Users/yutaka.nakajima/.config/emacs/init.el'"))
