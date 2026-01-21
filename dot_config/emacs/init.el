@@ -49,6 +49,10 @@
     (leaf *yes-or-noをy-or-nに変更--------------------------------------------------------
       :custom (use-short-answers . t))
 
+    (leaf *拡張子の大文字小文字を無視------------------------------------------------------
+      :doc "auto-mode-alistのマッチングで.PDFと.pdfを同一視する"
+      :custom (auto-mode-case-fold . t))
+
     (leaf *バッファ境界の表示--------------------------------------------------------------
       :doc "fringeにバッファの先頭・末尾を矢印で表示"
       :custom (indicate-buffer-boundaries . 'left))
@@ -1315,7 +1319,7 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
     (leaf *cやc++を扱うぞ ----------------------------------------------------------------
       :config
       (leaf c-ts-mode
-        :mode ("\\.c\\'" "\\.C\\'" "\\.sqc\\'" "\\.sqC\\'")
+        :mode ("\\.c\\'" "\\.sqc\\'")
         :hook (c-ts-mode-hook . lsp-deferred))
       (leaf c-or-c++-ts-mode
         :mode ("\\.h\\'"))
