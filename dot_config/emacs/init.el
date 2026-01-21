@@ -836,9 +836,11 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
         :url "https://github.com/Alexander-Miller/treemacs"
         :ensure t
         :custom
-        (treemacs-no-png-images . t)                    ; pngイメージを使わない
-                                        ; TODO cliではエラー出るので分岐入れたい
-        (treemacs-text-scale . -1)                      ; テキストサイズが大きいのを小さく
+        (treemacs-no-png-images . t)                    ; nerd-iconsを使うのでpng不要
+        :init
+        ;; GUIのみテキストサイズを小さく
+        (when (display-graphic-p)
+          (setq treemacs-text-scale -1))
         :config
         (treemacs-follow-mode t)                        ; 追従させる
         (treemacs-project-follow-mode t)                ; projectileと連動
