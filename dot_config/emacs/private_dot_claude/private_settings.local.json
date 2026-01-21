@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:emacs.stackexchange.com)",
+      "Bash(time emacs:*)",
+      "Bash(emacs:*)",
+      "Bash(timeout 60 emacs:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:zenn.dev)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:www.grugrut.net)",
+      "WebFetch(domain:elpa.gnu.org)",
+      "WebFetch(domain:protesilaos.com)",
+      "WebFetch(domain:qiita.com)",
+      "WebFetch(domain:ianyepan.github.io)",
+      "WebFetch(domain:fonts.google.com)",
+      "Bash(fc-list:*)",
+      "Bash(brew list:*)",
+      "WebFetch(domain:systemcrafters.net)",
+      "Bash(lsof:*)",
+      "Bash(pid=$$)",
+      "Bash(echo:*)",
+      "Bash(/usr/sbin/lsof:*)",
+      "WebFetch(domain:emacsredux.com)",
+      "WebFetch(domain:emacsnotes.wordpress.com)",
+      "WebFetch(domain:www.gnu.org)",
+      "Bash(grep:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
