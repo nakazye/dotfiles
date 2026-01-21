@@ -19,8 +19,7 @@
     (leaf *言語設定-----------------------------------------------------------------------
       :doc "Emacsが扱う文字コードの設定"
       :config
-      ;; ↓入れるとCLI時に罫線がおかしくなる
-      ;; (set-language-environment "Japanese")
+      (set-language-environment "Japanese")
       (prefer-coding-system  'utf-8-unix))
 
     (leaf *日本語入力設定-----------------------------------------------------------------
@@ -125,7 +124,6 @@
       )
 
     ) ; end of 一般設定 ==================================================================
-
 
   (leaf *GUI表示系設定====================================================================
     :if (window-system)
@@ -319,10 +317,7 @@
             (setq aw-ignored-buffers (delq 'treemacs-mode aw-ignored-buffers)))
           (advice-add 'ace-window :before #'my/ace-window-include-treemacs)))
       (leaf *ace-window-keybinds
-        :after meow
-        :config
-        (meow-leader-define-key
-         '("w w" . ace-window))))
+        :bind (("C-; w w" . ace-window))))
 
       (leaf *ウィンドウサイズ変更-------------------------------------------------------------
         :doc "hydraを使ってウィンドウサイズを簡単に変更する"
@@ -341,10 +336,7 @@
             ("=" balance-windows)
             ("q" nil :exit t)))
         (leaf *hydra-keybinds
-          :after meow
-          :config
-          (meow-leader-define-key
-           '("w r" . hydra-window-resize/body))))
+          :bind (("C-; w r" . hydra-window-resize/body))))
 
     ) ; end of 一般表示系設定=============================================================
 
@@ -405,11 +397,8 @@
       :doc "Benriカテゴリとしてまとめる"
       :config
       (leaf *benri-keybinds
-        :after meow
-        :config
-        (meow-leader-define-key
-         '("e w" . delete-trailing-whitespace)  ; 行末空白削除
-         '("e t" . untabify))))                  ; タブをスペースに変換
+        :bind (("C-; e w" . delete-trailing-whitespace)  ; 行末空白削除
+               ("C-; e t" . untabify))))                 ; タブをスペースに変換
 
 
 
@@ -444,10 +433,7 @@
         :custom
         ((vundo-compact-display . t))) ; ツリーをコンパクトに表示
       (leaf *vundo-keybinds
-        :after meow
-        :config
-        (meow-leader-define-key
-         '("e u" . vundo))))
+        :bind (("C-; e u" . vundo))))
 
     (leaf *操作にハイライトを-------------------------------------------------------------
       :doc "yankやundoした際に編集箇所をわかりやすい様にハイライトを入れる"
@@ -486,7 +472,7 @@
         :ensure t
         :global-minor-mode puni-global-mode
         :config
-        ;; meow normalモードで p を押すとpuni用hydraを起動
+        ;; C-; p でpuni用hydraを起動
         (defhydra hydra-puni (:hint nil)
           "
 puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
@@ -508,15 +494,13 @@ puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
           ("s" puni-slurp-forward)
           ("b" puni-barf-forward)
           ("q" nil :exit t)))
-      ;; meow normalモードでpキーにhydra-puniをバインド
-      (leaf *puni-meow-keybind
-        :after meow
-        :config
-        (define-key meow-normal-state-keymap (kbd "p") #'hydra-puni/body)))
+      ;; C-; p にhydra-puniをバインド
+      (leaf *puni-keybind
+        :bind (("C-; p" . hydra-puni/body))))
 
     (leaf *vimライク移動hydra----------------------------------------------------------------
-      :doc "vキーでVimライクな移動に"
-      :after (meow hydra)
+      :doc "C-; v でVimライクな移動に"
+      :after hydra
       :config
       (defhydra hydra-vim-motion (:hint nil :foreign-keys run)
         "
@@ -565,31 +549,9 @@ puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
         ("/" consult-line)
         ("q" nil :exit t))
 
-      ;; meow normalモードで「v」キーにバインド
-      (define-key meow-normal-state-keymap (kbd "v") #'hydra-vim-motion/body))
+      :bind (("C-; v" . hydra-vim-motion/body)))
 
     ) ; end of 括弧やS式の構造化編集
-
-    (leaf *モーダル編集(meow)----------------------------------------------------------------
-      :doc "軽量なモーダル編集。Kakoune風の選択→アクションモデル"
-      :doc "i: insertモード(カーソル前)、a: appendモード(カーソル後)、ESC: normalモードへ"
-      :doc "SPC ?: チートシート表示"
-      :config
-      (leaf meow
-        :url "https://github.com/meow-edit/meow"
-        :ensure t
-        :require t
-        :bind ((:meow-normal-state-keymap
-                ("i" . meow-insert)
-                ("a" . meow-append)
-                ("<escape>" . ignore))
-               (:meow-insert-state-keymap
-                ("C-[" . meow-insert-exit)))
-        :config
-        (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
-        (meow-leader-define-key
-         '("?" . meow-cheatsheet))
-        (meow-global-mode 1)))
 
     ) ; end of ファイル編集設定===========================================================
 
@@ -604,23 +566,24 @@ puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
         :ensure t
         :config
         (which-key-mode)
-        ;; meowリーダーキー用（mode-specific-mapに設定）
-        ;; 注意: meowのkeypadではSPC後にc/x/h/m/gを押すとC-c/C-x/C-h/M-/C-M-として解釈される
-        ;;       そのためこれらのキーはリーダーの第一キーとして避けた方が良い
-        (which-key-add-keymap-based-replacements mode-specific-map
-          "a"   "AI"
-          "a c" "Claude Code IDE"
-          "e"   "Edit"
-          "d"   "Dev"
-          "d u" "Dev UI"
-          "d d" "DAP"
-          "s"   "Search/Navigation"
-          "o"   "Org"
-          "o C" "Org Clock"
-          "p"   "Project"
-          "d t" "Tool"
-          "w"   "Window"
-          "w r" "window resize")))
+        ;; C-;リーダーキー用
+        (which-key-add-key-based-replacements
+          "C-; a"   "AI"
+          "C-; a c" "Claude Code IDE"
+          "C-; e"   "Edit"
+          "C-; d"   "Dev"
+          "C-; d u" "Dev UI"
+          "C-; d d" "DAP"
+          "C-; d t" "Tool"
+          "C-; j"   "Jump"
+          "C-; o"   "Org"
+          "C-; o C" "Org Clock"
+          "C-; p"   "Puni"
+          "C-; P"   "Project"
+          "C-; s"   "Search/Navigation"
+          "C-; v"   "Vim Motion"
+          "C-; w"   "Window"
+          "C-; w r" "window resize")))
 
     (leaf *最近使ったファイル-------------------------------------------------------------
       :doc "標準機能(recentf)として具備されている"
@@ -697,20 +660,17 @@ puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
                ([remap yank-pop] . consult-yank-pop)        ; M-y: kill-ringをプレビュー選択
                ([remap goto-line] . consult-goto-line)))    ; M-g g: 行番号プレビュー
       (leaf *consult-keybinds
-        :after meow
-        :config
-        (meow-leader-define-key
-         ;; ナビゲーション
-         '("s i" . consult-imenu)              ; 関数・見出し等へジャンプ
-         '("s o" . consult-outline)            ; アウトラインへジャンプ
-         '("s m" . consult-mark)               ; マーク履歴へジャンプ
-         '("s k" . consult-global-mark)        ; グローバルマーク履歴へジャンプ
-         ;; 検索
-         '("s g" . consult-ripgrep)            ; grepでファイル内容検索
-         '("s d" . consult-fd)                 ; fdでファイル名検索
-         ;; カスタム
-         '("s f" . consult-flymake)            ; flymakeエラー一覧
-         '("s y" . consult-yank-from-kill-ring)))) ; killringから選んでyank
+        :bind (;; ナビゲーション
+               ("C-; s i" . consult-imenu)              ; 関数・見出し等へジャンプ
+               ("C-; s o" . consult-outline)            ; アウトラインへジャンプ
+               ("C-; s m" . consult-mark)               ; マーク履歴へジャンプ
+               ("C-; s k" . consult-global-mark)        ; グローバルマーク履歴へジャンプ
+               ;; 検索
+               ("C-; s g" . consult-ripgrep)            ; grepでファイル内容検索
+               ("C-; s d" . consult-fd)                 ; fdでファイル名検索
+               ;; カスタム
+               ("C-; s f" . consult-flymake)            ; flymakeエラー一覧
+               ("C-; s y" . consult-yank-from-kill-ring)))) ; killringから選んでyank
 
     (leaf *補完パネルに追加情報を表示-----------------------------------------------------
       :config
@@ -759,7 +719,7 @@ puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
                              (projectile-mode t))))
       ;; projectile用hydra（厳選コマンド）
       (leaf *projectile-keybinds
-        :after (meow hydra)
+        :after hydra
         :config
         (defhydra hydra-projectile (:hint nil :exit t)
           "
@@ -788,11 +748,10 @@ puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
           ("v" projectile-vc)
           ("!" projectile-run-shell-command-in-root)
           ("q" nil))
-        (meow-leader-define-key
-         '("p" . hydra-projectile/body))
         ;; which-keyで関数名をわかりやすく表示
         (push '((nil . "hydra-projectile/body") . (nil . "Project"))
-              which-key-replacement-alist)))
+              which-key-replacement-alist)
+        :bind (("C-; P" . hydra-projectile/body))))
 
     (leaf *ツリービュー設定---------------------------------------------------------------
       :doc "NeoTreeとかもあるけど、他のプラグインと統合しやすそうなTreemacsを選択"
@@ -971,12 +930,7 @@ puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
             (magit-status)))
 )
       (leaf *magit-keybinds
-        :after meow
-        :config
-        (meow-leader-define-key
-         '("d t g" . my/magit))
-        (which-key-add-keymap-based-replacements mode-specific-map
-          "d t g" "magit"))
+        :bind (("C-; d t g" . my/magit)))
       (leaf forge
         :doc "GitHubのプルリクエストやissueの操作。Gitlabとかも対応しているぽい"
         :url "https://github.com/magit/forge"
@@ -984,10 +938,8 @@ puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
         :after magit)
       ;; forge操作自体はmagitで行う(forgeがmagitのサブモジュールなので)
       (leaf *forge-keybinds
-        :after (meow forge)
-        :config
-        (meow-leader-define-key
-         '("d t f" . forge-pull)))
+        :after forge
+        :bind (("C-; d t f" . forge-pull)))
       (leaf git-gutter
         :doc "gitの差分表示"
         :url ""
@@ -1006,13 +958,10 @@ puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
         (claude-code-ide-emacs-tools-setup))
       (leaf *claude-code-keybinds
         :doc ":commandsによる遅延ロードだと:config内が実行されないため、キーバインドは別ブロックで定義"
-        :after meow
-        :config
-        (meow-leader-define-key
-         '("a c i" . claude-code-ide)
-         '("a c m" . claude-code-ide-menu)
-         '("a c s" . claude-code-ide-send-region)
-         '("a c f" . claude-code-ide-fix-error))))
+        :bind (("C-; a c i" . claude-code-ide)
+               ("C-; a c m" . claude-code-ide-menu)
+               ("C-; a c s" . claude-code-ide-send-region)
+               ("C-; a c f" . claude-code-ide-fix-error))))
 
     (leaf *ジャンプ操作を便利に -----------------------------------------------------------
       :config
@@ -1020,23 +969,17 @@ puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
         :url "https://github.com/abo-abo/avy"
         :ensure t
         :custom (avy-timeout-seconds . 0.5))
-      ;; vim-easymotion風に <Leader><Leader> + モーション でavyを起動
+      ;; avyジャンプ
       (leaf *avy-keybinds
-        :after meow
-        :config
-        (meow-leader-define-key
-         '("SPC w" . avy-goto-word-1)  ; <Leader><Leader>w 単語ジャンプ
-         '("SPC f" . avy-goto-char)    ; <Leader><Leader>f 文字検索
-         '("SPC j" . avy-goto-line)))) ; <Leader><Leader>j 行ジャンプ
+        :bind (("C-; j w" . avy-goto-word-1)  ; 単語ジャンプ
+               ("C-; j f" . avy-goto-char)    ; 文字検索
+               ("C-; j j" . avy-goto-line)))) ; 行ジャンプ
 
     (leaf *バッファとウィンドウを閉じる---------------------------------------------------
-      :doc "標準関数だがmeowリーダーに追加"
+      :doc "標準関数だがC-;リーダーに追加"
       :config
       (leaf *kill-buffer-and-window-keybinds
-        :after meow
-        :config
-        (meow-leader-define-key
-         '("w q" . kill-buffer-and-window))))
+        :bind (("C-; w q" . kill-buffer-and-window))))
 
     ) ; end of 各種便利機能===============================================================
 
@@ -1063,15 +1006,7 @@ puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
       (leaf vterm-toggle
         :ensure t)
       (leaf *vterm-keybinds
-        :after meow
-        :config
-        (meow-leader-define-key
-         '("d t v" . vterm-toggle)))
-      (leaf meow-vterm
-        :vc (:url "https://github.com/accelbread/meow-vterm")
-        :after (meow vterm)
-        :config
-        (meow-vterm-enable))
+        :bind (("C-; d t v" . vterm-toggle)))
       )
 
 
@@ -1179,23 +1114,20 @@ puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
           (org-journal-file-header . "#+TITLE: Journal %Y-%m\n#+LANGUAGE: ja\n#+OPTIONS: toc:t num:t ^:nil\n#+PROPERTY: header-args :exports both :eval no-export\n#+STARTUP: show2levels indent\n\n"))
         )
       (leaf *org-keybinds
-        :after meow
-        :config
-        (meow-leader-define-key
-         '("o l" . org-store-link)
-         '("o L" . org-insert-link)
-         '("o i" . org-insert-structure-template)
-         '("o s" . org-edit-special)
-         '("o o" . org-open-at-point)
-         '("o a" . org-agenda)
-         '("o c" . org-capture)
-         '("o b" . business-journal)
-         '("o p" . private-journal)
-         '("o C i" . org-clock-in)
-         '("o C o" . org-clock-out)
-         '("o C d" . org-clock-display)
-         '("o C c" . org-clock-cancel)
-         '("o C r" . org-clock-report)))
+        :bind (("C-; o l" . org-store-link)
+               ("C-; o L" . org-insert-link)
+               ("C-; o i" . org-insert-structure-template)
+               ("C-; o s" . org-edit-special)
+               ("C-; o o" . org-open-at-point)
+               ("C-; o a" . org-agenda)
+               ("C-; o c" . org-capture)
+               ("C-; o b" . business-journal)
+               ("C-; o p" . private-journal)
+               ("C-; o C i" . org-clock-in)
+               ("C-; o C o" . org-clock-out)
+               ("C-; o C d" . org-clock-display)
+               ("C-; o C c" . org-clock-cancel)
+               ("C-; o C r" . org-clock-report)))
       )
 
     (leaf *Markdownを扱うよ----------------------------------------------------------------
@@ -1239,7 +1171,7 @@ puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
 )
       ;; 開発UI用hydra (ツリー表示、LSP、表示設定をまとめる)
       (leaf *dev-ui-keybinds
-        :after (meow lsp-treemacs)
+        :after lsp-treemacs
         :config
         (defhydra hydra-dev-ui (:hint nil)
           "
@@ -1265,8 +1197,7 @@ puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
           ("R" rainbow-delimiters-mode)
           ("f" flymake-mode)
           ("q" nil :exit t))
-        (meow-leader-define-key
-         '("d u" . hydra-dev-ui/body)))
+        :bind (("C-; d u" . hydra-dev-ui/body)))
 
       (leaf *web開発の諸々 ----------------------------------------------------------------
         :config
@@ -1330,7 +1261,7 @@ puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
 ))
       ;; DAP用hydra
       (leaf *dap-keybinds
-        :after (meow dap-mode)
+        :after dap-mode
         :config
         (defhydra hydra-dap (:hint nil)
           "
@@ -1344,8 +1275,7 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
           ("c" dap-continue)
           ("r" dap-ui-repl)
           ("q" dap-disconnect :exit t))
-        (meow-leader-define-key
-         '("d d" . hydra-dap/body)))
+        :bind (("C-; d d" . hydra-dap/body)))
 
     (leaf *Python開発の諸々 --------------------------------------------------------------
       :config
