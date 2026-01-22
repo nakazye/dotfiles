@@ -91,6 +91,8 @@
         :config
         ;; バックアップ・自動保存ファイルをvar/配下に配置
         (no-littering-theme-backups)
+        ;; auto-save-listもvar/配下に配置
+        (setq auto-save-list-file-prefix (no-littering-expand-var-file-name "auto-save-list/.saves-"))
         ;; カスタムテーマディレクトリをetc/配下に配置
         (setq custom-theme-directory (no-littering-expand-etc-file-name "themes/"))
         (make-directory custom-theme-directory t)))

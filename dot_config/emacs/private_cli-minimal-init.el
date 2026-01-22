@@ -23,7 +23,8 @@
       initial-scratch-message nil
       ring-bell-function 'ignore
       make-backup-files nil
-      auto-save-default nil)
+      auto-save-default nil
+      auto-save-list-file-prefix "~/.config/emacs/var/auto-save-list/.saves-")
 
 ;; エンコーディング
 (set-language-environment "Japanese")
