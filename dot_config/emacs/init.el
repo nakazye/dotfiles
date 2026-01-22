@@ -627,7 +627,8 @@ puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
    _t_ テスト⇔実装切り替え
 
  その他
-   _v_ バージョン管理(magit等)  _!_ シェルコマンド  _q_ 終了
+   _v_ バージョン管理(magit等)  _!_ シェルコマンド
+   _g_ ghqリフレッシュ                            _q_ 終了
 "
         ("p" projectile-switch-project)
         ("f" projectile-find-file)
@@ -640,6 +641,7 @@ puni: _m_:S式選択 _l_:括弧内選択 _M_:括弧含め選択 _e_:範囲拡張
         ("t" projectile-toggle-between-implementation-and-test)
         ("v" projectile-vc)
         ("!" projectile-run-shell-command-in-root)
+        ("g" my/projectile-refresh-ghq-projects)
         ("q" nil))
 
       ;; DAP (デバッグ)
@@ -807,12 +809,14 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
 
     (leaf *fuzzyにfindさせる--------------------------------------------------------------
       :doc "設定しているorderless-literalは、hogeを「*hoge*」としてfindしてくれる"
+      :doc "completion-ignore-caseで大文字小文字を常に無視"
       :config
       (leaf orderless
         :url "https://github.com/oantolin/orderless"
         :ensure t
         :custom
         `((completion-styles . '(orderless))
+          (completion-ignore-case . t)
           (orderless-matching-styles
            . '(orderless-literal)))))
 
@@ -827,6 +831,15 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
         :custom
         (projectile-dynamic-mode-line . nil)
         (projectile-switch-project-action . #'projectile-dired)
+        :preface
+        (defun my/projectile-refresh-ghq-projects ()
+          "ghqで管理しているリポジトリでprojectile-known-projectsをリフレッシュ"
+          (interactive)
+          (setq projectile-known-projects nil)
+          (dolist (repo (split-string (shell-command-to-string "ghq list -p") "\n" t))
+            (projectile-add-known-project repo))
+          (projectile-save-known-projects)
+          (message "Refreshed: %d ghq projects" (length projectile-known-projects)))
         :hook
         (after-init-hook . (lambda ()
                              (projectile-mode t)))))
