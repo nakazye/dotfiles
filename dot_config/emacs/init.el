@@ -775,6 +775,11 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
       :doc "一方、設定次第ではパフォーマンスに影響があるので注意すること（↓参照）"
       :url "https://blog.tomoyukim.net/post/2022/08/19/084659/"
       :config
+      (leaf ripgrep
+        :doc "projectile-ripgrep の依存パッケージ"
+        :url "https://github.com/nlamirault/ripgrep.el"
+        :ensure t)
+
       (leaf projectile
         :url "https://github.com/bbatsov/projectile"
         :ensure t
