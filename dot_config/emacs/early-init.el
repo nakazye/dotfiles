@@ -76,7 +76,9 @@
         :doc "デフォルトは800000。最後に戻す"
         :doc "hookだとうまく動かなかったので、configで対応する"
         :config (add-hook 'emacs-startup-hook
-                          (lambda () (setq gc-cons-threshold 800000))))
+                          ;; デフォルト(800000)は LSP の大量データ処理でGCが頻発するため
+                          ;; 64MB に設定する
+                          (lambda () (setq gc-cons-threshold (* 64 1024 1024)))))
       )
 
     (leaf *メニューバーやツールバーを表示しない----------------------------------------

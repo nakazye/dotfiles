@@ -1195,7 +1195,14 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
         :doc "LSPクライアント本体"
         :url "https://github.com/emacs-lsp/lsp-mode"
         :ensure t
-        :custom (lsp-keymap-prefix . "C-c l")
+        :custom ((lsp-keymap-prefix . "C-c l")
+                 ;; 大規模プロジェクト向けパフォーマンスチューニング
+                 (lsp-idle-delay . 0.5)            ; 編集からサーバへの通知間隔(秒)
+                 (lsp-response-timeout . 30)        ; レスポンスタイムアウト(秒)
+                 (lsp-file-watch-threshold . 5000)) ; ファイル監視の上限数
+        :init
+        ;; LSPの大きなJSONレスポンスを効率よく読むため1MBに拡張(デフォルト4KB)
+        (setq read-process-output-max (* 1024 1024))
         :hook (lsp-mode-hook . lsp-enable-which-key-integration))
       (leaf lsp-ui
         :doc "ハイレベルなUIを提供してくれるらしい。が、まだちゃんとわかってない"
@@ -1260,9 +1267,20 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
         (leaf lsp-java
           :doc "JavaなLSP"
           :url "https://github.com/emacs-lsp/lsp-java"
-          :hook ((java-mode-hook . lsp-deferred)
-                 (java-mode-hook . java-ts-mode))
-          :ensure t)
+          :ensure t
+          :custom
+          ;; jdtls の JVM ヒープを増やす(デフォルト 1G は大規模プロジェクトで不足)
+          ;; G1GC は大ヒープでの停止時間が短く LSP サーバ向き
+          (lsp-java-vmargs . '("-XX:+UseG1GC"
+                               "-XX:+UseStringDeduplication"
+                               "-Dsun.zip.disableMemoryMapping=true"
+                               "-Xmx4G"
+                               "-Xms512m"))
+          :init
+          ;; java-mode を java-ts-mode に直接リマップ (Emacs 29+)
+          ;; フック内でのモード切り替えは後続フックをスキップさせるため使わない
+          (add-to-list 'major-mode-remap-alist '(java-mode . java-ts-mode))
+          :hook (java-ts-mode-hook . lsp-deferred))
         (leaf dap-mode
           :doc "デバッグ機能 (Debug Adapter Protocol)"
           :url "https://github.com/emacs-lsp/dap-mode"
