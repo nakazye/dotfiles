@@ -1293,6 +1293,14 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
 ))
       ) ; end of *lspモード
 
+    (leaf *Groovy / Gradle ---------------------------------------------------------------
+      :config
+      (leaf groovy-mode
+        :doc "Groovy / Gradle ファイルのシンタックスハイライト"
+        :url "https://github.com/Groovy-Emacs-Modes/groovy-emacs-modes"
+        :ensure t
+        :mode ("\\.groovy\\'" "\\.gradle\\'")))
+
     (leaf *Python開発の諸々 --------------------------------------------------------------
       :config
       (leaf python-mode
