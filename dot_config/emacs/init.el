@@ -49,6 +49,10 @@
     (leaf *yes-or-noをy-or-nに変更--------------------------------------------------------
       :custom (use-short-answers . t))
 
+    (leaf *C-x C-c誤操作防止-----------------------------------------------------------------
+      :doc "C-x C-c でEmacsを終了する前に確認を求める"
+      :custom (confirm-kill-emacs . 'yes-or-no-p))
+
     (leaf *拡張子の大文字小文字を無視------------------------------------------------------
       :doc "auto-mode-alistのマッチングで.PDFと.pdfを同一視する"
       :custom (auto-mode-case-fold . t))
