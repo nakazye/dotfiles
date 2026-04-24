@@ -1045,6 +1045,7 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
         :hook
         (vterm-mode-hook . (lambda()
                              (display-line-numbers-mode 0)
+                             (setq show-trailing-whitespace nil)
                              ;; vtermは読み取り専用バッファなので編集系モードを無効化
                              (volatile-highlights-mode -1)
                              (puni-disable-puni-mode)
