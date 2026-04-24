@@ -381,10 +381,11 @@
 
     (leaf *フォーマット系諸々-------------------------------------------------------------
       :custom
-      (truncate-lines        . t)     ; 行を折り返さない
-      (require-final-newline . nil)   ; ファイルの末尾に改行を挿入しない
-      (tab-width             . 2)     ; タブ幅
-      (indent-tabs-mode      . nil)   ; タブをスペースで
+      (truncate-lines          . t)     ; 行を折り返さない
+      (require-final-newline   . nil)   ; ファイルの末尾に改行を挿入しない
+      (tab-width               . 2)     ; タブ幅
+      (indent-tabs-mode        . nil)   ; タブをスペースで
+      (show-trailing-whitespace . t)    ; 末尾スペースを可視化
       )
 
     (leaf *リージョン選択中に入力すると、選択範囲を消して入力-----------------------------
