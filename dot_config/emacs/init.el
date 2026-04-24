@@ -1223,12 +1223,24 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
         :config
         (leaf web-mode
           :doc "HTMLとかその他諸々"
+          :doc "Vueファイル用LSPサーバ: vue-language-server / volar (別途インストール要)"
+          :doc "  Nix: nix profile install nixpkgs#vue-language-server"
+          :doc "  npm: npm install -g @vue/language-server"
           :url "https://web-mode.org"
           :ensure t
           :mode ("\\.html\\'"
                  "\\.htm\\'"
                  "\\.jsp\\'"
-                 "\\.djhtml\\'"))
+                 "\\.djhtml\\'"
+                 "\\.vue\\'")
+          :hook (web-mode-hook . (lambda ()
+                                   (when (and buffer-file-name
+                                              (string= (file-name-extension buffer-file-name) "vue"))
+                                     (lsp-deferred))))
+          :config
+          ;; volar (vue-language-server) をVueファイルに対応付ける
+          (with-eval-after-load 'lsp-mode
+            (add-to-list 'lsp-language-id-configuration '("\\.vue\\'" . "vue"))))
         (leaf css-ts-mode
           :doc "cssを色付け"
           :mode ("\\.css\\'"))
@@ -1239,6 +1251,9 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
           :commands (httpd-start httpd-stop httpd-serve-directory)))
 
       (leaf *JSやTS開発の諸々 --------------------------------------------------------------
+        :doc "LSPサーバ: typescript-language-server (別途インストール要)"
+        :doc "  Nix: nix profile install nixpkgs#nodePackages.typescript-language-server"
+        :doc "  npm: npm install -g typescript-language-server typescript"
         :config
         (leaf typescript-ts-mode
           :doc "TypeScriptのビルトインモード"
@@ -1266,6 +1281,8 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
         :config
         (leaf lsp-java
           :doc "JavaなLSP"
+          :doc "LSPサーバ: Eclipse JDT LS (jdtls) は lsp-java が初回起動時に自動ダウンロード"
+          :doc "JDKが別途必要: nix profile install nixpkgs#jdk"
           :url "https://github.com/emacs-lsp/lsp-java"
           :ensure t
           :custom
@@ -1332,6 +1349,8 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
         :mode "\\.sh\\'"))
 
     (leaf *cやc++を扱うぞ ----------------------------------------------------------------
+      :doc "LSPサーバ: clangd (別途インストール要)"
+      :doc "  Nix: nix profile install nixpkgs#clang-tools"
       :config
       (leaf c-ts-mode
         :mode ("\\.c\\'" "\\.sqc\\'")

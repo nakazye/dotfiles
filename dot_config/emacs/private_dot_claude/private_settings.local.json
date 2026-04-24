@@ -27,7 +27,9 @@
       "WebFetch(domain:www.gnu.org)",
       "Bash(grep:*)",
       "Bash(chezmoi diff:*)",
-      "Bash(awk:*)"
+      "Bash(awk:*)",
+      "Read(//Users/yutaka.nakajima/src/aws/deliverable/ptn-shared-code-frontend-app/src/**)",
+      "Read(//Users/yutaka.nakajima/src/aws/deliverable/ptn-shared-code-frontend-app/**)"
     ],
     "deny": [],
     "ask": []
