@@ -29,7 +29,11 @@
       "Bash(chezmoi diff:*)",
       "Bash(awk:*)",
       "Read(//Users/yutaka.nakajima/src/aws/deliverable/ptn-shared-code-frontend-app/src/**)",
-      "Read(//Users/yutaka.nakajima/src/aws/deliverable/ptn-shared-code-frontend-app/**)"
+      "Read(//Users/yutaka.nakajima/src/aws/deliverable/ptn-shared-code-frontend-app/**)",
+      "WebFetch(domain:flaviofusuma.com)",
+      "Bash(infocmp eat-truecolor *)",
+      "Bash(infocmp eat-color *)",
+      "Bash(infocmp eat-mono *)"
     ],
     "deny": [],
     "ask": []

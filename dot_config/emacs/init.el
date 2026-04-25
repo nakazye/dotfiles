@@ -483,9 +483,9 @@
         "
 ─── Dev UI ───────────────────────────────────────────
  Tree     _t_:treemacs
- LSP      _s_:symbols  _e_:errors  _r_:refs  _i_:impl  _c_:call  _y_:type
+ LSP      _s_:symbols  _E_:errors  _r_:refs  _i_:impl  _c_:call  _y_:type
  Git      _g_:magit  _f_:forge-pull
- Term     _v_:vterm
+ Term     _v_:vterm  _e_:eat
  Display  _G_:git-gutter  _l_:line-num  _C_:colorful  _R_:rainbow  _F_:flymake
 ─────────────────────────────────────────── _q_:終了 ──
 "
@@ -493,7 +493,7 @@
         ("t" treemacs)
         ;; LSP
         ("s" lsp-treemacs-symbols)
-        ("e" lsp-treemacs-errors-list)
+        ("E" lsp-treemacs-errors-list)
         ("r" lsp-treemacs-references)
         ("i" lsp-treemacs-implementations)
         ("c" lsp-treemacs-call-hierarchy)
@@ -503,6 +503,7 @@
         ("f" forge-pull :exit t)
         ;; Term
         ("v" vterm-toggle :exit t)
+        ("e" my/eat-toggle :exit t)
         ;; Display
         ("G" git-gutter-mode)
         ("l" display-line-numbers-mode)
@@ -1053,6 +1054,35 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
                              (define-key vterm-mode-map (kbd "C-h") #'vterm-send-C-h))))
       (leaf vterm-toggle
         :ensure t)
+
+      (leaf eat
+        :doc "純Elispなターミナルエミュレータ。ネイティブモジュール不要でvtermより軽量"
+        :url "https://codeberg.org/akib/emacs-eat"
+        :ensure t
+        ;; 初回または eat パッケージ更新後に M-x eat-compile-terminfo を実行してターミナル定義をインストールする
+        ;; （未実行だと「can't find terminal definition for eat-truecolor」エラーが出る）
+        :preface
+        (defun my/eat-toggle ()
+          "eat を画面下部の分割ウィンドウでトグルする。vterm-toggle と同様の挙動"
+          (interactive)
+          (if-let ((win (get-buffer-window "*eat*")))
+              (delete-window win)
+            (let ((eat-buf (or (get-buffer "*eat*")
+                               ;; eat 内部の pop-to-buffer-same-window を封じてバッファだけ作る
+                               (progn
+                                 (cl-letf (((symbol-function 'pop-to-buffer-same-window) #'ignore))
+                                   (eat))
+                                 (get-buffer "*eat*")))))
+              (select-window
+               (display-buffer-in-side-window
+                eat-buf
+                '((side . bottom) (slot . 0) (window-height . 0.3)))))))
+        :hook
+        (eat-mode-hook . (lambda ()
+                           (display-line-numbers-mode 0)
+                           (setq show-trailing-whitespace nil)
+                           (volatile-highlights-mode -1)
+                           (puni-disable-puni-mode))))
       )
 
 
