@@ -280,18 +280,8 @@
 
     (leaf *tree-sitter使うよ--------------------------------------------------------------
       :config
-      (leaf tree-sitter
-        :doc "tree-sitterそのもの"
-        :ensure t
-        :hook ((typescript-ts-mode . tree-sitter-hl-mode)
-               (tsx-ts-mode . tree-sitter-hl-mode))
-        :config
-        (global-tree-sitter-mode))
       (leaf treesit
-        :doc "諸々設定"
-        :config
-        ;;; ハイライトレベルの設定Max(4)
-        (setq treesit-font-lock-level 4)
+        :doc "Emacs 29+ ビルトインのtree-sitter統合"
         :custom
         ;;; 構文定義ファイル
         (treesit-language-source-alist
@@ -313,7 +303,10 @@
              (make "https://github.com/alemuller/tree-sitter-make")
              (yaml "https://github.com/ikatyang/tree-sitter-yaml")
              ))
-        :init
+        :config
+        ;;; ハイライトレベルの設定Max(4)
+        (setq treesit-font-lock-level 4)
+        ;;; :customで設定したリストを参照するため:configで実行（:initは:customより先に走るため不可）
         (mapc (lambda (lang)
                 (unless (treesit-language-available-p lang nil)
                   (treesit-install-language-grammar lang)))
@@ -326,15 +319,14 @@
         :url "https://github.com/abo-abo/ace-window"
         :ensure t
         :config
-        (with-eval-after-load 'ace-window
-          (ace-window-posframe-mode t)
-          ;; treemacsがaw-ignored-buffersにtreemacs-modeを追加するのを取り消す
-          ;; treemacs-compatibilityがace-window読み込み後に追加するので、
-          ;; ace-window実行前に毎回削除する
-          (defun my/ace-window-include-treemacs (&rest _)
-            "Remove treemacs-mode from aw-ignored-buffers."
-            (setq aw-ignored-buffers (delq 'treemacs-mode aw-ignored-buffers)))
-          (advice-add 'ace-window :before #'my/ace-window-include-treemacs)))
+        (ace-window-posframe-mode t)
+        ;; treemacsがaw-ignored-buffersにtreemacs-modeを追加するのを取り消す
+        ;; treemacs-compatibilityがace-window読み込み後に追加するので、
+        ;; ace-window実行前に毎回削除する
+        (defun my/ace-window-include-treemacs (&rest _)
+          "Remove treemacs-mode from aw-ignored-buffers."
+          (setq aw-ignored-buffers (delq 'treemacs-mode aw-ignored-buffers)))
+        (advice-add 'ace-window :before #'my/ace-window-include-treemacs))
       (leaf *ace-window-keybinds
         :bind (("C-; w w" . ace-window))))
 
@@ -924,11 +916,23 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
         :custom (prefix-help-command . #'embark-prefix-help-command) ;; Embarkを用いたキーバインドヘルプ改善
         :config
         ;; Embark のアクションや変換候補を、which-key を使って視覚的に表示する設定
-        (setq embark-action-indicator
-              (lambda (map _target)
-                (which-key--show-keymap "Embark" map nil nil 'no-paging)
-                #'which-key--hide-popup-ignore-command)
-              embark-become-indicator embark-action-indicator))
+        (defun my/embark-which-key-indicator ()
+          "An embark indicator that displays keymaps using which-key."
+          (lambda (&optional keymap targets _prefix)
+            (if (null keymap)
+                (which-key--hide-popup-ignore-command)
+              (which-key--show-keymap
+               (if (eq (plist-get (car targets) :type) 'embark-become)
+                   "Become"
+                 (format "Act on %s '%s'%s"
+                         (plist-get (car targets) :type)
+                         (embark--truncate-target (plist-get (car targets) :target))
+                         (if (cdr targets) "…" "")))
+               keymap nil nil 'no-paging))))
+        (setq embark-indicators
+              '(my/embark-which-key-indicator
+                embark-highlight-indicator
+                embark-isearch-highlight-indicator)))
       ;; embark-consultの導入
       (leaf embark-consult
         :ensure t
@@ -1040,7 +1044,7 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
         :url "https://github.com/akermu/emacs-libvterm"
         :ensure t
         :custom
-        (vterm-max-scrollbacck . 100000)
+        (vterm-max-scrollback . 100000)
         (vterm-buffer-name-string . "vterm: %s")
         :hook
         (vterm-mode-hook . (lambda()
@@ -1326,12 +1330,12 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
 
     (leaf *Python開発の諸々 --------------------------------------------------------------
       :config
-      (leaf python-mode
-        :ensure t
-        :hook ((python-mode-hook . python-ts-mode)
-               ;;               (python-mode-hook . lsp-deferred)
-               )
-        :mode ("\\.py\\'")))
+      (leaf python-ts-mode
+        :doc "python-mode を python-ts-mode にリマップ (Emacs 29+)"
+        :init
+        (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
+        ;;:hook (python-ts-mode-hook . lsp-deferred)
+        ))
 
     (leaf *Nixをやるぞ--------------------------------------------------------------------
       :config
@@ -1349,7 +1353,7 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
         :mode "\\.lua\\'"))
 
     (leaf *shell(bash) -------------------------------------------------------------------
-      :doc "activeなluaのtreesitter見つけられなかったのでlua-ts-modeではなくlua-mode使う"
+      :doc "bash-ts-mode (Emacs 29+ ビルトイン) を .sh ファイルに適用"
       :config
       (leaf bash-ts-mode
         :mode "\\.sh\\'"))
