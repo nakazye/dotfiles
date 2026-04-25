@@ -874,33 +874,29 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
         :url "https://github.com/minad/cape"
         :ensure t
         :after corfu
+        :hook
+        ;; prog-mode: キーワードと略語
+        (prog-mode-hook . (lambda ()
+                            (add-to-list 'completion-at-point-functions #'cape-keyword)
+                            (add-to-list 'completion-at-point-functions #'cape-abbrev)))
+        ;; emacs-lisp: Elispシンボルとブロック
+        (emacs-lisp-mode-hook . (lambda ()
+                                  (add-to-list 'completion-at-point-functions #'cape-elisp-symbol)
+                                  (add-to-list 'completion-at-point-functions #'cape-elisp-block)))
+        ;; org-mode: TeXコマンド
+        (org-mode-hook . (lambda ()
+                           (add-to-list 'completion-at-point-functions #'cape-tex)))
         :config
-        ;; abbrev (略語) の補完
-        (add-to-list 'completion-at-point-functions #'cape-abbrev)
-        ;; バッファ内の単語を補完
-        (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-        ;; 辞書ファイルから単語を補完
-        (add-to-list 'completion-at-point-functions #'cape-dict)
-        ;; Org や Markdown のコードブロック内で Elisp を補完
-        (add-to-list 'completion-at-point-functions #'cape-elisp-block)
-        ;; Elisp シンボルを補完
-        (add-to-list 'completion-at-point-functions #'cape-elisp-symbol)
-        ;; 絵文字の補完
-        (add-to-list 'completion-at-point-functions #'cape-emoji)
-        ;; ファイル名の補完
-        (add-to-list 'completion-at-point-functions #'cape-file)
-        ;; Eshell や Comint、ミニバッファの履歴から補完
-        (add-to-list 'completion-at-point-functions #'cape-history)
-        ;; プログラミング言語のキーワードを補完
-        (add-to-list 'completion-at-point-functions #'cape-keyword)
-        ;; 現在のバッファから行全体を補完
-        (add-to-list 'completion-at-point-functions #'cape-line)
-        ;; RFC 1345 に基づく Unicode 補完
-        (add-to-list 'completion-at-point-functions #'cape-rfc1345)
-        ;; SGML エンティティ (例: &alpha;) に基づく補完
-        (add-to-list 'completion-at-point-functions #'cape-sgml)
-        ;; TeX コマンド (例: \hbar) に基づく Unicode 補完
-        (add-to-list 'completion-at-point-functions #'cape-tex)
+        ;; グローバル: どのモードでも有用なバックエンド
+        (add-to-list 'completion-at-point-functions #'cape-emoji)     ; 絵文字
+        (add-to-list 'completion-at-point-functions #'cape-history)   ; 履歴
+        (add-to-list 'completion-at-point-functions #'cape-file)      ; ファイル名
+        (add-to-list 'completion-at-point-functions #'cape-dabbrev)   ; バッファ内単語
+        ;; 以下は特定用途向け。必要時に有効化する
+        ;; (add-to-list 'completion-at-point-functions #'cape-dict)      ; 辞書ファイル（遅い）
+        ;; (add-to-list 'completion-at-point-functions #'cape-line)      ; 行全体補完
+        ;; (add-to-list 'completion-at-point-functions #'cape-rfc1345)   ; RFC1345 Unicode
+        ;; (add-to-list 'completion-at-point-functions #'cape-sgml)      ; SGMLエンティティ
         ;; lsp-java起動したら、lsp-modeかlsp-javaかわからんけどcompany使おうとしているログ出てきたので潰す
         (with-eval-after-load 'lsp-mode (setq lsp-completion-provider :none))
         ))
