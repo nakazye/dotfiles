@@ -319,7 +319,8 @@
         :url "https://github.com/abo-abo/ace-window"
         :ensure t
         :config
-        (ace-window-posframe-mode t)
+        (when (display-graphic-p)
+          (ace-window-posframe-mode t))
         ;; treemacsがaw-ignored-buffersにtreemacs-modeを追加するのを取り消す
         ;; treemacs-compatibilityがace-window読み込み後に追加するので、
         ;; ace-window実行前に毎回削除する
