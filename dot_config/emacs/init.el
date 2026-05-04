@@ -646,6 +646,7 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
           "C-; o C" "Org Clock"
           "C-; p"   "Puni"
           "C-; P"   "Project"
+          "C-; f"   "File Manager"
           "C-; s"   "Search/Navigation"
           "C-; w"   "Window"
           "C-; w r" "window resize")))
@@ -674,6 +675,17 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
       (leaf dired
         :custom
         (dired-kill-when-opening-new-dired-buffer . t)))
+
+    (leaf *dirvish-diredの代替として使う--------------------------------------------------
+      :doc "dirvish-override-dired-modeでdiredを呼ぶと自動的にdirvishが起動する"
+      :config
+      (leaf dirvish
+        :ensure t
+        :init (dirvish-override-dired-mode)
+        :custom
+        (dirvish-attributes . '(nerd-icons file-size))
+        :bind (("C-; f f" . dirvish)
+               ("C-; f s" . dirvish-side))))
 
     (leaf *ミニバッファで補完UI-----------------------------------------------------------
       :doc "Emacs28から標準添付されるfido-vertical-modeがあったりする"
