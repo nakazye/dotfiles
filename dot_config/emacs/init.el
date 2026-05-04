@@ -137,7 +137,25 @@
         :doc "emacs-direnvの後継"
         :url "https://github.com/purcell/envrc"
         :ensure t
-        :hook (after-init-hook . envrc-global-mode))
+        :preface
+        ;; projectile-compile-project 等が内部で呼ぶ compile は compilation バッファを作成してから
+        ;; プロセスを起動するが、envrc は非同期で環境変数を適用するため compilation-mode-hook
+        ;; では起動タイミングに間に合わない。
+        ;; .envrc が存在する場合はコマンドを direnv exec でラップして、
+        ;; プロセス起動時点で確実に .envrc の環境変数が有効になるようにする
+        (defun my/compile-with-direnv (orig-fn command &rest args)
+          (let ((envrc-dir (locate-dominating-file default-directory ".envrc")))
+            (apply orig-fn
+                   (if (and envrc-dir (executable-find "direnv"))
+                       (format "direnv exec %s sh -c %s"
+                               (shell-quote-argument (expand-file-name envrc-dir))
+                               (shell-quote-argument command))
+                     command)
+                   args)))
+        :hook
+        (after-init-hook . envrc-global-mode)
+        :config
+        (advice-add 'compile :around #'my/compile-with-direnv))
       )
 
     ) ; end of 一般設定 ==================================================================
