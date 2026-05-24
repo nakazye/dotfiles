@@ -325,10 +325,17 @@
         ;;; ハイライトレベルの設定Max(4)
         (setq treesit-font-lock-level 4)
         ;;; :customで設定したリストを参照するため:configで実行（:initは:customより先に走るため不可）
-        (mapc (lambda (lang)
-                (unless (treesit-language-available-p lang nil)
-                  (treesit-install-language-grammar lang)))
-              (mapcar #'car treesit-language-source-alist))
+        ;; macOSでNix GCCを使うとシステムヘッダが見つからないため、macOSのみシステムclangを使用
+        (let ((cc  (when (eq system-type 'darwin) "/usr/bin/cc"))
+              (c++ (when (eq system-type 'darwin) "/usr/bin/c++")))
+          (mapc (lambda (lang)
+                  (unless (treesit-language-available-p lang nil)
+                    (let* ((entry (alist-get lang treesit-language-source-alist))
+                           (url (if (listp entry) (car entry) entry))
+                           (rev (when (listp entry) (nth 1 entry)))
+                           (dir (when (listp entry) (nth 2 entry))))
+                      (treesit-install-language-grammar lang url rev dir cc c++))))
+                (mapcar #'car treesit-language-source-alist)))
         ))
 
     (leaf *ウィンドウ操作を便利に --------------------------------------------------------
@@ -1445,3 +1452,18 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
 (provide 'init)
 
 ;;; init.el ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-vc-selected-packages
+   '((claude-code-ide :url
+                      "https://github.com/manzaltu/claude-code-ide.el"))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(mode-line ((t (:underline nil))) nil "Customized with leaf in `doom-modeline' block at `/Users/yutaka.nakajima/.config/emacs/init.el'")
+ '(mode-line-inactive ((t (:underline nil))) nil "Customized with leaf in `doom-modeline' block at `/Users/yutaka.nakajima/.config/emacs/init.el'"))
