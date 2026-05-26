@@ -326,16 +326,21 @@
         (setq treesit-font-lock-level 4)
         ;;; :customで設定したリストを参照するため:configで実行（:initは:customより先に走るため不可）
         ;; macOSでNix GCCを使うとシステムヘッダが見つからないため、macOSのみシステムclangを使用
-        (let ((cc  (when (eq system-type 'darwin) "/usr/bin/cc"))
-              (c++ (when (eq system-type 'darwin) "/usr/bin/c++")))
-          (mapc (lambda (lang)
-                  (unless (treesit-language-available-p lang nil)
-                    (let* ((entry (alist-get lang treesit-language-source-alist))
-                           (url (if (listp entry) (car entry) entry))
-                           (rev (when (listp entry) (nth 1 entry)))
-                           (dir (when (listp entry) (nth 2 entry))))
-                      (treesit-install-language-grammar lang url rev dir cc c++))))
-                (mapcar #'car treesit-language-source-alist)))
+        ;; treesit-install-language-grammarはlang1引数のみ受け付けるため、cc/c++はalist側に設定する
+        (when (eq system-type 'darwin)
+          (setq treesit-language-source-alist
+                (mapcar (lambda (entry)
+                          (let* ((lang (car entry))
+                                 (rest (cdr entry))
+                                 (url (car rest))
+                                 (rev (nth 1 rest))
+                                 (dir (nth 2 rest)))
+                            (list lang url rev dir "/usr/bin/cc" "/usr/bin/c++")))
+                        treesit-language-source-alist)))
+        (mapc (lambda (lang)
+                (unless (treesit-language-available-p lang nil)
+                  (treesit-install-language-grammar lang)))
+              (mapcar #'car treesit-language-source-alist))
         ))
 
     (leaf *ウィンドウ操作を便利に --------------------------------------------------------
