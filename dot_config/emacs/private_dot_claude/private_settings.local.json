@@ -33,7 +33,10 @@
       "WebFetch(domain:flaviofusuma.com)",
       "Bash(infocmp eat-truecolor *)",
       "Bash(infocmp eat-color *)",
-      "Bash(infocmp eat-mono *)"
+      "Bash(infocmp eat-mono *)",
+      "Bash(rg *)",
+      "WebFetch(domain:www.sanrio.co.jp)",
+      "Bash(open *)"
     ],
     "deny": [],
     "ask": []

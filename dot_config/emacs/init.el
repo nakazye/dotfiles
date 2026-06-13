@@ -242,23 +242,12 @@
     :config
 
     (leaf *カラーテーマ設定---------------------------------------------------------------
-      :doc "可愛い色でテンションぶちあげたい！"
-      :url "https://conao3.com/blog/2020-13fc-43ec/"
-      :doc "↑を参考に設定"
+      :doc "サンリオ / リトルツインスターズ inspired テーマ"
+      :doc "ダーク: sanrio-night / ライト: sanrio-day"
+      :doc "テーマファイル: etc/themes/sanrio-{night,day}-theme.el"
       :config
-      (leaf solarized-theme
-        :url "https://github.com/bbatsov/solarized-emacs"
-        :ensure t
-        :require t
-        :custom
-        ;; テーマファイルをetc/themes/に保存
-        (solarized-theme-dir . "~/.config/emacs/etc/themes/")
-        :config
-        (solarized-create-theme-file-with-palette
-            'light 'my-solarized-light
-          '("#d688a7" "#f4f0f9"
-            "#c1e2f6" "#efc9cd" "#e8c34d" "#e4a747" "#c2d648" "#a2dcad" "#94cbd1" "#c6a3d8"))
-        (load-theme 'my-solarized-light t)))
+      ;; custom-theme-directory は no-littering で etc/themes/ に設定済み
+      (load-theme 'sanrio-night t))
 
     (leaf *カラーコードに色をつける-------------------------------------------------------
       :config

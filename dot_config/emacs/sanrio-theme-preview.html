@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Sanrio Night — Emacs Theme Preview</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:      #1b1118;
+    --bg-alt:  #271a22;
+    --bg-hl:   #3a2432;
+    --fg:      #f9e9f2;
+    --fg-dim:  #c8a4bc;
+    --gray:    #8a7082;
+    --red:     #f08080;
+    --orange:  #efa42b;
+    --yellow:  #efc128;
+    --lime:    #bcd60a;
+    --green:   #91dea9;
+    --cyan:    #8bd0dd;
+    --blue:    #72b8f0;
+    --purple:  #cda1dc;
+    --pink:    #e383a8;
+    --magenta: #f06aaa;
+  }
+
+  body {
+    background: #100c0f;
+    color: var(--fg);
+    font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+    padding: 40px;
+    line-height: 1.5;
+  }
+
+  .title {
+    font-size: 22px;
+    font-weight: bold;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+    color: var(--pink);
+  }
+  .subtitle {
+    font-size: 12px;
+    color: var(--fg-dim);
+    margin-bottom: 36px;
+  }
+
+  section { margin-bottom: 36px; }
+  /* ── Theme toggle ── */
+  .theme-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #0a080b;
+    padding: 10px 40px;
+    display: flex;
+    gap: 12px;
+    border-bottom: 1px solid #3a2432;
+  }
+  .theme-btn {
+    padding: 5px 18px;
+    border-radius: 20px;
+    border: 1px solid;
+    font-family: inherit;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .theme-btn.dark-btn  { background: #3a2432; color: #f9e9f2; border-color: #8bd0dd; }
+  .theme-btn.light-btn { background: #fff0f5; color: #2a1820; border-color: #c04482; }
+
+  /* ── Theme sections ── */
+  .theme-section { padding: 40px; }
+  .theme-section.is-hidden { display: none; }
+  .theme-divider {
+    height: 4px;
+    background: linear-gradient(to right, #8bd0dd, #efc128, #e383a8, #cda1dc);
+  }
+
+  /* ── Light theme overrides ── */
+  .light .section-label { color: #b080a0; }
+  .light .swatch        { background: #f8e8f0; }
+  .light .swatch-name   { color: #2a1820; }
+  .light .swatch-hex    { color: #8a5070; }
+  .light .swatch-note   { color: #c09aaa; }
+  .light .faces th      { color: #c09aaa; border-bottom-color: #fce0ed; }
+  .light .faces td      { border-bottom-color: #fce0ed; }
+  .light .face-hex      { color: #8a5070; }
+
+  .section-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--gray);
+    margin-bottom: 12px;
+  }
+
+  /* ── Palette ── */
+  .palette {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 10px;
+    max-width: 760px;
+  }
+  .swatch {
+    border-radius: 8px;
+    padding: 10px 8px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .swatch-color {
+    width: 100%;
+    aspect-ratio: 1.4;
+    border-radius: 5px;
+    margin-bottom: 4px;
+  }
+  .swatch-name {
+    font-size: 10px;
+    color: var(--fg);
+    opacity: 0.85;
+  }
+  .swatch-hex {
+    font-size: 10px;
+    color: var(--fg-dim);
+  }
+  .swatch-note {
+    font-size: 9px;
+    color: var(--gray);
+    line-height: 1.3;
+  }
+  .swatch { background: var(--bg-alt); }
+
+  /* ── Editor ── */
+  .editor {
+    max-width: 760px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--bg-hl);
+  }
+  .editor-titlebar {
+    background: var(--bg-alt);
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-bottom: 1px solid var(--bg-hl);
+  }
+  .dot { width: 11px; height: 11px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+  .titlebar-name {
+    margin-left: 8px;
+    font-size: 12px;
+    color: var(--fg-dim);
+  }
+
+  .editor-body {
+    background: var(--bg);
+    padding: 18px 0;
+    font-size: 13px;
+    line-height: 1.75;
+  }
+  .code-line {
+    display: flex;
+    padding: 0 20px;
+  }
+  .code-line.hl {
+    background: var(--bg-hl);
+  }
+  .ln {
+    color: var(--gray);
+    width: 32px;
+    flex-shrink: 0;
+    text-align: right;
+    margin-right: 20px;
+    user-select: none;
+    opacity: 0.7;
+  }
+  .code { flex: 1; white-space: pre; }
+
+  .c-comment  { color: var(--fg-dim); font-style: italic; }
+  .c-keyword  { color: var(--purple); }
+  .c-string   { color: var(--green); }
+  .c-fn       { color: var(--cyan); }
+  .c-type     { color: var(--blue); }
+  .c-number   { color: var(--yellow); }
+  .c-const    { color: var(--orange); }
+  .c-op       { color: var(--pink); }
+  .c-builtin  { color: var(--magenta); }
+  .c-var      { color: var(--fg); }
+  .c-param    { color: var(--red); }
+  .c-decor    { color: var(--lime); }
+
+  /* modeline */
+  .modeline {
+    background: var(--bg-hl);
+    padding: 5px 20px;
+    font-size: 12px;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    border-top: 1px solid #4a3048;
+  }
+  .ml-branch { color: var(--lime); }
+  .ml-file   { color: var(--cyan); font-weight: bold; }
+  .ml-mode   { color: var(--purple); }
+  .ml-pos    { color: var(--yellow); margin-left: auto; }
+
+  .minibuffer {
+    background: var(--bg-alt);
+    padding: 6px 20px;
+    font-size: 12px;
+    color: var(--fg-dim);
+    border-top: 1px solid var(--bg-hl);
+  }
+  .mb-prompt { color: var(--pink); }
+
+  /* ── Faces table ── */
+  .faces {
+    max-width: 760px;
+    border-collapse: collapse;
+    font-size: 12px;
+    width: 100%;
+  }
+  .faces th {
+    text-align: left;
+    padding: 6px 12px;
+    color: var(--gray);
+    font-weight: normal;
+    border-bottom: 1px solid var(--bg-hl);
+  }
+  .faces td {
+    padding: 7px 12px;
+    border-bottom: 1px solid #251a22;
+  }
+  .face-sample {
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+  }
+  .face-hex { color: var(--fg-dim); }
+</style>
+</head>
+<body>
+
+<div id="theme-nav" class="theme-nav">
+  <button class="theme-btn dark-btn"  onclick="showTheme('dark')">Dark</button>
+  <button class="theme-btn light-btn" onclick="showTheme('light')">Light</button>
+</div>
+
+<div id="section-dark" class="theme-section">
+<div class="title">✦ Sanrio Night</div>
+<div class="subtitle">サンリオサイトから抽出した 16 色パレット — Emacs テーマ案 / メインキャラ: リトルツインスターズ (キキ&ララ)</div>
+
+<!-- ── Palette ── -->
+<section>
+  <div class="section-label">16-Color Palette</div>
+  <div class="palette">
+    <div class="swatch">
+      <div class="swatch-color" style="background:#1b1118"></div>
+      <div class="swatch-name">bg</div>
+      <div class="swatch-hex">#1b1118</div>
+      <div class="swatch-note">背景</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#271a22"></div>
+      <div class="swatch-name">bg-alt</div>
+      <div class="swatch-hex">#271a22</div>
+      <div class="swatch-note">パネル・非アクティブ</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#3a2432"></div>
+      <div class="swatch-name">bg-hl</div>
+      <div class="swatch-hex">#3a2432</div>
+      <div class="swatch-note">選択・ハイライト</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#f9e9f2"></div>
+      <div class="swatch-name">fg</div>
+      <div class="swatch-hex">#f9e9f2</div>
+      <div class="swatch-note">デフォルトテキスト</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#c8a4bc"></div>
+      <div class="swatch-name">fg-dim</div>
+      <div class="swatch-hex">#c8a4bc</div>
+      <div class="swatch-note">コメント・薄字</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#8a7082"></div>
+      <div class="swatch-name">gray</div>
+      <div class="swatch-hex">#8a7082</div>
+      <div class="swatch-note">非アクティブ・境界</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#f08080"></div>
+      <div class="swatch-name">red</div>
+      <div class="swatch-hex">#f08080</div>
+      <div class="swatch-note">Hello Kitty</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#efa42b"></div>
+      <div class="swatch-name">orange</div>
+      <div class="swatch-hex">#efa42b</div>
+      <div class="swatch-note">ポムポムプリン</div>
+    </div>
+    <div class="swatch" style="outline: 2px solid #efc128; outline-offset: 2px;">
+      <div class="swatch-color" style="background:#efc128"></div>
+      <div class="swatch-name">yellow</div>
+      <div class="swatch-hex">#efc128</div>
+      <div class="swatch-note">★ キキ&ララ (星)</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#bcd60a"></div>
+      <div class="swatch-name">lime</div>
+      <div class="swatch-hex">#bcd60a</div>
+      <div class="swatch-note">けろっぴ (明)</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#91dea9"></div>
+      <div class="swatch-name">green</div>
+      <div class="swatch-hex">#91dea9</div>
+      <div class="swatch-note">けろっぴ (体)</div>
+    </div>
+    <div class="swatch" style="outline: 2px solid #8bd0dd; outline-offset: 2px;">
+      <div class="swatch-color" style="background:#8bd0dd"></div>
+      <div class="swatch-name">cyan</div>
+      <div class="swatch-hex">#8bd0dd</div>
+      <div class="swatch-note">★ キキ (LTS 水色)</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#72b8f0"></div>
+      <div class="swatch-name">blue</div>
+      <div class="swatch-hex">#72b8f0</div>
+      <div class="swatch-note">シナモロール (青)</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#cda1dc"></div>
+      <div class="swatch-name">purple</div>
+      <div class="swatch-hex">#cda1dc</div>
+      <div class="swatch-note">クロミ / LTS</div>
+    </div>
+    <div class="swatch" style="outline: 2px solid #e383a8; outline-offset: 2px;">
+      <div class="swatch-color" style="background:#e383a8"></div>
+      <div class="swatch-name">pink</div>
+      <div class="swatch-hex">#e383a8</div>
+      <div class="swatch-note">★ ララ (LTS ピンク)</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#f06aaa"></div>
+      <div class="swatch-name">magenta</div>
+      <div class="swatch-hex">#f06aaa</div>
+      <div class="swatch-note">マイメロ / 見出し</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Character Legend ── -->
+<section>
+  <div class="section-label">Character Legend</div>
+  <table class="faces" style="max-width:600px">
+    <thead>
+      <tr>
+        <th>★</th>
+        <th>キャラクター</th>
+        <th>色</th>
+        <th>パレット名</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>★★★</td>
+        <td style="color:#efc128">キキ&ララ (星)</td>
+        <td><span style="background:#efc128;color:#1b1118;padding:1px 8px;border-radius:3px">#efc128</span></td>
+        <td>yellow</td>
+      </tr>
+      <tr>
+        <td>★★★</td>
+        <td style="color:#8bd0dd">キキ (水色)</td>
+        <td><span style="background:#8bd0dd;color:#1b1118;padding:1px 8px;border-radius:3px">#8bd0dd</span></td>
+        <td>cyan</td>
+      </tr>
+      <tr>
+        <td>★★★</td>
+        <td style="color:#e383a8">ララ (ピンク)</td>
+        <td><span style="background:#e383a8;color:#1b1118;padding:1px 8px;border-radius:3px">#e383a8</span></td>
+        <td>pink</td>
+      </tr>
+      <tr>
+        <td>★★</td>
+        <td style="color:#f08080">Hello Kitty</td>
+        <td><span style="background:#f08080;color:#1b1118;padding:1px 8px;border-radius:3px">#f08080</span></td>
+        <td>red</td>
+      </tr>
+      <tr>
+        <td>★★</td>
+        <td style="color:#efa42b">ポムポムプリン</td>
+        <td><span style="background:#efa42b;color:#1b1118;padding:1px 8px;border-radius:3px">#efa42b</span></td>
+        <td>orange</td>
+      </tr>
+      <tr>
+        <td>★★</td>
+        <td style="color:#f06aaa">マイメロ</td>
+        <td><span style="background:#f06aaa;color:#1b1118;padding:1px 8px;border-radius:3px">#f06aaa</span></td>
+        <td>magenta</td>
+      </tr>
+      <tr>
+        <td>★★</td>
+        <td style="color:#72b8f0">シナモロール</td>
+        <td><span style="background:#72b8f0;color:#1b1118;padding:1px 8px;border-radius:3px">#72b8f0</span></td>
+        <td>blue</td>
+      </tr>
+      <tr>
+        <td>★</td>
+        <td style="color:#cda1dc">クロミ</td>
+        <td><span style="background:#cda1dc;color:#1b1118;padding:1px 8px;border-radius:3px">#cda1dc</span></td>
+        <td>purple</td>
+      </tr>
+      <tr>
+        <td>★</td>
+        <td style="color:#91dea9">けろっぴ</td>
+        <td><span style="background:#91dea9;color:#1b1118;padding:1px 8px;border-radius:3px">#91dea9</span></td>
+        <td>green / lime</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ── Editor Preview ── -->
+<section>
+  <div class="section-label">Code Preview (Python)</div>
+  <div class="editor">
+    <div class="editor-titlebar">
+      <div class="dot dot-r"></div>
+      <div class="dot dot-y"></div>
+      <div class="dot dot-g"></div>
+      <div class="titlebar-name">sanrio_theme.py</div>
+    </div>
+    <div class="editor-body">
+      <div class="code-line">
+        <span class="ln">1</span>
+        <span class="code"><span class="c-comment"># Sanrio Night — palette configuration</span></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">2</span>
+        <span class="code"></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">3</span>
+        <span class="code"><span class="c-keyword">from</span> <span class="c-type">typing</span> <span class="c-keyword">import</span> <span class="c-type">Optional</span></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">4</span>
+        <span class="code"></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">5</span>
+        <span class="code"><span class="c-const">CHARACTERS</span><span class="c-op">: dict[</span><span class="c-type">str</span><span class="c-op">, </span><span class="c-type">str</span><span class="c-op">]</span> <span class="c-op">=</span> <span class="c-op">{</span></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">6</span>
+        <span class="code">    <span class="c-string">"Hello Kitty"</span><span class="c-op">:</span> <span class="c-string">"#f08080"</span><span class="c-op">,</span></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">7</span>
+        <span class="code">    <span class="c-string">"Cinnamoroll"</span><span class="c-op">:</span> <span class="c-string">"#8bd0dd"</span><span class="c-op">,</span></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">8</span>
+        <span class="code">    <span class="c-string">"My Melody"</span><span class="c-op">:</span>   <span class="c-string">"#e383a8"</span><span class="c-op">,</span></span>
+      </div>
+      <div class="code-line hl">
+        <span class="ln">9</span>
+        <span class="code">    <span class="c-string">"Pompompurin"</span><span class="c-op">:</span>  <span class="c-string">"#efa42b"</span><span class="c-op">,</span></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">10</span>
+        <span class="code"><span class="c-op">}</span></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">11</span>
+        <span class="code"></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">12</span>
+        <span class="code"><span class="c-decor">@dataclass</span></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">13</span>
+        <span class="code"><span class="c-keyword">def</span> <span class="c-fn">get_color</span><span class="c-op">(</span><span class="c-param">name</span><span class="c-op">: </span><span class="c-type">str</span><span class="c-op">,</span> <span class="c-param">fallback</span><span class="c-op">: </span><span class="c-type">Optional</span><span class="c-op">[</span><span class="c-type">str</span><span class="c-op">]</span> <span class="c-op">=</span> <span class="c-const">None</span><span class="c-op">)</span> <span class="c-op">-&gt; </span><span class="c-type">str</span><span class="c-op">:</span></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">14</span>
+        <span class="code">    <span class="c-comment">"""Return theme color for the given character name."""</span></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">15</span>
+        <span class="code">    <span class="c-keyword">return</span> <span class="c-const">CHARACTERS</span><span class="c-op">.</span><span class="c-fn">get</span><span class="c-op">(</span><span class="c-param">name</span><span class="c-op">,</span> <span class="c-param">fallback</span> <span class="c-keyword">or</span> <span class="c-string">"#c8a4bc"</span><span class="c-op">)</span></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">16</span>
+        <span class="code"></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">17</span>
+        <span class="code"><span class="c-keyword">if</span> <span class="c-const">__name__</span> <span class="c-op">==</span> <span class="c-string">"__main__"</span><span class="c-op">:</span></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">18</span>
+        <span class="code">    <span class="c-keyword">for</span> <span class="c-var">char</span><span class="c-op">,</span> <span class="c-var">hex_code</span> <span class="c-keyword">in</span> <span class="c-const">CHARACTERS</span><span class="c-op">.</span><span class="c-fn">items</span><span class="c-op">():</span></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">19</span>
+        <span class="code">        <span class="c-builtin">print</span><span class="c-op">(</span><span class="c-fn">f</span><span class="c-string">"</span><span class="c-op">{</span><span class="c-var">char</span><span class="c-op">}</span><span class="c-string">: </span><span class="c-op">{</span><span class="c-var">hex_code</span><span class="c-op">}</span><span class="c-string">"</span><span class="c-op">)</span></span>
+      </div>
+    </div>
+    <div class="modeline">
+      <span class="ml-branch">⎇ main</span>
+      <span class="ml-file">sanrio_theme.py</span>
+      <span class="ml-mode">Python</span>
+      <span class="ml-pos">L9:24  74%</span>
+    </div>
+    <div class="minibuffer">
+      <span class="mb-prompt">M-x </span><span style="color:var(--fg)">describe-face</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── Face Mapping ── -->
+<section>
+  <div class="section-label">Face Mapping</div>
+  <table class="faces">
+    <thead>
+      <tr>
+        <th>face</th>
+        <th>sample</th>
+        <th>color</th>
+        <th>用途</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>default</td>
+        <td><span class="face-sample" style="color:#f9e9f2;background:#1b1118">normal text</span></td>
+        <td class="face-hex">fg #f9e9f2 / bg #1b1118</td>
+        <td>デフォルトテキスト</td>
+      </tr>
+      <tr>
+        <td>font-lock-comment-face</td>
+        <td><span class="face-sample" style="color:#c8a4bc;font-style:italic"># comment</span></td>
+        <td class="face-hex">#c8a4bc</td>
+        <td>コメント</td>
+      </tr>
+      <tr>
+        <td>font-lock-keyword-face</td>
+        <td><span class="face-sample" style="color:#cda1dc">def / if / return</span></td>
+        <td class="face-hex">#cda1dc (purple)</td>
+        <td>キーワード</td>
+      </tr>
+      <tr>
+        <td>font-lock-string-face</td>
+        <td><span class="face-sample" style="color:#91dea9">"Hello Kitty"</span></td>
+        <td class="face-hex">#91dea9 (green)</td>
+        <td>文字列</td>
+      </tr>
+      <tr>
+        <td>font-lock-function-name-face</td>
+        <td><span class="face-sample" style="color:#8bd0dd">get_color()</span></td>
+        <td class="face-hex">#8bd0dd (cyan)</td>
+        <td>関数名</td>
+      </tr>
+      <tr>
+        <td>font-lock-type-face</td>
+        <td><span class="face-sample" style="color:#72b8f0">str / Optional</span></td>
+        <td class="face-hex">#72b8f0 (blue)</td>
+        <td>型・クラス名</td>
+      </tr>
+      <tr>
+        <td>font-lock-constant-face</td>
+        <td><span class="face-sample" style="color:#efa42b">CHARACTERS</span></td>
+        <td class="face-hex">#efa42b (orange)</td>
+        <td>定数</td>
+      </tr>
+      <tr>
+        <td>font-lock-number-face</td>
+        <td><span class="face-sample" style="color:#efc128">42 / 3.14</span></td>
+        <td class="face-hex">#efc128 (yellow)</td>
+        <td>数値</td>
+      </tr>
+      <tr>
+        <td>font-lock-builtin-face</td>
+        <td><span class="face-sample" style="color:#f06aaa">print / len</span></td>
+        <td class="face-hex">#f06aaa (magenta)</td>
+        <td>組み込み関数</td>
+      </tr>
+      <tr>
+        <td>font-lock-preprocessor-face</td>
+        <td><span class="face-sample" style="color:#bcd60a">@dataclass</span></td>
+        <td class="face-hex">#bcd60a (lime)</td>
+        <td>デコレータ・プリプロセッサ</td>
+      </tr>
+      <tr>
+        <td>font-lock-warning-face</td>
+        <td><span class="face-sample" style="color:#f08080">SyntaxWarning</span></td>
+        <td class="face-hex">#f08080 (red)</td>
+        <td>警告・エラー</td>
+      </tr>
+      <tr>
+        <td>region</td>
+        <td><span class="face-sample" style="background:#3a2432;color:#f9e9f2">selected text</span></td>
+        <td class="face-hex">bg #3a2432</td>
+        <td>選択範囲</td>
+      </tr>
+      <tr>
+        <td>mode-line</td>
+        <td><span class="face-sample" style="background:#3a2432;color:#f9e9f2"> main  file.py  Python </span></td>
+        <td class="face-hex">bg #3a2432</td>
+        <td>モードライン (アクティブ)</td>
+      </tr>
+      <tr>
+        <td>mode-line-inactive</td>
+        <td><span class="face-sample" style="background:#271a22;color:#8a7082"> main  file.py  Python </span></td>
+        <td class="face-hex">bg #271a22</td>
+        <td>モードライン (非アクティブ)</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+</div><!-- /section-dark -->
+
+<!-- ════════════════════════════════════════════
+     LIGHT THEME
+════════════════════════════════════════════ -->
+<div id="section-light" class="theme-section light is-hidden" style="background:#fff4f8;color:#2a1820;">
+
+<div class="title" style="color:#c04482">✦ Sanrio Day</div>
+<div class="subtitle" style="color:#8a5070">サンリオサイトから抽出した 16 色パレット (ライトモード) — メインキャラ: リトルツインスターズ (キキ&ララ)</div>
+
+<!-- ── Light Palette ── -->
+<section>
+  <div class="section-label">16-Color Palette</div>
+  <div class="palette">
+    <div class="swatch">
+      <div class="swatch-color" style="background:#fffaf8;border:1px solid #fce0ed"></div>
+      <div class="swatch-name">bg</div>
+      <div class="swatch-hex">#fffaf8</div>
+      <div class="swatch-note">背景</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#fff0f5;border:1px solid #fce0ed"></div>
+      <div class="swatch-name">bg-alt</div>
+      <div class="swatch-hex">#fff0f5</div>
+      <div class="swatch-note">パネル・非アクティブ</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#fce0ed;border:1px solid #f4c0d8"></div>
+      <div class="swatch-name">bg-hl</div>
+      <div class="swatch-hex">#fce0ed</div>
+      <div class="swatch-note">選択・ハイライト</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#2a1820"></div>
+      <div class="swatch-name">fg</div>
+      <div class="swatch-hex">#2a1820</div>
+      <div class="swatch-note">デフォルトテキスト</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#8a5070"></div>
+      <div class="swatch-name">fg-dim</div>
+      <div class="swatch-hex">#8a5070</div>
+      <div class="swatch-note">コメント・薄字</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#c09aaa"></div>
+      <div class="swatch-name">gray</div>
+      <div class="swatch-hex">#c09aaa</div>
+      <div class="swatch-note">非アクティブ・境界</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#cc3855"></div>
+      <div class="swatch-name">red</div>
+      <div class="swatch-hex">#cc3855</div>
+      <div class="swatch-note">Hello Kitty</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#b87520"></div>
+      <div class="swatch-name">orange</div>
+      <div class="swatch-hex">#b87520</div>
+      <div class="swatch-note">ポムポムプリン</div>
+    </div>
+    <div class="swatch" style="outline:2px solid #9a8800;outline-offset:2px;">
+      <div class="swatch-color" style="background:#9a8800"></div>
+      <div class="swatch-name">yellow</div>
+      <div class="swatch-hex">#9a8800</div>
+      <div class="swatch-note">★ キキ&ララ (星)</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#5c8c00"></div>
+      <div class="swatch-name">lime</div>
+      <div class="swatch-hex">#5c8c00</div>
+      <div class="swatch-note">けろっぴ (明)</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#2a9468"></div>
+      <div class="swatch-name">green</div>
+      <div class="swatch-hex">#2a9468</div>
+      <div class="swatch-note">けろっぴ (体)</div>
+    </div>
+    <div class="swatch" style="outline:2px solid #1882a0;outline-offset:2px;">
+      <div class="swatch-color" style="background:#1882a0"></div>
+      <div class="swatch-name">cyan</div>
+      <div class="swatch-hex">#1882a0</div>
+      <div class="swatch-note">★ キキ (LTS 水色)</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#2858b8"></div>
+      <div class="swatch-name">blue</div>
+      <div class="swatch-hex">#2858b8</div>
+      <div class="swatch-note">シナモロール (青)</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#7038a0"></div>
+      <div class="swatch-name">purple</div>
+      <div class="swatch-hex">#7038a0</div>
+      <div class="swatch-note">クロミ</div>
+    </div>
+    <div class="swatch" style="outline:2px solid #c04482;outline-offset:2px;">
+      <div class="swatch-color" style="background:#c04482"></div>
+      <div class="swatch-name">pink</div>
+      <div class="swatch-hex">#c04482</div>
+      <div class="swatch-note">★ ララ (LTS ピンク)</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#b02878"></div>
+      <div class="swatch-name">magenta</div>
+      <div class="swatch-hex">#b02878</div>
+      <div class="swatch-note">マイメロ / 見出し</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Light Code Preview ── -->
+<section>
+  <div class="section-label">Code Preview (Python)</div>
+  <div class="editor" style="border-color:#fce0ed">
+    <div class="editor-titlebar" style="background:#fff0f5;border-bottom-color:#fce0ed;color:#8a5070">
+      <div class="dot dot-r"></div>
+      <div class="dot dot-y"></div>
+      <div class="dot dot-g"></div>
+      <div class="titlebar-name">sanrio_theme.py</div>
+    </div>
+    <div class="editor-body" style="background:#fffaf8;color:#2a1820">
+      <div class="code-line">
+        <span class="ln">1</span>
+        <span class="code"><span style="color:#8a5070;font-style:italic"># Sanrio Day — palette configuration</span></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">2</span><span class="code"></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">3</span>
+        <span class="code"><span style="color:#7038a0">from</span> <span style="color:#2858b8">typing</span> <span style="color:#7038a0">import</span> <span style="color:#2858b8">Optional</span></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">4</span><span class="code"></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">5</span>
+        <span class="code"><span style="color:#b87520">CHARACTERS</span><span style="color:#c04482">: dict[</span><span style="color:#2858b8">str</span><span style="color:#c04482">, </span><span style="color:#2858b8">str</span><span style="color:#c04482">]</span> <span style="color:#c04482">=</span> <span style="color:#c04482">{</span></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">6</span>
+        <span class="code">    <span style="color:#2a9468">"Hello Kitty"</span><span style="color:#c04482">:</span> <span style="color:#2a9468">"#cc3855"</span><span style="color:#c04482">,</span></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">7</span>
+        <span class="code">    <span style="color:#2a9468">"Cinnamoroll"</span><span style="color:#c04482">:</span> <span style="color:#2a9468">"#1882a0"</span><span style="color:#c04482">,</span></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">8</span>
+        <span class="code">    <span style="color:#2a9468">"My Melody"</span><span style="color:#c04482">:</span>   <span style="color:#2a9468">"#c04482"</span><span style="color:#c04482">,</span></span>
+      </div>
+      <div class="code-line" style="background:#fce0ed">
+        <span class="ln">9</span>
+        <span class="code">    <span style="color:#2a9468">"Pompompurin"</span><span style="color:#c04482">:</span>  <span style="color:#2a9468">"#b87520"</span><span style="color:#c04482">,</span></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">10</span>
+        <span class="code"><span style="color:#c04482">}</span></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">11</span><span class="code"></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">12</span>
+        <span class="code"><span style="color:#5c8c00">@dataclass</span></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">13</span>
+        <span class="code"><span style="color:#7038a0">def</span> <span style="color:#1882a0">get_color</span><span style="color:#c04482">(</span><span style="color:#cc3855">name</span><span style="color:#c04482">: </span><span style="color:#2858b8">str</span><span style="color:#c04482">,</span> <span style="color:#cc3855">fallback</span><span style="color:#c04482">: </span><span style="color:#2858b8">Optional</span><span style="color:#c04482">[</span><span style="color:#2858b8">str</span><span style="color:#c04482">]</span> <span style="color:#c04482">=</span> <span style="color:#b87520">None</span><span style="color:#c04482">)</span> <span style="color:#c04482">-&gt; </span><span style="color:#2858b8">str</span><span style="color:#c04482">:</span></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">14</span>
+        <span class="code">    <span style="color:#8a5070;font-style:italic">"""Return theme color for the given character name."""</span></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">15</span>
+        <span class="code">    <span style="color:#7038a0">return</span> <span style="color:#b87520">CHARACTERS</span><span style="color:#c04482">.</span><span style="color:#1882a0">get</span><span style="color:#c04482">(</span><span style="color:#cc3855">name</span><span style="color:#c04482">,</span> <span style="color:#cc3855">fallback</span> <span style="color:#7038a0">or</span> <span style="color:#2a9468">"#8a5070"</span><span style="color:#c04482">)</span></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">16</span><span class="code"></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">17</span>
+        <span class="code"><span style="color:#7038a0">if</span> <span style="color:#b87520">__name__</span> <span style="color:#c04482">==</span> <span style="color:#2a9468">"__main__"</span><span style="color:#c04482">:</span></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">18</span>
+        <span class="code">    <span style="color:#7038a0">for</span> <span style="color:#2a1820">char</span><span style="color:#c04482">,</span> <span style="color:#2a1820">hex_code</span> <span style="color:#7038a0">in</span> <span style="color:#b87520">CHARACTERS</span><span style="color:#c04482">.</span><span style="color:#1882a0">items</span><span style="color:#c04482">():</span></span>
+      </div>
+      <div class="code-line">
+        <span class="ln">19</span>
+        <span class="code">        <span style="color:#b02878">print</span><span style="color:#c04482">(</span><span style="color:#1882a0">f</span><span style="color:#2a9468">"</span><span style="color:#c04482">{</span><span style="color:#2a1820">char</span><span style="color:#c04482">}</span><span style="color:#2a9468">: </span><span style="color:#c04482">{</span><span style="color:#2a1820">hex_code</span><span style="color:#c04482">}</span><span style="color:#2a9468">"</span><span style="color:#c04482">)</span></span>
+      </div>
+    </div>
+    <div class="modeline" style="background:#fce0ed;color:#2a1820;border-top-color:#f4c0d8">
+      <span style="color:#5c8c00">⎇ main</span>
+      <span style="color:#1882a0;font-weight:bold">sanrio_theme.py</span>
+      <span style="color:#7038a0">Python</span>
+      <span style="color:#9a8800;margin-left:auto">L9:24  74%</span>
+    </div>
+    <div class="minibuffer" style="background:#fff0f5;border-top-color:#fce0ed;color:#8a5070">
+      <span style="color:#c04482">M-x </span><span style="color:#2a1820">describe-face</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── Light Face Mapping ── -->
+<section>
+  <div class="section-label">Face Mapping</div>
+  <table class="faces">
+    <thead>
+      <tr>
+        <th>face</th>
+        <th>sample</th>
+        <th>color</th>
+        <th>用途</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>default</td>
+        <td><span class="face-sample" style="color:#2a1820;background:#fffaf8;border:1px solid #fce0ed">normal text</span></td>
+        <td class="face-hex">fg #2a1820 / bg #fffaf8</td>
+        <td>デフォルトテキスト</td>
+      </tr>
+      <tr>
+        <td>font-lock-comment-face</td>
+        <td><span class="face-sample" style="color:#8a5070;font-style:italic"># comment</span></td>
+        <td class="face-hex">#8a5070</td>
+        <td>コメント</td>
+      </tr>
+      <tr>
+        <td>font-lock-keyword-face</td>
+        <td><span class="face-sample" style="color:#7038a0">def / if / return</span></td>
+        <td class="face-hex">#7038a0 (purple)</td>
+        <td>キーワード</td>
+      </tr>
+      <tr>
+        <td>font-lock-string-face</td>
+        <td><span class="face-sample" style="color:#2a9468">"Hello Kitty"</span></td>
+        <td class="face-hex">#2a9468 (green)</td>
+        <td>文字列</td>
+      </tr>
+      <tr>
+        <td>font-lock-function-name-face</td>
+        <td><span class="face-sample" style="color:#1882a0">get_color()</span></td>
+        <td class="face-hex">#1882a0 (cyan)</td>
+        <td>関数名</td>
+      </tr>
+      <tr>
+        <td>font-lock-type-face</td>
+        <td><span class="face-sample" style="color:#2858b8">str / Optional</span></td>
+        <td class="face-hex">#2858b8 (blue)</td>
+        <td>型・クラス名</td>
+      </tr>
+      <tr>
+        <td>font-lock-constant-face</td>
+        <td><span class="face-sample" style="color:#b87520">CHARACTERS</span></td>
+        <td class="face-hex">#b87520 (orange)</td>
+        <td>定数</td>
+      </tr>
+      <tr>
+        <td>font-lock-number-face</td>
+        <td><span class="face-sample" style="color:#9a8800">42 / 3.14</span></td>
+        <td class="face-hex">#9a8800 (yellow)</td>
+        <td>数値</td>
+      </tr>
+      <tr>
+        <td>font-lock-builtin-face</td>
+        <td><span class="face-sample" style="color:#b02878">print / len</span></td>
+        <td class="face-hex">#b02878 (magenta)</td>
+        <td>組み込み関数</td>
+      </tr>
+      <tr>
+        <td>font-lock-preprocessor-face</td>
+        <td><span class="face-sample" style="color:#5c8c00">@dataclass</span></td>
+        <td class="face-hex">#5c8c00 (lime)</td>
+        <td>デコレータ・プリプロセッサ</td>
+      </tr>
+      <tr>
+        <td>font-lock-warning-face</td>
+        <td><span class="face-sample" style="color:#cc3855">SyntaxWarning</span></td>
+        <td class="face-hex">#cc3855 (red)</td>
+        <td>警告・エラー</td>
+      </tr>
+      <tr>
+        <td>region</td>
+        <td><span class="face-sample" style="background:#fce0ed;color:#2a1820">selected text</span></td>
+        <td class="face-hex">bg #fce0ed</td>
+        <td>選択範囲</td>
+      </tr>
+      <tr>
+        <td>mode-line</td>
+        <td><span class="face-sample" style="background:#fce0ed;color:#2a1820"> main  file.py  Python </span></td>
+        <td class="face-hex">bg #fce0ed</td>
+        <td>モードライン (アクティブ)</td>
+      </tr>
+      <tr>
+        <td>mode-line-inactive</td>
+        <td><span class="face-sample" style="background:#fff0f5;color:#c09aaa"> main  file.py  Python </span></td>
+        <td class="face-hex">bg #fff0f5</td>
+        <td>モードライン (非アクティブ)</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+</div><!-- /section-light -->
+
+<script>
+function showTheme(theme) {
+  document.getElementById('section-dark').classList.toggle('is-hidden', theme !== 'dark');
+  document.getElementById('section-light').classList.toggle('is-hidden', theme !== 'light');
+  document.querySelector('.theme-nav').style.background = theme === 'light' ? '#fff0f5' : '#0a080b';
+  document.querySelector('.theme-nav').style.borderBottomColor = theme === 'light' ? '#fce0ed' : '#3a2432';
+}
+</script>
+
+</body>
+</html>
