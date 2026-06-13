@@ -27,7 +27,7 @@
    'sanrio-night
 
    ;; ── Core ──────────────────────────────────────────
-   `(default                        ((t (:background ,bg :foreground ,fg))))
+   `(default                        ((t (:background ,bg :foreground ,fg :weight light))))
    `(cursor                         ((t (:background ,cyan))))
    `(fringe                         ((t (:background ,bg-alt :foreground ,gray))))
    `(vertical-border                ((t (:foreground ,bg-hl))))
@@ -38,17 +38,18 @@
    `(trailing-whitespace            ((t (:background ,red))))
 
    ;; ── Text decorations ──────────────────────────────
-   `(bold                           ((t (:weight bold))))
-   `(italic                         ((t (:slant italic))))
+   ;; extralight/light バリアントを持つフォント（PlemolJP Console NF 等）が必要
+   `(bold                           ((t (:weight normal))))
+   `(italic                         ((t (:weight light :slant italic))))
    `(shadow                         ((t (:foreground ,gray))))
    `(link                           ((t (:foreground ,cyan :underline t))))
    `(link-visited                   ((t (:foreground ,purple :underline t))))
-   `(error                          ((t (:foreground ,red :weight bold))))
-   `(warning                        ((t (:foreground ,orange :weight bold))))
-   `(success                        ((t (:foreground ,lime :weight bold))))
+   `(error                          ((t (:foreground ,red :weight normal))))
+   `(warning                        ((t (:foreground ,orange :weight normal))))
+   `(success                        ((t (:foreground ,lime :weight normal))))
 
    ;; ── Minibuffer / Prompt ───────────────────────────
-   `(minibuffer-prompt              ((t (:foreground ,pink :weight bold))))
+   `(minibuffer-prompt              ((t (:foreground ,pink :weight normal))))
 
    ;; ── Font-lock (syntax highlighting) ───────────────
    `(font-lock-comment-face         ((t (:foreground ,fg-dim))))
@@ -63,7 +64,7 @@
    `(font-lock-constant-face        ((t (:foreground ,orange))))
    `(font-lock-number-face          ((t (:foreground ,yellow))))
    `(font-lock-preprocessor-face    ((t (:foreground ,lime))))
-   `(font-lock-warning-face         ((t (:foreground ,red :weight bold))))
+   `(font-lock-warning-face         ((t (:foreground ,red :weight normal))))
    `(font-lock-negation-char-face   ((t (:foreground ,red))))
    `(font-lock-regexp-grouping-backslash ((t (:foreground ,yellow))))
    `(font-lock-regexp-grouping-construct ((t (:foreground ,orange))))
@@ -75,52 +76,52 @@
                                          :box (:line-width 1 :color ,bg-hl)))))
    `(mode-line-inactive             ((t (:background ,bg-alt :foreground ,gray
                                          :box (:line-width 1 :color ,bg-alt)))))
-   `(mode-line-buffer-id            ((t (:foreground ,cyan :weight bold))))
-   `(mode-line-highlight            ((t (:foreground ,yellow :weight bold))))
-   `(mode-line-emphasis             ((t (:foreground ,pink :weight bold))))
+   `(mode-line-buffer-id            ((t (:foreground ,cyan :weight normal))))
+   `(mode-line-highlight            ((t (:foreground ,yellow :weight normal))))
+   `(mode-line-emphasis             ((t (:foreground ,pink :weight normal))))
    `(header-line                    ((t (:background ,bg-alt :foreground ,fg-dim
                                          :box (:line-width 1 :color ,bg-hl)))))
 
    ;; ── Line numbers ──────────────────────────────────
    `(line-number                    ((t (:background ,bg :foreground ,gray))))
-   `(line-number-current-line       ((t (:background ,bg-alt :foreground ,pink :weight bold))))
+   `(line-number-current-line       ((t (:background ,bg-alt :foreground ,pink :weight normal))))
 
    ;; ── Search ────────────────────────────────────────
-   `(isearch                        ((t (:background ,yellow :foreground ,bg :weight bold))))
+   `(isearch                        ((t (:background ,yellow :foreground ,bg :weight normal))))
    `(isearch-fail                   ((t (:background ,red :foreground ,fg))))
-   `(lazy-highlight                 ((t (:background ,bg-hl :foreground ,yellow :weight bold))))
+   `(lazy-highlight                 ((t (:background ,bg-hl :foreground ,yellow :weight normal))))
    `(match                          ((t (:background ,bg-hl :foreground ,cyan))))
 
    ;; ── Show paren ────────────────────────────────────
-   `(show-paren-match               ((t (:background ,cyan :foreground ,bg :weight bold))))
-   `(show-paren-mismatch            ((t (:background ,red :foreground ,fg :weight bold))))
+   `(show-paren-match               ((t (:background ,cyan :foreground ,bg :weight normal))))
+   `(show-paren-mismatch            ((t (:background ,red :foreground ,fg :weight normal))))
 
    ;; ── Diff / VC ─────────────────────────────────────
    `(diff-added                     ((t (:foreground ,lime :extend t))))
    `(diff-removed                   ((t (:foreground ,red :extend t))))
    `(diff-changed                   ((t (:foreground ,yellow :extend t))))
-   `(diff-header                    ((t (:foreground ,fg-dim :weight bold))))
-   `(diff-file-header               ((t (:foreground ,cyan :weight bold))))
+   `(diff-header                    ((t (:foreground ,fg-dim :weight normal))))
+   `(diff-file-header               ((t (:foreground ,cyan :weight normal))))
    `(diff-hunk-header               ((t (:foreground ,purple))))
    `(diff-refine-added              ((t (:background "#2a4030" :foreground ,lime))))
    `(diff-refine-removed            ((t (:background "#3a1820" :foreground ,red))))
 
    ;; ── Compilation ───────────────────────────────────
-   `(compilation-error              ((t (:foreground ,red :weight bold))))
-   `(compilation-warning            ((t (:foreground ,orange :weight bold))))
+   `(compilation-error              ((t (:foreground ,red :weight normal))))
+   `(compilation-warning            ((t (:foreground ,orange :weight normal))))
    `(compilation-info               ((t (:foreground ,cyan))))
-   `(compilation-mode-line-exit     ((t (:foreground ,lime :weight bold))))
-   `(compilation-mode-line-fail     ((t (:foreground ,red :weight bold))))
+   `(compilation-mode-line-exit     ((t (:foreground ,lime :weight normal))))
+   `(compilation-mode-line-fail     ((t (:foreground ,red :weight normal))))
 
    ;; ── Org-mode ──────────────────────────────────────
-   `(org-level-1                    ((t (:foreground ,magenta :weight bold :height 1.2))))
-   `(org-level-2                    ((t (:foreground ,pink    :weight bold :height 1.1))))
-   `(org-level-3                    ((t (:foreground ,cyan    :weight bold))))
-   `(org-level-4                    ((t (:foreground ,purple  :weight bold))))
+   `(org-level-1                    ((t (:foreground ,magenta :weight normal :height 1.2))))
+   `(org-level-2                    ((t (:foreground ,pink    :weight normal :height 1.1))))
+   `(org-level-3                    ((t (:foreground ,cyan    :weight normal))))
+   `(org-level-4                    ((t (:foreground ,purple  :weight normal))))
    `(org-level-5                    ((t (:foreground ,yellow))))
    `(org-level-6                    ((t (:foreground ,green))))
-   `(org-todo                       ((t (:foreground ,red    :weight bold))))
-   `(org-done                       ((t (:foreground ,lime   :weight bold))))
+   `(org-todo                       ((t (:foreground ,red    :weight normal))))
+   `(org-done                       ((t (:foreground ,lime   :weight normal))))
    `(org-date                       ((t (:foreground ,cyan   :underline t))))
    `(org-link                       ((t (:foreground ,cyan   :underline t))))
    `(org-block                      ((t (:background ,bg-alt :extend t))))
@@ -132,34 +133,39 @@
    `(org-special-keyword            ((t (:foreground ,purple))))
 
    ;; ── Markdown ──────────────────────────────────────
-   `(markdown-header-face-1         ((t (:foreground ,magenta :weight bold :height 1.2))))
-   `(markdown-header-face-2         ((t (:foreground ,pink    :weight bold :height 1.1))))
-   `(markdown-header-face-3         ((t (:foreground ,cyan    :weight bold))))
+   `(markdown-header-face            ((t (:weight normal))))
+   `(markdown-header-face-1         ((t (:foreground ,magenta :weight normal :height 1.2))))
+   `(markdown-header-face-2         ((t (:foreground ,pink    :weight normal :height 1.1))))
+   `(markdown-header-face-3         ((t (:foreground ,cyan    :weight normal))))
+   `(markdown-header-face-4         ((t (:foreground ,blue    :weight normal))))
+   `(markdown-header-face-5         ((t (:foreground ,purple  :weight normal))))
+   `(markdown-header-face-6         ((t (:foreground ,yellow  :weight normal))))
+   `(markdown-bold-face             ((t (:weight normal))))
    `(markdown-code-face             ((t (:background ,bg-alt :extend t))))
    `(markdown-inline-code-face      ((t (:foreground ,green))))
 
    ;; ── Company ───────────────────────────────────────
    `(company-tooltip                ((t (:background ,bg-alt :foreground ,fg))))
-   `(company-tooltip-selection      ((t (:background ,bg-hl  :foreground ,fg :weight bold))))
-   `(company-tooltip-common         ((t (:foreground ,cyan   :weight bold))))
+   `(company-tooltip-selection      ((t (:background ,bg-hl  :foreground ,fg :weight normal))))
+   `(company-tooltip-common         ((t (:foreground ,cyan   :weight normal))))
    `(company-tooltip-annotation     ((t (:foreground ,gray))))
    `(company-scrollbar-bg           ((t (:background ,bg-alt))))
    `(company-scrollbar-fg           ((t (:background ,gray))))
    `(company-preview-common         ((t (:foreground ,fg-dim))))
 
    ;; ── Vertico / Corfu / Consult ─────────────────────
-   `(vertico-current                ((t (:background ,bg-hl :weight bold))))
-   `(corfu-current                  ((t (:background ,bg-hl :weight bold))))
+   `(vertico-current                ((t (:background ,bg-hl :weight normal))))
+   `(corfu-current                  ((t (:background ,bg-hl :weight normal))))
    `(corfu-default                  ((t (:background ,bg-alt))))
-   `(consult-highlight-match        ((t (:foreground ,yellow :weight bold))))
+   `(consult-highlight-match        ((t (:foreground ,yellow :weight normal))))
 
    ;; ── Which-key ─────────────────────────────────────
    `(which-key-key-face             ((t (:foreground ,cyan))))
    `(which-key-command-face         ((t (:foreground ,fg-dim))))
-   `(which-key-group-face           ((t (:foreground ,pink :weight bold))))
+   `(which-key-group-face           ((t (:foreground ,pink :weight normal))))
 
    ;; ── Magit ─────────────────────────────────────────
-   `(magit-section-heading          ((t (:foreground ,pink   :weight bold))))
+   `(magit-section-heading          ((t (:foreground ,pink   :weight normal))))
    `(magit-section-highlight        ((t (:background ,bg-alt :extend t))))
    `(magit-diff-added               ((t (:foreground ,lime   :background "#1e2e1e" :extend t))))
    `(magit-diff-removed             ((t (:foreground ,red    :background "#2e1818" :extend t))))
