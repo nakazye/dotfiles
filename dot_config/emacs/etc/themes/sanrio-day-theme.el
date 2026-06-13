@@ -51,9 +51,9 @@
    `(minibuffer-prompt              ((t (:foreground ,pink :weight bold))))
 
    ;; ── Font-lock (syntax highlighting) ───────────────
-   `(font-lock-comment-face         ((t (:foreground ,fg-dim :slant italic))))
-   `(font-lock-comment-delimiter-face ((t (:foreground ,fg-dim :slant italic))))
-   `(font-lock-doc-face             ((t (:foreground ,fg-dim :slant italic))))
+   `(font-lock-comment-face         ((t (:foreground ,fg-dim))))
+   `(font-lock-comment-delimiter-face ((t (:foreground ,fg-dim))))
+   `(font-lock-doc-face             ((t (:foreground ,fg-dim))))
    `(font-lock-string-face          ((t (:foreground ,green))))
    `(font-lock-keyword-face         ((t (:foreground ,purple))))
    `(font-lock-builtin-face         ((t (:foreground ,magenta))))
