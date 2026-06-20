@@ -80,7 +80,12 @@
     (leaf *ファイルをデフォルトで読み取り専用で開く---------------------------------------
       :doc "view-modeで開く。編集したい場合はeまたはC-x C-qで切り替え"
       :doc "qでバッファを閉じる"
-      :hook (find-file-hook . view-mode))
+      :doc "gitのコミットメッセージバッファ (COMMIT_EDITMSG等) は除外"
+      :hook (find-file-hook . (lambda ()
+                                (unless (string-match-p
+                                         "COMMIT_EDITMSG\\|MERGE_MSG\\|TAG_EDITMSG"
+                                         (or (buffer-file-name) ""))
+                                  (view-mode 1)))))
 
     (leaf *勝手にできるファイルを散らかさない---------------------------------------------
       :doc "勝手に作られる設定ファイルやキャッシュを良い感じにまとめてくれる"
@@ -997,7 +1002,6 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
         :ensure t
         ;; 以下パフォーマンス改善の設定。see->https://misohena.jp/blog/2022-11-13-improve-magit-commiting-performance-on-windows.html
         :setq-default (magit-auto-revert-mode . nil)
-        :hook (git-commit-setup-hook . (lambda () (view-mode -1)))
         :preface
         (defun my/magit ()
           "magitを開く。vtermの場合はシェルのカレントディレクトリで開く"
