@@ -997,6 +997,7 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
         :ensure t
         ;; 以下パフォーマンス改善の設定。see->https://misohena.jp/blog/2022-11-13-improve-magit-commiting-performance-on-windows.html
         :setq-default (magit-auto-revert-mode . nil)
+        :hook (git-commit-setup-hook . (lambda () (view-mode -1)))
         :preface
         (defun my/magit ()
           "magitを開く。vtermの場合はシェルのカレントディレクトリで開く"

@@ -36,7 +36,11 @@
       "Bash(infocmp eat-mono *)",
       "Bash(rg *)",
       "WebFetch(domain:www.sanrio.co.jp)",
-      "Bash(open *)"
+      "Bash(open *)",
+      "Bash(defaults read *)",
+      "Bash(fd *)",
+      "Read(//Users/yutaka.nakajima/**)",
+      "Bash(git config *)"
     ],
     "deny": [],
     "ask": []
