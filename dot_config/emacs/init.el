@@ -237,19 +237,30 @@
                             (font-spec :family emoji-font :size 18) nil 'prepend))))
 
     (leaf *Claude Codeの記号を等幅フォントで表示----------------------------------------
-      :doc "⏺(U+23FA)等のメディア制御記号やbrailleスピナーはPlemolJPに無く、"
-      :doc "可変幅のSTIX Two Mathに化けてvtermでガタつく。等幅で網羅するJuliaMono(nix導入)に"
-      :doc "フォールバックさせ、列幅も1に固定する。効かない場合はこのleafごとコメントアウト"
+      :doc "⏺(U+23FA)等のメディア制御記号・brailleスピナー・回転スピナー(◐◑◒◓)や星記号(✽✧✨等)は"
+      :doc "PlemolJPに無いか絵文字フォントに化けて可変幅になり、vtermで縦横にガタつく。"
+      :doc "等幅で網羅するJuliaMono(nix導入)に明示マッピングし、列幅も1に固定する。"
+      :doc "効かない場合はこのleafごとコメントアウトで元に戻る"
+      :preface
+      ;; Claudeのスピナーが使う個別コードポイント(回転円◐◑◒◓・星/アスタリスク記号)。
+      ;; 星記号は絵文字フォントマッピング(U+2700-27BF)を上書きするため個別にprependする。
+      (defconst my/claude-spinner-chars
+        '(#x25D0 #x25D1 #x25D2 #x25D3   ; ◐◑◒◓ 回転円
+          #x2217                         ; ∗
+          #x2727 #x2728 #x272C #x2731 #x273D) ; ✧✨✬✱✽
+        "Claude Codeのスピナーで使われる可変幅化しやすい記号のコードポイント。")
       :config
       (when (member "JuliaMono" (font-family-list))
-        ;; メディア制御記号(⏩⏸⏹⏺ など U+23E9-23FA)
-        (set-fontset-font t '(#x23E9 . #x23FA)
-                          (font-spec :family "JuliaMono" :size 18) nil 'prepend)
-        ;; brailleスピナー(U+2800-28FF)
-        (set-fontset-font t '(#x2800 . #x28FF)
-                          (font-spec :family "JuliaMono" :size 18) nil 'prepend))
+        (let ((jm (font-spec :family "JuliaMono" :size 18)))
+          ;; 範囲指定: メディア制御記号(⏩⏸⏹⏺ U+23E9-23FA)とbrailleスピナー(U+2800-28FF)
+          (dolist (range '((#x23E9 . #x23FA) (#x2800 . #x28FF)))
+            (set-fontset-font t range jm nil 'prepend))
+          ;; 個別指定: スピナー記号
+          (dolist (cp my/claude-spinner-chars)
+            (set-fontset-font t cp jm nil 'prepend))))
       ;; cjk-ambiguous-chars-are-wide の影響を受けないよう列幅を1に固定
-      (dolist (char (number-sequence #x23E9 #x23FA))
+      (dolist (char (append (number-sequence #x23E9 #x23FA)
+                            my/claude-spinner-chars))
         (aset char-width-table char 1)))
 
     (leaf *カーソルを自分好みに-----------------------------------------------------------
