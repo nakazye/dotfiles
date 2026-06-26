@@ -700,6 +700,10 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
           "C-; p"   "Puni"
           "C-; P"   "Project"
           "C-; f"   "File Manager"
+          "C-; f f" "Dirvish (dwim)"
+          "C-; f d" "Dirvish (全画面)"
+          "C-; f c" "Sunrise Commander"
+          "C-; f C" "Sunrise (現在地)"
           "C-; s"   "Search/Navigation"
           "C-; w"   "Window"
           "C-; w r" "window resize")))
@@ -737,8 +741,19 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
         :init (dirvish-override-dired-mode)
         :custom
         (dirvish-attributes . '(nerd-icons file-size))
-        :bind (("C-; f f" . dirvish)
+        :bind (("C-; f f" . dirvish-dwim)   ; 分割中はその場/単独ならフルフレーム
+               ("C-; f d" . dirvish)        ; 常にフルフレームのリッチ表示
                ("C-; f s" . dirvish-side))))
+
+    (leaf *Sunrise Commander-2ペインファイラ----------------------------------------------
+      :doc "diredベースの2ペイン型ファイルマネージャ(Midnight Commander風)"
+      :url "https://github.com/sunrise-commander/sunrise-commander"
+      :config
+      (leaf sunrise
+        :ensure t
+        :commands (sunrise sunrise-cd)
+        :bind (("C-; f c" . sunrise)      ; Commander起動
+               ("C-; f C" . sunrise-cd))))  ; 現在のファイルのディレクトリで起動
 
     (leaf *ミニバッファで補完UI-----------------------------------------------------------
       :doc "Emacs28から標準添付されるfido-vertical-modeがあったりする"
