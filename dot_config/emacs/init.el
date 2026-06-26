@@ -236,6 +236,22 @@
           (set-fontset-font t '(#x1F300 . #x1F5FF)
                             (font-spec :family emoji-font :size 18) nil 'prepend))))
 
+    (leaf *Claude Codeの記号を等幅フォントで表示----------------------------------------
+      :doc "⏺(U+23FA)等のメディア制御記号やbrailleスピナーはPlemolJPに無く、"
+      :doc "可変幅のSTIX Two Mathに化けてvtermでガタつく。等幅で網羅するJuliaMono(nix導入)に"
+      :doc "フォールバックさせ、列幅も1に固定する。効かない場合はこのleafごとコメントアウト"
+      :config
+      (when (member "JuliaMono" (font-family-list))
+        ;; メディア制御記号(⏩⏸⏹⏺ など U+23E9-23FA)
+        (set-fontset-font t '(#x23E9 . #x23FA)
+                          (font-spec :family "JuliaMono" :size 18) nil 'prepend)
+        ;; brailleスピナー(U+2800-28FF)
+        (set-fontset-font t '(#x2800 . #x28FF)
+                          (font-spec :family "JuliaMono" :size 18) nil 'prepend))
+      ;; cjk-ambiguous-chars-are-wide の影響を受けないよう列幅を1に固定
+      (dolist (char (number-sequence #x23E9 #x23FA))
+        (aset char-width-table char 1)))
+
     (leaf *カーソルを自分好みに-----------------------------------------------------------
       :url "https://qiita.com/tadsan/items/f23d6db8efc0fcdcd225"
       :doc "↑の説明がめっちゃわかりやすい"
@@ -1042,7 +1058,14 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
         :vc (:url "https://github.com/manzaltu/claude-code-ide.el")
         :commands (claude-code-ide claude-code-ide-menu claude-code-ide-send-region claude-code-ide-fix-error)
         :config
-        (claude-code-ide-emacs-tools-setup))
+        (claude-code-ide-emacs-tools-setup)
+        ;; envrc はバッファローカルに process-environment を設定するが、vterm は
+        ;; 新規バッファでプロセスを起動するため direnv の環境変数が引き継がれない。
+        ;; inheritenv で起動元バッファの環境を新規バッファに伝播させる。
+        (leaf inheritenv
+          :ensure t
+          :config
+          (inheritenv-add-advice 'claude-code-ide--create-terminal-session)))
       (leaf *claude-code-keybinds
         :doc ":commandsによる遅延ロードだと:config内が実行されないため、キーバインドは別ブロックで定義"
         :bind (("C-; a c i" . claude-code-ide)
@@ -1253,6 +1276,47 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
         :url "https://github.com/jrblevin/markdown-mode"
         :ensure t
         :mode ("\\.md\\'" "\\.markdown\\'")))
+
+    (leaf *mermaid図をmarkdown-view-modeで表示--------------------------------------------------
+      :doc "markdown-view-modeでmermaid記法のコードブロックをSVG画像として表示する。mmdc(mermaid-cli)が必要。"
+      :config
+      (defvar-local my/mermaid-temp-files nil
+        "このバッファのmermaidレンダリングで生成した一時ファイルのリスト。")
+
+      (defun my/mermaid-cleanup-temp-files ()
+        "mermaid用一時ファイルを削除する。"
+        (dolist (file my/mermaid-temp-files)
+          (when (file-exists-p file)
+            (delete-file file)))
+        (setq my/mermaid-temp-files nil))
+
+      (defun my/markdown-render-mermaid-blocks ()
+        "バッファ内のmermaidコードブロックをSVG画像としてオーバーレイ表示する。
+mmdc が見つからない場合はスキップ。"
+        (interactive)
+        (when (executable-find "mmdc")
+          (save-excursion
+            (goto-char (point-min))
+            (while (re-search-forward "^```mermaid\n\\(\\(?:.*\n\\)*?\\)```" nil t)
+              (let* ((code (match-string 1))
+                     (beg  (match-beginning 0))
+                     (end  (match-end 0))
+                     (in-file  (make-temp-file "emacs-mermaid-" nil ".mmd"))
+                     (out-file (concat (file-name-sans-extension in-file) ".svg")))
+                (write-region code nil in-file nil 'silent)
+                (push in-file my/mermaid-temp-files)
+                (when (= 0 (call-process "mmdc" nil "*mermaid-errors*" nil
+                                          "-i" in-file "-o" out-file))
+                  (when (file-exists-p out-file)
+                    (push out-file my/mermaid-temp-files)
+                    (let ((ov (make-overlay beg end)))
+                      (overlay-put ov 'display
+                                   (create-image out-file 'svg nil
+                                                 :max-width (- (window-body-width nil t) 40)))
+                      (overlay-put ov 'mermaid-overlay t))))))))
+        (add-hook 'kill-buffer-hook #'my/mermaid-cleanup-temp-files nil t))
+
+      (add-hook 'markdown-view-mode-hook #'my/markdown-render-mermaid-blocks))
 
     (leaf *テーブルをピクセル単位で整列-----------------------------------------------------
       :doc "日本語や絵文字を含むテーブルでも綺麗に揃える"
