@@ -40,9 +40,19 @@
       "Bash(defaults read *)",
       "Bash(fd *)",
       "Read(//Users/yutaka.nakajima/**)",
-      "Bash(git config *)"
+      "Bash(git config *)",
+      "Bash(python3 -c \"import fontTools; print\\('fontTools', fontTools.__version__\\)\")",
+      "Bash(nix-shell -p \"python3.withPackages\\(ps:[ps.fonttools]\\)\" --run \"python3 scan_23fa.py\")",
+      "WebFetch(domain:melpa.org)",
+      "Bash(sqlite3 --version)",
+      "Bash(/Applications/Emacs.app/Contents/MacOS/Emacs --version)",
+      "Bash(gh pr *)",
+      "Bash(direnv version *)"
     ],
     "deny": [],
-    "ask": []
+    "ask": [],
+    "additionalDirectories": [
+      "/Users/yutaka.nakajima/nix-config"
+    ]
   }
 }

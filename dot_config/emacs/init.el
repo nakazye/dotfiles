@@ -382,7 +382,16 @@
           (setq aw-ignored-buffers (delq 'treemacs-mode aw-ignored-buffers)))
         (advice-add 'ace-window :before #'my/ace-window-include-treemacs))
       (leaf *ace-window-keybinds
-        :bind (("C-; w w" . ace-window))))
+        :bind (("C-; w w" . ace-window)))
+
+      (leaf *winner-mode
+        :doc "ウィンドウレイアウトのundo/redo"
+        :global-minor-mode winner-mode
+        :custom
+        (winner-boring-buffers . '("*Completions*" "*Help*" "*Apropos*"
+                                   "*compilation*" "*xref*"))
+        :bind (("C-; w u" . winner-undo)
+               ("C-; w U" . winner-redo))))
 
     ) ; end of 一般表示系設定=============================================================
 
@@ -704,7 +713,9 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
           "C-; f d" "Dirvish (全画面)"
           "C-; s"   "Search/Navigation"
           "C-; w"   "Window"
-          "C-; w r" "window resize")))
+          "C-; w r" "window resize"
+          "C-; w u" "winner undo"
+          "C-; w U" "winner redo")))
 
     (leaf *最近使ったファイル-------------------------------------------------------------
       :doc "標準機能(recentf)として具備されている"
@@ -737,8 +748,23 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
       (leaf dirvish
         :ensure t
         :init (dirvish-override-dired-mode)
+        :config
+        (defface dirvish-vc-ignored-state
+          '((t :foreground "#555555"))
+          "Face for ignored vc state in dirvish.")
         :custom
-        (dirvish-attributes . '(nerd-icons file-size))
+        (dirvish-attributes . '(nerd-icons vc-state file-size git-msg))
+        (dirvish-vc-state-face-alist . '((up-to-date       . nil)
+                                         (edited           . dirvish-vc-edited-state)
+                                         (added            . dirvish-vc-added-state)
+                                         (removed          . dirvish-vc-removed-state)
+                                         (missing          . dirvish-vc-missing-state)
+                                         (needs-merge      . dirvish-vc-needs-merge-face)
+                                         (conflict         . dirvish-vc-conflict-state)
+                                         (unlocked-changes . dirvish-vc-locked-state)
+                                         (needs-update     . dirvish-vc-needs-update-state)
+                                         (ignored          . dirvish-vc-ignored-state)
+                                         (unregistered     . dirvish-vc-unregistered-face)))
         :bind (("C-; f f" . dirvish-dwim)   ; 分割中はその場/単独ならフルフレーム
                ("C-; f d" . dirvish)        ; 常にフルフレームのリッチ表示
                ("C-; f s" . dirvish-side))))
