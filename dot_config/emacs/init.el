@@ -889,8 +889,7 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
           (projectile-save-known-projects)
           (message "Refreshed: %d ghq projects" (length projectile-known-projects)))
         :hook
-        (after-init-hook . (lambda ()
-                             (projectile-mode t)))))
+        (after-init-hook . projectile-mode)))
 
     (leaf *ツリービュー設定---------------------------------------------------------------
       :doc "NeoTreeとかもあるけど、他のプラグインと統合しやすそうなTreemacsを選択"
@@ -937,8 +936,7 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
                  (corfu-preselect . 'first)  ; 最初の候補を事前選択
                  (corfu-scroll-margin . 2))  ; 候補スクロール開始位置が候補ウィンドウの下から何行目か
         :bind (:corfu-map
-               ("TAB" . corfu-insert)      ; Tab キーで補完を確定
-               ([tab] . corfu-insert)
+               ([tab] . corfu-insert)      ; Tab キーで補完を確定
                ("RET" . nil)               ; Enter キーで補完を無効化（デフォルトの動作に戻す）
                ("C-[" . corfu-quit)        ; C-[で補完キャンセル
                )
@@ -948,11 +946,8 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
           :url "https://github.com/LuigiPiucco/nerd-icons-corfu"
           :ensure t
           :after (nerd-icons corfu)
-          :custom
           :config
-          ;;; 利用できる様にするよ
           (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter)
-          :defer-config
           ;; 無理やりスペースの幅を調整する(20241202.2355の元コードから。Ambiguous-width characters絡みの問題と理解している)
           ;; 元コードを上書きしたいので、customは使わない
           (setq nerd-icons-corfu--space  "  "))
@@ -1057,7 +1052,7 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
         :url "https://github.com/magit/magit"
         :ensure t
         ;; 以下パフォーマンス改善の設定。see->https://misohena.jp/blog/2022-11-13-improve-magit-commiting-performance-on-windows.html
-        :setq-default (magit-auto-revert-mode . nil)
+        :custom (magit-auto-revert-mode . nil)
         :preface
         (defun my/magit ()
           "magitを開く。vtermの場合はシェルのカレントディレクトリで開く"
@@ -1138,6 +1133,13 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
 
     (leaf *Emacsでterminalを使うぞ--------------------------------------------------------
       :config
+      (defun my/terminal-mode-setup ()
+        "ターミナルバッファ共通の表示設定を無効化する"
+        (display-line-numbers-mode 0)
+        (setq show-trailing-whitespace nil)
+        (volatile-highlights-mode -1)
+        (puni-disable-puni-mode))
+
       (leaf vterm
         :doc "wsl上だと日本語が入力できなかったり出力おかしかったりするけど、でも最低限使えるので良いかなと"
         :url "https://github.com/akermu/emacs-libvterm"
@@ -1147,11 +1149,7 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
         (vterm-buffer-name-string . "vterm: %s")
         :hook
         (vterm-mode-hook . (lambda()
-                             (display-line-numbers-mode 0)
-                             (setq show-trailing-whitespace nil)
-                             ;; vtermは読み取り専用バッファなので編集系モードを無効化
-                             (volatile-highlights-mode -1)
-                             (puni-disable-puni-mode)
+                             (my/terminal-mode-setup)
                              ;; C-hをバックスペースとしてターミナルに送信
                              (define-key vterm-mode-map (kbd "C-h") #'vterm-send-C-h))))
       (leaf vterm-toggle
@@ -1180,11 +1178,7 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
                 eat-buf
                 '((side . bottom) (slot . 0) (window-height . 0.3)))))))
         :hook
-        (eat-mode-hook . (lambda ()
-                           (display-line-numbers-mode 0)
-                           (setq show-trailing-whitespace nil)
-                           (volatile-highlights-mode -1)
-                           (puni-disable-puni-mode))))
+        (eat-mode-hook . my/terminal-mode-setup))
       )
 
 
@@ -1483,10 +1477,9 @@ mmdc が見つからない場合はスキップ。"
           :ensure t
           :after lsp-java
           :config
-          (require 'dap-java)
+          (leaf dap-java :require t)
           ;; UIを有効化
-          (dap-auto-configure-mode 1)
-))
+          (dap-auto-configure-mode 1)))
       ) ; end of *lspモード
 
     (leaf *Groovy / Gradle ---------------------------------------------------------------
@@ -1511,7 +1504,7 @@ mmdc が見つからない場合はスキップ。"
       (leaf nix-ts-mode
         :ensure t
         :mode "\\.nix\\'"
-        ;;        :hook (nix-ts-mode-hook . lsp-defrred)
+        ;;        :hook (nix-ts-mode-hook . lsp-deferred)
         ))
 
     (leaf *nvimの設定をEmacsでやることもあるよね（Lua弄ることもあるよね）-----------------
