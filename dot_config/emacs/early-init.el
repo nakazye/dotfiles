@@ -90,7 +90,11 @@
     (leaf *メニューバーやツールバーを表示しない----------------------------------------
       :doc "(menu-bar-mode -1)とか(tool-bar-mode -1)だと速度的には意味ないので注意"
       :push ((default-frame-alist . '(menu-bar-lines . 0))
-             (default-frame-alist . '(tool-bar-lines . 0))))
+             (default-frame-alist . '(tool-bar-lines . 0))
+             ;; Emacs 30.x on macOS の ns_judge_scroll_bars バグ (#75030 等) の回避策
+             ;; スクロールバーを無効化することで SIGSEGV クラッシュを防ぐ
+             (default-frame-alist . '(vertical-scroll-bars . nil))
+             (default-frame-alist . '(horizontal-scroll-bars . nil))))
 
     (leaf *スタートアップメッセージの非表示--------------------------------------------
       :doc "このタイミングが良いのか正直自信無いが、early-initでやっている人が多いので僕も習う"
