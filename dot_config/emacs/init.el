@@ -1178,7 +1178,24 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
                 eat-buf
                 '((side . bottom) (slot . 0) (window-height . 0.3)))))))
         :hook
-        (eat-mode-hook . my/terminal-mode-setup))
+        (eat-mode-hook . my/terminal-mode-setup)
+        :config
+        ;; macOSでは同梱terminfo（Linuxビルド）が壊れており、backspaceが
+        ;; 前方スペース挿入になる（eat issue #45）。未コンパイルなら自動で
+        ;; tic再コンパイルする。terminfoディレクトリはバージョン付きパス配下
+        ;; なので、パッケージ更新時はマーカーが消えて自動再コンパイルされる。
+        (defun my/eat-ensure-terminfo ()
+          "macOSでeatのterminfoが未コンパイルなら自動コンパイルする。"
+          (when (eq system-type 'darwin)
+            (let ((marker (expand-file-name ".compiled-on-darwin"
+                                            eat-term-terminfo-directory)))
+              (unless (file-exists-p marker)
+                (if (not (executable-find "tic"))
+                    (message "eat: ticが見つからずterminfoを自動コンパイルできません")
+                  (eat-compile-terminfo)
+                  (make-directory eat-term-terminfo-directory 'parents)
+                  (write-region "" nil marker nil 'silent))))))
+        (my/eat-ensure-terminfo))
       )
 
 
