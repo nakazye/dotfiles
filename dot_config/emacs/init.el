@@ -1243,11 +1243,23 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
           (setq org-journal-dir "~/note/public/journal")
           (org-journal-new-entry t))
         :preface
+        (defvar my/org-journal-target "~/note/business/journal"
+          "org-captureが格納対象とするjournalディレクトリ。")
         (defun my/org-journal-find-location ()
-          "org-captureからbusiness journalの今日のエントリにキャプチャする"
-          (setq org-journal-dir "~/note/business/journal")
+          "org-captureから`my/org-journal-target'の今日のエントリにキャプチャする"
+          (setq org-journal-dir my/org-journal-target)
           (org-journal-new-entry t)
           (goto-char (point-max)))
+        (defun my/org-capture-business ()
+          "business journalに対してorg-captureする"
+          (interactive)
+          (let ((my/org-journal-target "~/note/business/journal"))
+            (org-capture)))
+        (defun my/org-capture-private ()
+          "private(public) journalに対してorg-captureする"
+          (interactive)
+          (let ((my/org-journal-target "~/note/public/journal"))
+            (org-capture)))
         :custom ((org-todo-keywords . '((sequence "TODO(t)" "DOING(d)" "WAITING(w)" "|" "DONE(D)" "CANCELED(C)")))
                  (org-todo-keyword-faces . '(("TODO"     . warning)
                                              ("DOING"    . success)
@@ -1311,7 +1323,8 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
                ("C-; o s" . org-edit-special)
                ("C-; o o" . org-open-at-point)
                ("C-; o a" . org-agenda)
-               ("C-; o c" . org-capture)
+               ("C-; o c b" . my/org-capture-business)
+               ("C-; o c p" . my/org-capture-private)
                ("C-; o b" . business-journal)
                ("C-; o p" . private-journal)
                ("C-; o C i" . org-clock-in)
