@@ -1258,7 +1258,7 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
                                        "~/note/public/journal"))
                  (org-capture-templates
                   . '(("t" "TODO" plain (function my/org-journal-find-location)
-                       "** TODO [#B] %?\n:PROPERTIES:\n:CREATED: %U\n:Effort: %^{Effort}\n:END:")
+                       "** TODO [#B] %?\nDEADLINE: %^t\n:PROPERTIES:\n:CREATED: %U\n:Effort: %^{Effort}\n:END:")
                       ("m" "MEMO" plain (function my/org-journal-find-location)
                        "** MEMO %?\n:PROPERTIES:\n:CREATED: %U\n:END:")
                       ("M" "MTG" plain (function my/org-journal-find-location)
