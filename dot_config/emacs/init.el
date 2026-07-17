@@ -1262,7 +1262,7 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
                       ("m" "MEMO" plain (function my/org-journal-find-location)
                        "** MEMO %?")
                       ("M" "MTG" plain (function my/org-journal-find-location)
-                       "** MTG %?\n   出席者: %^{出席者}\n   開始: %^T\n   終了: %^T\n   - %a")
+                       "** MTG %?\n   出席者: %^{出席者}\n   開始: %^T\n   終了: %^T\n   - ")
                       ("w" "WORK" plain (function my/org-journal-find-location)
                        "** WORK %^{作業内容}\n   %T"))))
         :preface
