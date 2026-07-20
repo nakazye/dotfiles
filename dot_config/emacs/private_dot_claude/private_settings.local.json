@@ -47,7 +47,13 @@
       "Bash(sqlite3 --version)",
       "Bash(/Applications/Emacs.app/Contents/MacOS/Emacs --version)",
       "Bash(gh pr *)",
-      "Bash(direnv version *)"
+      "Bash(direnv version *)",
+      "Bash(nix eval *)",
+      "Bash(nix-instantiate --eval -E '\\(import <nixpkgs> {}\\).emacs.version')",
+      "Bash(command -v trash)",
+      "Bash(trash magit-20260711.1257 magit-section-20260709.950 transient-20260701.1255 with-editor-20260701.1252 ghub-20260701.1318 forge-20260701.1425 closql-20260601.1540 emacsql-20260601.1722 llama-20260601.1455)",
+      "Bash(trash eln-cache/30.2-0f21041b eln-cache/30.2-221ff139 eln-cache/30.2-dbe6b270 eln-cache/30.2-dd2fc611)",
+      "Skill(commit-dotfiles)"
     ],
     "deny": [],
     "ask": [],

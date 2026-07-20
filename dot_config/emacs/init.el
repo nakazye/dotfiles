@@ -1260,7 +1260,11 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
           (interactive)
           (let ((my/org-journal-target "~/note/public/journal"))
             (org-capture)))
-        :custom ((org-todo-keywords . '((sequence "TODO(t)" "DOING(d)" "WAITING(w)" "|" "DONE(D)" "CANCELED(C)")))
+        :custom (;; D! → DONE時にタイムスタンプ記録、C@ → CANCELED時にタイムスタンプ+コメント記録
+                 (org-todo-keywords . '((sequence "TODO(t)" "DOING(d)" "WAITING(w)" "|" "DONE(D!)" "CANCELED(C@)")))
+                 (org-log-done . 'time)       ; DONEでCLOSEDタイムスタンプを挿入
+                 (org-log-into-drawer . t)    ; ログをLOGBOOKドロワーにまとめる
+                 (org-hide-emphasis-markers . t) ; =~*/_ などの装飾記号を非表示
                  (org-todo-keyword-faces . '(("TODO"     . warning)
                                              ("DOING"    . success)
                                              ("WAITING"  . font-lock-constant-face)
@@ -1315,6 +1319,11 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
           (org-journal-file-format . "journal-%Y%m.org")
           ;; 新規ジャーナルファイル作成時のヘッダテンプレート
           (org-journal-file-header . "#+TITLE: Journal %Y-%m\n#+LANGUAGE: ja\n#+OPTIONS: toc:t num:t ^:nil\n#+PROPERTY: header-args :exports both :eval no-export\n#+STARTUP: show2levels indent\n\n"))
+        (leaf org-appear
+          :doc "カーソルが乗ったときだけ装飾記号(=~*/_ など)を表示"
+          :url "https://github.com/awth13/org-appear"
+          :ensure t
+          :hook (org-mode-hook . org-appear-mode))
         )
       (leaf *org-keybinds
         :bind (("C-; o l" . org-store-link)
