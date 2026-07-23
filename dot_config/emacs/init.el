@@ -1274,13 +1274,13 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
                                        "~/note/public/journal"))
                  (org-capture-templates
                   . '(("t" "TODO" plain (function my/org-journal-find-location)
-                       "** TODO [#B] %?\nDEADLINE: %^t\n:PROPERTIES:\n:CREATED: %U\n:Effort: %^{Effort}\n:END:")
+                       "** TODO [#B] %?\nDEADLINE: %^t\n:PROPERTIES:\n:ADDED: %U\n:Effort: %^{Effort}\n:END:")
                       ("m" "MEMO" plain (function my/org-journal-find-location)
-                       "** MEMO %?\n:PROPERTIES:\n:CREATED: %U\n:END:")
+                       "** MEMO %?\n:PROPERTIES:\n:ADDED: %U\n:END:")
                       ("M" "MTG" plain (function my/org-journal-find-location)
-                       "** MTG %?\n:PROPERTIES:\n:CREATED: %U\n:ATTENDEES: %^{出席者}\n:START_TIME: %^T\n:END_TIME: %^T\n:END:\n   - ")
+                       "** MTG %?\n:PROPERTIES:\n:ADDED: %U\n:ATTENDEES: %^{出席者}\n:START_TIME: %^T\n:END_TIME: %^T\n:END:\n   - ")
                       ("w" "WORK" plain (function my/org-journal-find-location)
-                       "** WORK %^{作業内容}\n:PROPERTIES:\n:CREATED: %U\n:Effort: %^{Effort}\n:END:\n   %T"))))
+                       "** WORK %^{作業内容}\n:PROPERTIES:\n:ADDED: %U\n:Effort: %^{Effort}\n:END:\n   %T"))))
         :preface
         ;; org-babelの言語設定を一度だけ遅延ロード
         (defvar my/org-babel-loaded nil)
