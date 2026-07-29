@@ -1375,7 +1375,9 @@ mmdc が見つからない場合はスキップ。"
                      (beg  (match-beginning 0))
                      (end  (match-end 0))
                      (in-file  (make-temp-file "emacs-mermaid-" nil ".mmd"))
-                     (out-file (concat (file-name-sans-extension in-file) ".svg")))
+                     ;; librsvgはmmdcが出力する<foreignObject>(HTMLラベル)を描画できず
+                     ;; 文字が消えるため、ChromiumがラスタライズするPNGで出力する。
+                     (out-file (concat (file-name-sans-extension in-file) ".png")))
                 (write-region code nil in-file nil 'silent)
                 (push in-file my/mermaid-temp-files)
                 (when (= 0 (call-process "mmdc" nil "*mermaid-errors*" nil
@@ -1384,7 +1386,7 @@ mmdc が見つからない場合はスキップ。"
                     (push out-file my/mermaid-temp-files)
                     (let ((ov (make-overlay beg end)))
                       (overlay-put ov 'display
-                                   (create-image out-file 'svg nil
+                                   (create-image out-file 'png nil
                                                  :max-width (- (window-body-width nil t) 40)))
                       (overlay-put ov 'mermaid-overlay t))))))))
         (add-hook 'kill-buffer-hook #'my/mermaid-cleanup-temp-files nil t))
