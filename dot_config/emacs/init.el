@@ -1233,14 +1233,14 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
         :ensure t
         :preface
         (defun business-journal ()
-          "お仕事用(見せちゃだめ)Journalエントリ"
+          "お仕事用Journalエントリ"
           (interactive)
           (setq org-journal-dir "~/note/business/journal")
           (org-journal-new-entry t))
         (defun private-journal ()
-          "プライベート(見せても良い)用Journalエントリ"
+          "プライベート用Journalエントリ"
           (interactive)
-          (setq org-journal-dir "~/note/public/journal")
+          (setq org-journal-dir "~/note/private/journal")
           (org-journal-new-entry t))
         :preface
         (defvar my/org-journal-target "~/note/business/journal"
@@ -1256,9 +1256,9 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
           (let ((my/org-journal-target "~/note/business/journal"))
             (org-capture)))
         (defun my/org-capture-private ()
-          "private(public) journalに対してorg-captureする"
+          "private journalに対してorg-captureする"
           (interactive)
-          (let ((my/org-journal-target "~/note/public/journal"))
+          (let ((my/org-journal-target "~/note/private/journal"))
             (org-capture)))
         :custom (;; D! → DONE時にタイムスタンプ記録、C@ → CANCELED時にタイムスタンプ+コメント記録
                  (org-todo-keywords . '((sequence "TODO(t)" "DOING(d)" "WAITING(w)" "|" "DONE(D!)" "CANCELED(C@)")))
@@ -1271,7 +1271,7 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
                                              ("DONE"     . org-done)
                                              ("CANCELED" . shadow)))
                  (org-agenda-files . '("~/note/business/journal"
-                                       "~/note/public/journal"))
+                                       "~/note/private/journal"))
                  (org-capture-templates
                   . '(("t" "TODO" plain (function my/org-journal-find-location)
                        "** TODO [#B] %?\nDEADLINE: %^t\n:PROPERTIES:\n:ADDED: %U\n:Effort: %^{Effort}\n:END:")
