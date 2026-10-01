@@ -706,6 +706,10 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
           "C-; j"   "Jump"
           "C-; o"   "Org"
           "C-; o C" "Org Clock"
+          "C-; o c" "org-capture"
+          "C-; o c b" "capture business"
+          "C-; o c p" "capture private"
+          "C-; o c B" "capture book"
           "C-; p"   "Puni"
           "C-; P"   "Project"
           "C-; f"   "File Manager"
@@ -1260,6 +1264,50 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
           (interactive)
           (let ((my/org-journal-target "~/note/private/journal"))
             (org-capture)))
+        :preface
+        (defvar my/book-dir "~/note/private/memo/book/"
+          "読書記録を1冊1ファイルで保存するディレクトリ。")
+        (defvar my/book-capture-templates
+          '(("b" "BOOK" plain (function my/book-capture-new-file) "%?"))
+          "BOOKキャプチャ専用のテンプレート。business/private用のorg-capture-templatesには混ぜない。")
+        ;; org-capture-templatesをletで動的束縛するより前に、コンパイラへ特殊変数だと伝えておく
+        ;; (org本体のdefcustomより先にバイトコンパイルされると"lexical var"エラーになるため)
+        (defvar org-capture-templates)
+        (defun my/book--sanitize-filename (title)
+          "ファイル名に使えないスラッシュ・コロンを置換する"
+          (replace-regexp-in-string "[/:]" "_" title))
+        (defun my/book-capture-new-file ()
+          "org-captureから新しい本の記録ファイルを作成し、読書記録/読書メモのひな形を挿入してクロックインする"
+          (let ((title (read-string "本のタイトル: ")))
+            (unless (file-directory-p my/book-dir)
+              (make-directory my/book-dir t))
+            ;; auto-insertには頼らず、このファイルの共通ヘッダは自前で挿入する
+            (let ((find-file-hook (remq 'auto-insert find-file-hook)))
+              (find-file (expand-file-name (concat (my/book--sanitize-filename title) ".org") my/book-dir)))
+            ;; 新規ファイルが何らかの理由でread-onlyになっていた場合に備えて明示的に解除する
+            (setq buffer-read-only nil)
+            (goto-char (point-max))
+            ;; 共通ヘッダ(他のorgファイルと同内容)+本の記録用設定を1回だけ追加する
+            (when (= (buffer-size) 0)
+              (insert "#+TITLE: " title "\n"
+                      "#+LANGUAGE: ja\n"
+                      "#+OPTIONS: toc:t num:t ^:nil\n"
+                      "#+PROPERTY: header-args :exports both :eval no-export\n"
+                      "#+STARTUP: showall indent\n"
+                      "#+CATEGORY: book\n\n"))
+            (goto-char (point-max))
+            ;; 読書記録は普段のTODO確認でノイズにならないよう一律優先度Z(最低)にする
+            (insert (format "* %s\n** 読書記録\n*** TODO [#Z] 読書：%s：初回\n** 読書メモ\n*** 初回\n"
+                             title title))
+            (save-excursion
+              (re-search-backward "^\\*\\*\\* TODO")
+              (org-clock-in))
+            (goto-char (point-max))))
+        (defun my/org-capture-book ()
+          "business/privateのメニューには出さず、BOOKキャプチャを直接起動する"
+          (interactive)
+          (let ((org-capture-templates my/book-capture-templates))
+            (org-capture nil "b")))
         :custom (;; D! → DONE時にタイムスタンプ記録、C@ → CANCELED時にタイムスタンプ+コメント記録
                  (org-todo-keywords . '((sequence "TODO(t)" "DOING(d)" "WAITING(w)" "|" "DONE(D!)" "CANCELED(C@)")))
                  (org-log-done . 'time)       ; DONEでCLOSEDタイムスタンプを挿入
@@ -1271,7 +1319,8 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
                                              ("DONE"     . org-done)
                                              ("CANCELED" . shadow)))
                  (org-agenda-files . '("~/note/business/journal"
-                                       "~/note/private/journal"))
+                                       "~/note/private/journal"
+                                       "~/note/private/memo/book"))
                  (org-capture-templates
                   . '(("t" "TODO" plain (function my/org-journal-find-location)
                        "** TODO [#B] %?\nDEADLINE: %^t\n:PROPERTIES:\n:ADDED: %U\n:Effort: %^{Effort}\n:END:")
@@ -1334,6 +1383,7 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
                ("C-; o a" . org-agenda)
                ("C-; o c b" . my/org-capture-business)
                ("C-; o c p" . my/org-capture-private)
+               ("C-; o c B" . my/org-capture-book)
                ("C-; o b" . business-journal)
                ("C-; o p" . private-journal)
                ("C-; o C i" . org-clock-in)
