@@ -1225,6 +1225,7 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
           '("\\.org\\'" . "Org-mode file")
           '(nil
             "#+TITLE: " (file-name-base (buffer-file-name)) "\n"
+            "#+DATE: " (format-time-string "[%Y-%m-%d %a %H:%M]") "\n"
             "#+LANGUAGE: ja\n"
             "#+OPTIONS: toc:t num:t ^:nil\n"
             "#+PROPERTY: header-args :exports both :eval no-export\n"
@@ -1290,6 +1291,7 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
             ;; 共通ヘッダ(他のorgファイルと同内容)+本の記録用設定を1回だけ追加する
             (when (= (buffer-size) 0)
               (insert "#+TITLE: " title "\n"
+                      "#+DATE: " (format-time-string "[%Y-%m-%d %a %H:%M]") "\n"
                       "#+LANGUAGE: ja\n"
                       "#+OPTIONS: toc:t num:t ^:nil\n"
                       "#+PROPERTY: header-args :exports both :eval no-export\n"
