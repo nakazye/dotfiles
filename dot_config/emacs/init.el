@@ -268,6 +268,38 @@
       :doc "↑の説明がめっちゃわかりやすい"
       :config (add-to-list 'default-frame-alist '(cursor-type . bar)))
 
+    (leaf *WSLgのタスクバーアイコンをEmacsにする-----------------------------------------
+      :doc "Lucid(X11)ビルドは白黒のWM_HINTSアイコンしか付けず、_NET_WM_ICONが無いので"
+      :doc "WSLgのタスクバーではペンギンになる。同梱PNGをmagickでARGBに変換して自前で設定する"
+      :when (eq system-type 'gnu/linux)
+      :preface
+      (defun my/x-set-net-wm-icon (&optional frame)
+        "Emacs同梱のPNGアイコンをFRAMEの_NET_WM_ICONに設定する。"
+        (let* ((frame (or frame (selected-frame)))
+               (root (file-name-directory (directory-file-name invocation-directory)))
+               (png (expand-file-name "share/icons/hicolor/48x48/apps/emacs.png" root))
+               (magick (executable-find "magick")))
+          (when (and (eq (framep frame) 'x) magick (file-exists-p png))
+            (let ((raw (with-temp-buffer
+                         (set-buffer-multibyte nil)
+                         (call-process magick nil t nil png "-depth" "8" "rgba:-")
+                         (buffer-string)))
+                  pixels)
+              ;; RGBAバイト列 → ARGBの32bit値
+              (dotimes (i (/ (length raw) 4))
+                (let ((o (* i 4)))
+                  (push (logior (ash (aref raw (+ o 3)) 24)
+                                (ash (aref raw o) 16)
+                                (ash (aref raw (+ o 1)) 8)
+                                (aref raw (+ o 2)))
+                        pixels)))
+              ;; 先頭に幅・高さ。WMが見る外側ウィンドウ(OUTER-P)に設定する
+              (x-change-window-property "_NET_WM_ICON" (append '(48 48) (nreverse pixels))
+                                        frame "CARDINAL" 32 t)))))
+      :config
+      (my/x-set-net-wm-icon)
+      (add-hook 'after-make-frame-functions #'my/x-set-net-wm-icon))
+
     ) ; end of GUI表示系設定==============================================================
 
   (leaf *一般表示系設定===================================================================
