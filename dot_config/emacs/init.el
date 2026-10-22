@@ -1342,8 +1342,10 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
           (interactive)
           (let ((org-capture-templates my/book-capture-templates))
             (org-capture nil "b")))
-        :custom (;; D! → DONE時にタイムスタンプ記録、C@ → CANCELED時にタイムスタンプ+コメント記録
-                 (org-todo-keywords . '((sequence "TODO(t)" "DOING(d)" "WAITING(w)" "|" "DONE(D!)" "CANCELED(C@)")))
+        :custom (;; 状態を変えた日時をLOGBOOKに記録する(! → タイムスタンプ、@ → タイムスタンプ+コメント)
+                 ;; WAITING(w@/!) → 入るときは理由を書き、出るときはタイムスタンプだけ
+                 ;; claude-slack-botも同じ形で記録する(journal_todos.pyのchange_state)
+                 (org-todo-keywords . '((sequence "TODO(t!)" "DOING(d!)" "WAITING(w@/!)" "|" "DONE(D!)" "CANCELED(C@)")))
                  (org-log-done . 'time)       ; DONEでCLOSEDタイムスタンプを挿入
                  (org-log-into-drawer . t)    ; ログをLOGBOOKドロワーにまとめる
                  (org-hide-emphasis-markers . t) ; =~*/_ などの装飾記号を非表示
@@ -1352,6 +1354,7 @@ DAP: _d_:debug _b_:breakpoint _n_:next _i_:step-in _o_:step-out _c_:continue _r_
                                              ("WAITING"  . font-lock-constant-face)
                                              ("DONE"     . org-done)
                                              ("CANCELED" . shadow)))
+                 (org-agenda-log-mode-items . '(closed clock state)) ; agendaのlog mode(l)に状態の変化も出す
                  (org-agenda-files . '("~/note/business/journal"
                                        "~/note/private/journal"
                                        "~/note/private/memo/book"))
